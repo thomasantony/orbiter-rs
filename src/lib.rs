@@ -47,7 +47,7 @@ pub mod ffi {
         fn SetPMI(self: &SpacecraftWrapper, pmi: &Vector3);
         fn CreatePropellantResource(self: &SpacecraftWrapper, mass: f64) -> usize;
         fn CreateThruster(self: &SpacecraftWrapper, pos: &Vector3, dir: &Vector3, maxth0: f64, ph: usize, isp: f64) -> usize;
-
+        fn CreateThrusterGroup(self: &SpacecraftWrapper, thrusters: &Vec<usize>) -> usize;
 /// SetTouchdownPoints
 /// CreateThrusterGroup
 /// AddExhaust
@@ -116,11 +116,12 @@ pub struct RustSpacecraft{}
 impl OrbiterVessel for RustSpacecraft {
     fn set_class_caps(&self, context: &SpacecraftWrapper) {
         context.SetSize(1.0);
-        context.SetPMI(& Vector3::new(0.50, 0.50, 0.50));
+        context.SetPMI(_V!(0.50, 0.50, 0.50));
 
         const VERNIER_PROP_MASS:f64 = 70.98;
         let ph_vernier = context.CreatePropellantResource (VERNIER_PROP_MASS);
-
+        let th_vernier = context.CreateThruster(_V!(0.0, 1.0, 1.0), _V!(0.0, 0.0, 1.0), 10.0, ph_vernier, 10.0);
+        context.CreateThrusterGroup(&vec![th_vernier]);
         context.AddMesh("ShuttlePB");
     }
     fn pre_step(&mut self, _context: &SpacecraftWrapper, sim_t: f64, sim_dt: f64, mjd: f64)

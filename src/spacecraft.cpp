@@ -47,6 +47,16 @@ uintptr_t SpacecraftWrapper::CreatePropellantResource(double mass) const
 {
     return reinterpret_cast<uintptr_t>(VESSEL4::CreatePropellantResource(mass));
 }
+uintptr_t SpacecraftWrapper::CreateThrusterGroup(const rust::Vec<uintptr_t>& thrusters) const
+{
+    std::vector<THRUSTER_HANDLE> th_vec(thrusters.size());
+
+    for (auto i = 0; i < thrusters.size(); i++)
+    {
+        th_vec.push_back(reinterpret_cast<THRUSTER_HANDLE>(thrusters[i]));
+    }
+    return reinterpret_cast<uintptr_t>(VESSEL4::CreateThrusterGroup(&th_vec[0], thrusters.size(), THGROUP_MAIN));
+}
 
 void SpacecraftWrapper::clbkSetClassCaps(FILEHANDLE cfg)
 {
@@ -60,6 +70,13 @@ void SpacecraftWrapper::clbkPreStep(double SimT, double SimDT, double MJD)
 {
     dyn_vessel_pre_step(rust_spacecraft_, *this, SimT, SimDT, MJD);
 }
+
+
+
+
+
+
+
 
 BoxDynVessel::BoxDynVessel(BoxDynVessel &&other) noexcept : repr(other.repr)
 {

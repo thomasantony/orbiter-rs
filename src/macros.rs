@@ -13,3 +13,9 @@ macro_rules! make_orbiter_vessel {
         }
     }
 }
+#[macro_export]
+macro_rules! _V {
+    ($x:expr, $y:expr, $z:expr) => {
+        & $crate::Vector3::new($x, $y, $z)
+    }
+}
