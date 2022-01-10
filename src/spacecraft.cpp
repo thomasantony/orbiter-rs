@@ -17,7 +17,7 @@ void debugLog(rust::Str s)
 }
 
 SpacecraftWrapper::SpacecraftWrapper(OBJHANDLE hVessel, int flightmodel)
-    : VESSEL3(hVessel, flightmodel),
+    : VESSEL4(hVessel, flightmodel),
       // rust_spacecraft_(box_to_uptr(create_rust_spacecraft()))
       rust_spacecraft_(std::move(create_rust_spacecraft()))
 {
@@ -27,19 +27,23 @@ SpacecraftWrapper::~SpacecraftWrapper()
 {
 }
 
+void SpacecraftWrapper::AddMesh(rust::Str mesh_name) const
+{
+    const std::string _mesh_name(mesh_name);
+    VESSEL::AddMesh(_mesh_name.data());
+}
+
 void SpacecraftWrapper::clbkSetClassCaps(FILEHANDLE cfg)
 {
     // physical vessel parameters
-    SetSize(1.0);
     SetPMI(_V(0.50, 0.50, 0.50));
-    AddMesh("ShuttlePB");
-    dyn_vessel_set_class_caps(rust_spacecraft_);
+    dyn_vessel_set_class_caps(rust_spacecraft_, *this);
 }
 
 // Pre-step logic for differential thrust
 void SpacecraftWrapper::clbkPreStep(double SimT, double SimDT, double MJD)
 {
-    dyn_vessel_pre_step(rust_spacecraft_, SimT, SimDT, MJD);
+    dyn_vessel_pre_step(rust_spacecraft_, *this, SimT, SimDT, MJD);
 }
 
 BoxDynVessel::BoxDynVessel(BoxDynVessel &&other) noexcept : repr(other.repr)

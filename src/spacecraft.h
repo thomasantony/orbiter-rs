@@ -24,7 +24,7 @@ using PtrBoxDynVessel = BoxDynVessel *;
 // ==============================================================
 // Spacecraft class interface
 // ==============================================================
-class SpacecraftWrapper : public VESSEL3
+class SpacecraftWrapper : public VESSEL4
 {
 public:
     SpacecraftWrapper(OBJHANDLE hVessel, int flightmodel);
@@ -32,6 +32,7 @@ public:
     void clbkSetClassCaps(FILEHANDLE cfg);
     void clbkPreStep(double SimT, double SimDT, double MJD);
 
+    void AddMesh(rust::Str mesh_name) const;
     // double CalcEmptyMass();
     // int clbkConsumeBufferedKey(DWORD key, bool down, char *kstate);
 
