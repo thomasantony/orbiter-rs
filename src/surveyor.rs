@@ -1,5 +1,5 @@
 /// Surveyor spacecraft definition using the SDK
-use crate::{debugLog, make_orbiter_vessel, OrbiterVessel, SpacecraftWrapper, THGROUP_TYPE, _V};
+use crate::{debugLog, make_orbiter_vessel, OrbiterVessel, SpacecraftWrapper, THGROUP_TYPE, _V, Vector3};
 
 const VERNIER_PROP_MASS: f64 = 70.98;
 const VERNIER_ISP: f64 = 3200.0;
@@ -54,10 +54,19 @@ impl Surveyor {
     fn setup_meshes(&mut self, context: &SpacecraftWrapper)
     {
         context.ClearMeshes();
-        match self.vehicle_state {
-            SurveyorState::BeforeRetroIgnition => context.AddMeshWithOffset("Surveyor-AMR", _V!(0., 0., -0.6)),
-            SurveyorState::RetroFiring => context.AddMeshWithOffset("Surveyor-Retro", _V!(0., 0., -0.5)),
-            SurveyorState::AfterRetro => context.AddMeshWithOffset("Surveyor-Lander", _V!(0., 0.3, 0.)),
+        let mut meshes = Vec::new();
+        meshes.push(("Surveyor-AMR", Vector3::new(0., 0., -0.6)));
+        meshes.push(("Surveyor-Retro", Vector3::new(0., 0., -0.5)));
+        meshes.push(("Surveyor-Lander", Vector3::new(0., 0.3, 0.)));
+        
+        let meshes_used = match self.vehicle_state {
+            SurveyorState::BeforeRetroIgnition => &meshes[0..],
+            SurveyorState::RetroFiring => &meshes[1..],
+            SurveyorState::AfterRetro => &meshes[2..],
+        };
+        for (mesh, ofs) in meshes_used
+        {
+            context.AddMeshWithOffset(mesh, &ofs);
         }
     }
 }
