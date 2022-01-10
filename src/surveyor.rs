@@ -246,9 +246,19 @@ impl OrbiterVessel for Surveyor {
         context.SetCameraOffset(_V!(0.0, 0.8, 0.0));
         self.setup_meshes(context)
     }
-    fn pre_step(&mut self, context: &SpacecraftWrapper, sim_t: f64, sim_dt: f64, mjd: f64) {
+    fn pre_step(&mut self, context: &SpacecraftWrapper, _sim_t: f64, _sim_dt: f64, _mjd: f64) {
         context.SetEmptyMass(self.calc_empty_mass(context));
-        debugLog(&format!("Hello world! {} {} {}", sim_t, sim_dt, mjd));
+
+        let pitch = context.GetThrusterGroupLevelByType(THGROUP_TYPE::AttPitchup) - context.GetThrusterGroupLevelByType(THGROUP_TYPE::AttPitchdown);
+        let yaw = context.GetThrusterGroupLevelByType(THGROUP_TYPE::AttYawright) - context.GetThrusterGroupLevelByType(THGROUP_TYPE::AttYawleft);
+        let roll = context.GetThrusterGroupLevelByType(THGROUP_TYPE::AttBankright) - context.GetThrusterGroupLevelByType(THGROUP_TYPE::AttBankleft);
+
+        // Differential thrusting for attitude control
+        context.SetThrusterDir(self.th_vernier[0], _V!(5.0f64.to_radians().sin() * roll, 0.0, 1.0));	            // Roll using the 5 degree offset
+        context.SetThrusterDir(self.th_vernier[1], _V!(0.0, 0.0, 1.0 + 0.05 * (pitch - yaw)));
+        context.SetThrusterDir(self.th_vernier[2], _V!(0.0, 0.0, 1.0 + 0.05 * (pitch + yaw)));
+
+        debugLog(&format!("Pitch: {}, Yaw: {}, Roll: {}", pitch, yaw, roll));
     }
 }
 
