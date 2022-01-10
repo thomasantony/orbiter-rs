@@ -74,9 +74,9 @@ double SpacecraftWrapper::GetPropellantMass(uintptr_t ph) const
 {
     return VESSEL4::GetPropellantMass(PROPELLANT_HANDLE(ph));
 }
-double SpacecraftWrapper::GetThrusterGroupLevel(uintptr_t thg) const
+double SpacecraftWrapper::GetThrusterGroupLevelByType(THGROUP_TYPE thgroup_type) const
 {
-    return VESSEL4::GetThrusterGroupLevel(THGROUP_HANDLE(thg));
+    return VESSEL4::GetThrusterGroupLevel(thgroup_type);
 }
 
 void SpacecraftWrapper::clbkSetClassCaps(FILEHANDLE cfg)

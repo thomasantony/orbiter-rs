@@ -45,7 +45,7 @@ public:
     uintptr_t CreateThrusterGroup(rust::Slice<const uintptr_t> thrusters, THGROUP_TYPE thgroup_type) const;
 
     double GetPropellantMass(uintptr_t ph) const;
-    double GetThrusterGroupLevel(uintptr_t thg) const;
+    double GetThrusterGroupLevelByType(THGROUP_TYPE thgroup_type) const;
     // int clbkConsumeBufferedKey(DWORD key, bool down, char *kstate);
 
     // void SetupMeshes();
