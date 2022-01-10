@@ -30,7 +30,49 @@ pub mod ffi {
         y: f64,
         z: f64
     }
-
+    #[derive(Debug)]
+    #[repr(usize)]
+    // #[cxx_name = "THGROUP_TYPE"]
+    enum THGROUP_TYPE {
+        #[cxx_name = "THGROUP_MAIN"]
+        Main,
+        #[cxx_name = "THGROUP_RETRO"]
+        Retro,
+        #[cxx_name = "THGROUP_HOVER"]
+        Hover,
+        #[cxx_name = "THGROUP_ATT_PITCHUP"]
+        AttPitchup,
+        #[cxx_name = "THGROUP_ATT_PITCHDOWN"]
+        AttPitchdown,
+        #[cxx_name = "THGROUP_ATT_YAWLEFT"]
+        AttYawleft,
+        #[cxx_name = "THGROUP_ATT_YAWRIGHT"]
+        AttYawright,
+        #[cxx_name = "THGROUP_ATT_BANKLEFT"]
+        AttBankleft,
+        #[cxx_name = "THGROUP_ATT_BANKRIGHT"]
+        AttBankright,
+        #[cxx_name = "THGROUP_ATT_RIGHT"]
+        AttRight,
+        #[cxx_name = "THGROUP_ATT_LEFT"]
+        AttLeft,
+        #[cxx_name = "THGROUP_ATT_UP"]
+        AttUp,
+        #[cxx_name = "THGROUP_ATT_DOWN"]
+        AttDown,
+        #[cxx_name = "THGROUP_ATT_FORWARD"]
+        AttForward,
+        #[cxx_name = "THGROUP_ATT_BACK"]
+        AttBack,
+        #[cxx_name = "THGROUP_USER"]
+        User = 0x40,
+    }
+    enum SmallPrime {
+        Two = 2,
+        Three = 3,
+        Five = 5,
+        Seven = 7,
+    }
     unsafe extern "C++" {
         include!("src/spacecraft.h");
         type c_void;
@@ -40,6 +82,7 @@ pub mod ffi {
 
         type SpacecraftWrapper;
         type VECTOR3;
+        type THGROUP_TYPE;
 
         // VESSEL API
         fn SetSize(self: &SpacecraftWrapper, size: f64);
@@ -51,7 +94,7 @@ pub mod ffi {
 
         fn CreatePropellantResource(self: &SpacecraftWrapper, mass: f64) -> usize;
         fn CreateThruster(self: &SpacecraftWrapper, pos: &Vector3, dir: &Vector3, maxth0: f64, ph: usize, isp: f64) -> usize;
-        fn CreateThrusterGroup(self: &SpacecraftWrapper, thrusters: &[usize]) -> usize;
+        fn CreateThrusterGroup(self: &SpacecraftWrapper, thrusters: &[usize], thgroup_type: THGROUP_TYPE) -> usize;
 /// SetTouchdownPoints
 /// SetCameraOffset
 /// GetThrusterGroupLevel
@@ -72,8 +115,7 @@ pub mod ffi {
     }
 }
 
-pub use ffi::Vector3;
-pub use ffi::debugLog;
+pub use ffi::*;
 
 impl Vector3
 {
@@ -83,7 +125,6 @@ impl Vector3
 }
 // Based on https://github.com/dtolnay/cxx/pull/672
 use cxx::ExternType;
-use ffi::SpacecraftWrapper;
 pub trait OrbiterVessel {
     fn set_class_caps(&mut self, context: &SpacecraftWrapper);
     fn pre_step(&mut self, context: &SpacecraftWrapper, sim_t: f64, sim_dt: f64, mjd: f64);

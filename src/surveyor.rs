@@ -1,6 +1,6 @@
 
 /// Surveyor spacecraft definition using the SDK
-use crate::{make_orbiter_vessel, _V, OrbiterVessel, SpacecraftWrapper, debugLog};
+use crate::{make_orbiter_vessel, _V, OrbiterVessel, SpacecraftWrapper, debugLog, THGROUP_TYPE};
 
 
 const VERNIER_PROP_MASS:f64 = 70.98;
@@ -50,7 +50,7 @@ impl OrbiterVessel for RustSpacecraft {
         self.th_vernier.push(context.CreateThruster(_V!(                          0.0 * VERNIER_RAD,  1.0 * VERNIER_RAD, VERNIER_Z), _V!(0.0, 0.0, 1.0), VERNIER_THRUST, ph_vernier, VERNIER_ISP));
         self.th_vernier.push(context.CreateThruster(_V!(( 60.0f64).to_radians().sin() * VERNIER_RAD, -0.5 * VERNIER_RAD, VERNIER_Z), _V!(0.0, 0.0, 1.0), VERNIER_THRUST, ph_vernier, VERNIER_ISP));
         self.th_vernier.push(context.CreateThruster(_V!((-60.0f64).to_radians().sin() * VERNIER_RAD, -0.5 * VERNIER_RAD, VERNIER_Z), _V!(0.0, 0.0, 1.0), VERNIER_THRUST, ph_vernier, VERNIER_ISP));
-        context.CreateThrusterGroup(&self.th_vernier);
+        context.CreateThrusterGroup(&self.th_vernier, THGROUP_TYPE::Main);
         for th in self.th_vernier.iter() {
             context.AddExhaust(*th, 1.0, 0.1);
         }

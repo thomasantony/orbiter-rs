@@ -50,11 +50,11 @@ uintptr_t SpacecraftWrapper::CreatePropellantResource(double mass) const
 {
     return reinterpret_cast<uintptr_t>(VESSEL4::CreatePropellantResource(mass));
 }
-uintptr_t SpacecraftWrapper::CreateThrusterGroup(rust::Slice<const uintptr_t> thrusters) const
+uintptr_t SpacecraftWrapper::CreateThrusterGroup(rust::Slice<const uintptr_t> thrusters, THGROUP_TYPE thgroup_type) const
 {
     const uintptr_t *th_ptr = thrusters.data();
 
-    return reinterpret_cast<uintptr_t>(VESSEL4::CreateThrusterGroup((THRUSTER_HANDLE *)th_ptr, thrusters.size(), THGROUP_MAIN));
+    return reinterpret_cast<uintptr_t>(VESSEL4::CreateThrusterGroup((THRUSTER_HANDLE *)th_ptr, thrusters.size(), thgroup_type));
 }
 
 void SpacecraftWrapper::clbkSetClassCaps(FILEHANDLE cfg)
