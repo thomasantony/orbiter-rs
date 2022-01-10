@@ -48,10 +48,11 @@ fn dyn_vessel_pre_step(vessel: &mut Box<dyn OrbiterVessel>, sim_t: f64, sim_dt: 
     (**vessel).pre_step(sim_t, sim_dt, mjd);
 }
 
+mod macros;
 
 
 
-pub struct RustSpacecraft;
+pub struct RustSpacecraft{}
 impl OrbiterVessel for RustSpacecraft {
     fn set_class_caps(&self) {
         ffi::debugLog("Hello world!");
@@ -62,7 +63,4 @@ impl OrbiterVessel for RustSpacecraft {
     }
 }
 
-#[no_mangle]
-fn create_rust_spacecraft() -> Box<dyn OrbiterVessel> {
-    Box::new(RustSpacecraft)
-}
+make_orbiter_vessel!(RustSpacecraft{});
