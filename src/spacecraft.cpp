@@ -51,6 +51,10 @@ void SpacecraftWrapper::SetCameraOffset(const Vector3 &co) const
 {
     VESSEL4::SetCameraOffset(_V(co.x, co.y, co.z));
 }
+void SpacecraftWrapper::SetTouchdownPoints(const Vector3 &pt1, const Vector3 &pt2, const Vector3 &pt3) const
+{
+    VESSEL4::SetTouchdownPoints(_V(pt1.x, pt1.y, pt1.z), _V(pt2.x, pt2.y, pt2.z), _V(pt3.x, pt3.y, pt3.z));
+}
 
 uintptr_t SpacecraftWrapper::CreateThruster(const Vector3 &pos, const Vector3 &dir, double maxth0, uintptr_t ph, double isp) const
 {

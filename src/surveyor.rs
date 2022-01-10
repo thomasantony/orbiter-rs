@@ -26,7 +26,7 @@ const RETRO_EMPTY_MASS: f64 = 64.88;
 const AMR_MASS: f64 = 3.82;
 
 const LEG_RAD: f64 = 1.5;
-const LEG_STA: f64 = -0.6;
+const LEG_Z: f64 = -0.6;
 
 #[derive(Debug)]
 enum SurveyorState {
@@ -74,7 +74,7 @@ impl OrbiterVessel for Surveyor {
     fn set_class_caps(&mut self, context: &SpacecraftWrapper) {
         context.SetSize(1.0);
         context.SetPMI(_V!(0.50, 0.50, 0.50));
-
+        context.SetTouchdownPoints(_V!(0.0, LEG_RAD, LEG_Z), _V!((60.0f64).to_radians().sin() * LEG_RAD, -0.5 * LEG_RAD, LEG_Z), _V!(-(60.0f64).to_radians().sin() * LEG_RAD, -0.5 * LEG_RAD, LEG_Z));
         // Create Propellant Resources
         self.ph_vernier = context.CreatePropellantResource(VERNIER_PROP_MASS);
 	    self.ph_rcs = context.CreatePropellantResource(RCS_PROP_MASS);
