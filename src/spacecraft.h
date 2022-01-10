@@ -3,10 +3,11 @@
 #include "rust/cxx.h"
 #include "orbitersdk.h"
 #include "box_wrapper.h"
-
+#include <cstdint>
 void debugLog(rust::Str);
 
 struct Vector3;
+using c_void = void;
 
 class BoxDynVessel
 {
@@ -32,6 +33,8 @@ public:
 
     void AddMesh(rust::Str mesh_name) const;
     void SetPMI(const Vector3& pmi) const;
+    uintptr_t CreateThruster(const Vector3 &pos, const Vector3 &dir, double maxth0, uintptr_t ph, double isp) const;
+    uintptr_t CreatePropellantResource(double mass) const;
     // double CalcEmptyMass();
     // int clbkConsumeBufferedKey(DWORD key, bool down, char *kstate);
 

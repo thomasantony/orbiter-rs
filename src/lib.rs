@@ -1,4 +1,26 @@
 pub mod oapi_consts;
+pub mod utils;
+
+
+
+// // ctype_wrapper!(THRUSTERHANDLE, &std::os::raw::c_void, "THRUSTERHANDLE");
+// #[derive(Debug, Eq, Clone, PartialEq, Hash)]
+// #[allow(non_camel_case_types)]
+// #[repr(transparent)]
+// pub struct THRUSTERHANDLE(pub *const std::ffi::c_void);
+// unsafe impl cxx::ExternType for THRUSTERHANDLE {
+//     type Id = cxx::type_id!("std::ffi::c_void");
+//     type Kind = cxx::kind::Trivial;
+// }
+// #[derive(Debug, Eq, Clone, PartialEq, Hash)]
+// #[allow(non_camel_case_types)]
+// #[repr(transparent)]
+// pub struct PROPELLANTHANDLE(pub *const std::ffi::c_void);
+// unsafe impl cxx::ExternType for PROPELLANTHANDLE {
+//     type Id = cxx::type_id!("std::ffi::c_void");
+//     type Kind = cxx::kind::Trivial;
+// }
+// // ctype_wrapper!(PROPELLANTHANDLE, &std::os::raw::c_void, "PROPELLANTHANDLE");
 
 #[cxx::bridge]
 pub mod ffi {
@@ -8,17 +30,37 @@ pub mod ffi {
         y: f64,
         z: f64
     }
+
     unsafe extern "C++" {
         include!("src/spacecraft.h");
+        type c_void;
+
         type BoxDynVessel = Box<dyn crate::OrbiterVessel>;
         type PtrBoxDynVessel = crate::PtrBoxDynVessel;
 
         type SpacecraftWrapper;
         type VECTOR3;
 
+        // VESSEL API
         fn SetSize(self: &SpacecraftWrapper, size: f64);
         fn AddMesh(self: &SpacecraftWrapper, mesh_name: &str);
         fn SetPMI(self: &SpacecraftWrapper, pmi: &Vector3);
+        fn CreatePropellantResource(self: &SpacecraftWrapper, mass: f64) -> usize;
+        fn CreateThruster(self: &SpacecraftWrapper, pos: &Vector3, dir: &Vector3, maxth0: f64, ph: usize, isp: f64) -> usize;
+
+/// SetTouchdownPoints
+/// CreateThrusterGroup
+/// AddExhaust
+/// SetCameraOffset
+/// SetEmptyMass
+/// GetThrusterGroupLevel
+/// SetThrusterDir
+/// GetPropellantMass
+/// SetThrusterLevel
+/// oapiCreateVessel
+/// Local2Rel
+/// GetStatus
+/// SpawnObject
         fn debugLog(s: &str);
     }
     extern "Rust" {
@@ -28,6 +70,7 @@ pub mod ffi {
         unsafe fn dyn_vessel_drop_in_place(ptr: PtrBoxDynVessel);
     }
 }
+
 use ffi::Vector3;
 impl Vector3
 {
@@ -74,7 +117,11 @@ impl OrbiterVessel for RustSpacecraft {
     fn set_class_caps(&self, context: &SpacecraftWrapper) {
         context.SetSize(1.0);
         context.SetPMI(& Vector3::new(0.50, 0.50, 0.50));
-        context.AddMesh("ShuttlePB")
+
+        const VERNIER_PROP_MASS:f64 = 70.98;
+        let ph_vernier = context.CreatePropellantResource (VERNIER_PROP_MASS);
+
+        context.AddMesh("ShuttlePB");
     }
     fn pre_step(&mut self, _context: &SpacecraftWrapper, sim_t: f64, sim_dt: f64, mjd: f64)
     {

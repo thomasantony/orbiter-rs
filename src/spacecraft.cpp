@@ -38,6 +38,16 @@ void SpacecraftWrapper::SetPMI(const Vector3& pmi) const
     VESSEL4::SetPMI(_V(pmi.x, pmi.y, pmi.z));
 }
 
+uintptr_t SpacecraftWrapper::CreateThruster(const Vector3 &pos, const Vector3 &dir, double maxth0, uintptr_t ph, double isp) const
+{
+    auto _ph = reinterpret_cast<PROPELLANT_HANDLE>(ph);
+    return reinterpret_cast<uintptr_t>(VESSEL4::CreateThruster(_V(pos.x, pos.y, pos.z), _V(dir.x, dir.y, dir.z), maxth0, _ph, isp));
+}
+uintptr_t SpacecraftWrapper::CreatePropellantResource(double mass) const
+{
+    return reinterpret_cast<uintptr_t>(VESSEL4::CreatePropellantResource(mass));
+}
+
 void SpacecraftWrapper::clbkSetClassCaps(FILEHANDLE cfg)
 {
     // physical vessel parameters
