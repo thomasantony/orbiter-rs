@@ -41,7 +41,7 @@ impl Default for SurveyorState {
 }
 
 #[derive(Default, Debug)]
-pub struct RustSpacecraft {
+pub struct Surveyor {
     th_vernier: Vec<usize>,
     th_rcs: Vec<usize>,
     th_retro: usize,
@@ -50,7 +50,7 @@ pub struct RustSpacecraft {
     ph_rcs: usize,
     vehicle_state: SurveyorState,
 }
-impl RustSpacecraft {
+impl Surveyor {
     fn setup_meshes(&mut self, context: &SpacecraftWrapper)
     {
         context.ClearMeshes();
@@ -61,7 +61,7 @@ impl RustSpacecraft {
         }
     }
 }
-impl OrbiterVessel for RustSpacecraft {
+impl OrbiterVessel for Surveyor {
     fn set_class_caps(&mut self, context: &SpacecraftWrapper) {
         context.SetSize(1.0);
         context.SetPMI(_V!(0.50, 0.50, 0.50));
@@ -160,4 +160,4 @@ impl OrbiterVessel for RustSpacecraft {
     }
 }
 
-make_orbiter_vessel!(RustSpacecraft::default());
+make_orbiter_vessel!(Surveyor::default());
