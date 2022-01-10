@@ -86,7 +86,12 @@ pub mod ffi {
         fn SetPMI(self: &SpacecraftWrapper, pmi: &Vector3);
         fn SetEmptyMass(self: &SpacecraftWrapper, empty_mass: f64);
         fn SetCameraOffset(self: &SpacecraftWrapper, camera_offset: &Vector3);
-        fn SetTouchdownPoints(self: &SpacecraftWrapper, pt1: &Vector3, pt2: &Vector3, pt3: &Vector3);
+        fn SetTouchdownPoints(
+            self: &SpacecraftWrapper,
+            pt1: &Vector3,
+            pt2: &Vector3,
+            pt3: &Vector3,
+        );
 
         fn AddMesh(self: &SpacecraftWrapper, mesh_name: &str);
         fn AddMeshWithOffset(self: &SpacecraftWrapper, mesh_name: &str, ofs: &Vector3);
