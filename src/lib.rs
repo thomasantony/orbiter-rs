@@ -25,7 +25,6 @@ pub trait OrbiterVessel {
     fn set_class_caps(&self);
     fn pre_step(&mut self, sim_t: f64, sim_dt: f64, mjd: f64);
 }
-type DynVessel = Box<dyn OrbiterVessel>;
 unsafe impl ExternType for Box<dyn OrbiterVessel> {
     type Id = cxx::type_id!("BoxDynVessel");
     type Kind = cxx::kind::Trivial;

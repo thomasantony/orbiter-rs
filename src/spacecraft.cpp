@@ -4,7 +4,7 @@
 #include "windows.h"
 #include "orbitersdk.h"
 #include "spacecraft.h"
-#include "RustySpace/src/lib.rs.h"
+#include "orbiter-rs/src/lib.rs.h"
 #include <memory>
 #include <cstring>
 

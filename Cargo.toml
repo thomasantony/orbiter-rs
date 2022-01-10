@@ -1,5 +1,5 @@
 [package]
-name = "RustySpace"
+name = "orbiter-rs"
 version = "0.1.0"
 edition = "2021"
 
@@ -10,7 +10,6 @@ bench = false
 [dependencies]
 cxx = "1.0.62"
 winapi = "0.3.9"
-
 
 [build-dependencies]
 cxx-build = "1.0.62"

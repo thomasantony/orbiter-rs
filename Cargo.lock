@@ -3,15 +3,6 @@
 version = 3
 
 [[package]]
-name = "RustySpace"
-version = "0.1.0"
-dependencies = [
- "cxx",
- "cxx-build",
- "winapi",
-]
-
-[[package]]
 name = "cc"
 version = "1.0.72"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -84,6 +75,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f8cae2cd7ba2f3f63938b9c724475dfb7b9861b545a90324476324ed21dbc8c8"
 dependencies = [
  "cc",
+]
+
+[[package]]
+name = "orbiter-rs"
+version = "0.1.0"
+dependencies = [
+ "cxx",
+ "cxx-build",
+ "winapi",
 ]
 
 [[package]]
