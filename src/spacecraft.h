@@ -32,6 +32,7 @@ public:
     void clbkPreStep(double SimT, double SimDT, double MJD);
 
     void AddMesh(rust::Str mesh_name) const;
+    void AddMeshWithOffset(rust::Str mesh_name, const Vector3& ofs) const;
     void AddExhaust(rust::Str mesh_name) const;
     size_t AddExhaust(uintptr_t th, double lscale, double wscale) const;
 

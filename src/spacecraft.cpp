@@ -33,6 +33,12 @@ void SpacecraftWrapper::AddMesh(rust::Str mesh_name) const
     const std::string _mesh_name(mesh_name);
     VESSEL4::AddMesh(_mesh_name.data());
 }
+void SpacecraftWrapper::AddMeshWithOffset(rust::Str mesh_name, const Vector3& ofs) const
+{
+    const std::string _mesh_name(mesh_name);
+    auto _ofs = _V(ofs.x, ofs.y, ofs.z);
+    VESSEL4::AddMesh(_mesh_name.data(), &_ofs);
+}
 size_t SpacecraftWrapper::AddExhaust(uintptr_t th, double lscale, double wscale) const
 {
     return VESSEL4::AddExhaust(THRUSTER_HANDLE(th), lscale, wscale);
