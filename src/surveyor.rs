@@ -28,6 +28,18 @@ const AMR_MASS: f64 = 3.82;
 const LEG_RAD: f64 = 1.5;
 const LEG_STA: f64 = -0.6;
 
+#[derive(Debug)]
+enum SurveyorState {
+    BeforeRetroIgnition,
+    RetroFiring,
+    AfterRetro,
+}
+impl Default for SurveyorState {
+    fn default() -> Self {
+        Self::BeforeRetroIgnition
+    }
+}
+
 #[derive(Default, Debug)]
 pub struct RustSpacecraft {
     th_vernier: Vec<usize>,
@@ -36,6 +48,18 @@ pub struct RustSpacecraft {
     ph_vernier: usize,
     ph_retro: usize,
     ph_rcs: usize,
+    vehicle_state: SurveyorState,
+}
+impl RustSpacecraft {
+    fn setup_meshes(&mut self, context: &SpacecraftWrapper)
+    {
+        context.ClearMeshes();
+        match self.vehicle_state {
+            SurveyorState::BeforeRetroIgnition => context.AddMeshWithOffset("Surveyor-AMR", _V!(0., 0., -0.6)),
+            SurveyorState::RetroFiring => context.AddMeshWithOffset("Surveyor-Retro", _V!(0., 0., -0.5)),
+            SurveyorState::AfterRetro => context.AddMeshWithOffset("Surveyor-Lander", _V!(0., 0.3, 0.)),
+        }
+    }
 }
 impl OrbiterVessel for RustSpacecraft {
     fn set_class_caps(&mut self, context: &SpacecraftWrapper) {
@@ -128,7 +152,7 @@ impl OrbiterVessel for RustSpacecraft {
         
         // camera parameters
 	    context.SetCameraOffset (_V!(0.0, 0.8, 0.0));
-        context.AddMesh("ShuttlePB");
+        self.setup_meshes(context)
     }
     fn pre_step(&mut self, _context: &SpacecraftWrapper, sim_t: f64, sim_dt: f64, mjd: f64) {
         // ffi::debugLog(& format!("{:?}", self.th_vernier));
