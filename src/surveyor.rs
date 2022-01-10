@@ -55,6 +55,7 @@ impl OrbiterVessel for RustSpacecraft {
             context.AddExhaust(*th, 1.0, 0.1);
         }
 
+        context.SetEmptyMass(LANDER_EMPTY_MASS);
         context.AddMesh("ShuttlePB");
     }
     fn pre_step(&mut self, _context: &SpacecraftWrapper, sim_t: f64, sim_dt: f64, mjd: f64)

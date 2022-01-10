@@ -43,17 +43,17 @@ pub mod ffi {
 
         // VESSEL API
         fn SetSize(self: &SpacecraftWrapper, size: f64);
+        fn SetPMI(self: &SpacecraftWrapper, pmi: &Vector3);
+        fn SetEmptyMass(self: &SpacecraftWrapper, empty_mass: f64);
+
         fn AddMesh(self: &SpacecraftWrapper, mesh_name: &str);
         fn AddExhaust (self: &SpacecraftWrapper, th: usize, lscale: f64, wscale:f64) -> usize;
-        fn SetPMI(self: &SpacecraftWrapper, pmi: &Vector3);
+
         fn CreatePropellantResource(self: &SpacecraftWrapper, mass: f64) -> usize;
         fn CreateThruster(self: &SpacecraftWrapper, pos: &Vector3, dir: &Vector3, maxth0: f64, ph: usize, isp: f64) -> usize;
         fn CreateThrusterGroup(self: &SpacecraftWrapper, thrusters: &[usize]) -> usize;
 /// SetTouchdownPoints
-/// CreateThrusterGroup
-/// AddExhaust
 /// SetCameraOffset
-/// SetEmptyMass
 /// GetThrusterGroupLevel
 /// SetThrusterDir
 /// GetPropellantMass
