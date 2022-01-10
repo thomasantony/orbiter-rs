@@ -4,7 +4,7 @@ fn main() {
         .include(".")
         .include("D:\\code\\Orbitersdk\\include\\")
         .flag_if_supported("-std=c++14")
-        .compile("rust-orbiter-bridge");
+        .compile("orbiter-rs");
 
     println!("cargo:rerun-if-changed=src/lib.rs");
     println!("cargo:rerun-if-changed=src/spacecraft.h");
