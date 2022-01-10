@@ -39,6 +39,7 @@ public:
     void SetPMI(const Vector3& pmi) const;
     void SetCameraOffset(const Vector3& co) const;
     void SetTouchdownPoints(const Vector3 &pt1, const Vector3 &pt2, const Vector3 &pt3) const;
+    void SetThrusterDir(uintptr_t th, const Vector3 &dir) const;
 
     uintptr_t CreateThruster(const Vector3 &pos, const Vector3 &dir, double maxth0, uintptr_t ph, double isp) const;
     uintptr_t CreatePropellantResource(double mass) const;

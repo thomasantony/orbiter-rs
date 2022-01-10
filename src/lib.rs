@@ -92,6 +92,7 @@ pub mod ffi {
             pt2: &Vector3,
             pt3: &Vector3,
         );
+        fn SetThrusterDir(self: &SpacecraftWrapper, th: usize, dir: &Vector3);
 
         fn AddMesh(self: &SpacecraftWrapper, mesh_name: &str);
         fn AddMeshWithOffset(self: &SpacecraftWrapper, mesh_name: &str, ofs: &Vector3);
