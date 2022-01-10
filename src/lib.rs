@@ -113,9 +113,10 @@ pub mod ffi {
         ) -> usize;
 
         fn ClearMeshes(self: &SpacecraftWrapper);
-        /// GetThrusterGroupLevel
+
+        fn GetPropellantMass(self: &SpacecraftWrapper, ph: usize) -> f64;
+        fn GetThrusterGroupLevel(self: &SpacecraftWrapper, thg: usize) -> f64;
         /// SetThrusterDir
-        /// GetPropellantMass
         /// SetThrusterLevel
         /// oapiCreateVessel
         /// Local2Rel

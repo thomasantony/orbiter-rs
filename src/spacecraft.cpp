@@ -70,6 +70,14 @@ uintptr_t SpacecraftWrapper::CreateThrusterGroup(rust::Slice<const uintptr_t> th
 
     return reinterpret_cast<uintptr_t>(VESSEL4::CreateThrusterGroup((THRUSTER_HANDLE *)th_ptr, thrusters.size(), thgroup_type));
 }
+double SpacecraftWrapper::GetPropellantMass(uintptr_t ph) const
+{
+    return VESSEL4::GetPropellantMass(PROPELLANT_HANDLE(ph));
+}
+double SpacecraftWrapper::GetThrusterGroupLevel(uintptr_t thg) const
+{
+    return VESSEL4::GetThrusterGroupLevel(THGROUP_HANDLE(thg));
+}
 
 void SpacecraftWrapper::clbkSetClassCaps(FILEHANDLE cfg)
 {
