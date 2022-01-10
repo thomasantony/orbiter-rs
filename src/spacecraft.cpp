@@ -16,30 +16,30 @@ void debugLog(rust::Str s)
     sprintf(oapiDebugString(), _s.c_str());
 }
 
-RustySpace::RustySpace(OBJHANDLE hVessel, int flightmodel)
+SpacecraftWrapper::SpacecraftWrapper(OBJHANDLE hVessel, int flightmodel)
     : VESSEL3(hVessel, flightmodel),
       // rust_spacecraft_(box_to_uptr(create_rust_spacecraft()))
       rust_spacecraft_(std::move(create_rust_spacecraft()))
 {
 }
 
-RustySpace::~RustySpace()
+SpacecraftWrapper::~SpacecraftWrapper()
 {
 }
 
-void RustySpace::clbkSetClassCaps(FILEHANDLE cfg)
+void SpacecraftWrapper::clbkSetClassCaps(FILEHANDLE cfg)
 {
     // physical vessel parameters
     SetSize(1.0);
     SetPMI(_V(0.50, 0.50, 0.50));
     AddMesh("ShuttlePB");
-    rust_spacecraft_.set_class_caps();
+    dyn_vessel_set_class_caps(rust_spacecraft_);
 }
 
 // Pre-step logic for differential thrust
-void RustySpace::clbkPreStep(double SimT, double SimDT, double MJD)
+void SpacecraftWrapper::clbkPreStep(double SimT, double SimDT, double MJD)
 {
-    rust_spacecraft_.pre_step(SimT, SimDT, MJD);
+    dyn_vessel_pre_step(rust_spacecraft_, SimT, SimDT, MJD);
 }
 
 BoxDynVessel::BoxDynVessel(BoxDynVessel &&other) noexcept : repr(other.repr)
@@ -55,17 +55,6 @@ BoxDynVessel::~BoxDynVessel() noexcept
     }
 }
 
-void BoxDynVessel::set_class_caps() const
-{
-    dyn_vessel_set_class_caps(*this);
-}
-
-void BoxDynVessel::pre_step(double SimT, double SimDT, double MJD)
-{
-    dyn_vessel_pre_step(*this, SimT, SimDT, MJD);
-}
-
-
 // ==============================================================
 // API callback interface
 // ==============================================================
@@ -75,7 +64,7 @@ void BoxDynVessel::pre_step(double SimT, double SimDT, double MJD)
 // --------------------------------------------------------------
 DLLCLBK VESSEL *ovcInit(OBJHANDLE hvessel, int flightmodel)
 {
-    return new RustySpace(hvessel, flightmodel);
+    return new SpacecraftWrapper(hvessel, flightmodel);
 }
 
 // --------------------------------------------------------------
@@ -84,5 +73,5 @@ DLLCLBK VESSEL *ovcInit(OBJHANDLE hvessel, int flightmodel)
 DLLCLBK void ovcExit(VESSEL *vessel)
 {
     if (vessel)
-        delete (RustySpace *)vessel;
+        delete (SpacecraftWrapper *)vessel;
 }

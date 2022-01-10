@@ -17,9 +17,6 @@ public:
     ~BoxDynVessel() noexcept;
     using IsRelocatable = std::true_type;
 
-    void set_class_caps() const;
-    void pre_step(double SimT, double SimDT, double MJD);
-
 private:
     std::array<std::uintptr_t, 2> repr;
 };
@@ -27,11 +24,11 @@ using PtrBoxDynVessel = BoxDynVessel *;
 // ==============================================================
 // Spacecraft class interface
 // ==============================================================
-class RustySpace : public VESSEL3
+class SpacecraftWrapper : public VESSEL3
 {
 public:
-    RustySpace(OBJHANDLE hVessel, int flightmodel);
-    ~RustySpace();
+    SpacecraftWrapper(OBJHANDLE hVessel, int flightmodel);
+    ~SpacecraftWrapper();
     void clbkSetClassCaps(FILEHANDLE cfg);
     void clbkPreStep(double SimT, double SimDT, double MJD);
 
@@ -47,7 +44,6 @@ public:
     // void Jettison();
 
 private:
-    // std::unique_ptr<DynVessel, BoxDeleter<DynVessel>> rust_spacecraft_; // Reference to rust struct instance
     BoxDynVessel rust_spacecraft_;
     // THRUSTER_HANDLE th_vernier[3], th_retro, th_rcs[6], th_group[2];
     // PROPELLANT_HANDLE ph_vernier, ph_rcs, ph_retro;

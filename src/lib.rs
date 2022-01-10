@@ -1,7 +1,7 @@
 pub mod oapi_consts;
 
 #[cxx::bridge]
-mod ffi {
+pub mod ffi {
     unsafe extern "C++" {
         include!("src/spacecraft.h");
         type BoxDynVessel = Box<dyn crate::OrbiterVessel>;
@@ -10,8 +10,6 @@ mod ffi {
         fn debugLog(s: &str);
     }
     extern "Rust" {
-        type RustSpacecraft;
-        
         fn create_rust_spacecraft() -> BoxDynVessel;
         fn dyn_vessel_set_class_caps(vessel: &BoxDynVessel);
         fn dyn_vessel_pre_step(vessel: &mut BoxDynVessel, sim_t: f64, sim_dt: f64, mjd: f64);
