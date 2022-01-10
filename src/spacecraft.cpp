@@ -41,6 +41,10 @@ void SpacecraftWrapper::SetPMI(const Vector3& pmi) const
 {
     VESSEL4::SetPMI(_V(pmi.x, pmi.y, pmi.z));
 }
+void SpacecraftWrapper::SetCameraOffset(const Vector3 &co) const
+{
+    VESSEL4::SetCameraOffset(_V(co.x, co.y, co.z));
+}
 
 uintptr_t SpacecraftWrapper::CreateThruster(const Vector3 &pos, const Vector3 &dir, double maxth0, uintptr_t ph, double isp) const
 {

@@ -85,7 +85,8 @@ pub mod ffi {
         fn SetSize(self: &SpacecraftWrapper, size: f64);
         fn SetPMI(self: &SpacecraftWrapper, pmi: &Vector3);
         fn SetEmptyMass(self: &SpacecraftWrapper, empty_mass: f64);
-
+        fn SetCameraOffset(self: &SpacecraftWrapper, camera_offset: &Vector3);
+        
         fn AddMesh(self: &SpacecraftWrapper, mesh_name: &str);
         fn AddExhaust(self: &SpacecraftWrapper, th: usize, lscale: f64, wscale: f64) -> usize;
 

@@ -125,6 +125,9 @@ impl OrbiterVessel for RustSpacecraft {
 	    context.AddExhaust(self.th_retro, 2.0, 0.3);
 
         context.SetEmptyMass(LANDER_EMPTY_MASS);
+        
+        // camera parameters
+	    context.SetCameraOffset (_V!(0.0, 0.8, 0.0));
         context.AddMesh("ShuttlePB");
     }
     fn pre_step(&mut self, _context: &SpacecraftWrapper, sim_t: f64, sim_dt: f64, mjd: f64) {
