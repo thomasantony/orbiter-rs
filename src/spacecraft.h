@@ -2,7 +2,6 @@
 // DO NOT IMPORT lib.rs.h here
 #include "rust/cxx.h"
 #include "orbitersdk.h"
-#include "box_wrapper.h"
 #include <cstdint>
 void debugLog(rust::Str);
 
