@@ -93,6 +93,7 @@ pub mod ffi {
             pt3: &Vector3,
         );
         fn SetThrusterDir(self: &SpacecraftWrapper, th: usize, dir: &Vector3);
+        fn SetThrusterLevel(self: &SpacecraftWrapper, th: usize, level: f64);
 
         fn AddMesh(self: &SpacecraftWrapper, mesh_name: &str);
         fn AddMeshWithOffset(self: &SpacecraftWrapper, mesh_name: &str, ofs: &Vector3);
@@ -117,8 +118,6 @@ pub mod ffi {
 
         fn GetPropellantMass(self: &SpacecraftWrapper, ph: usize) -> f64;
         fn GetThrusterGroupLevelByType(self: &SpacecraftWrapper, thgroup_type: THGROUP_TYPE) -> f64;
-        /// SetThrusterDir
-        /// SetThrusterLevel
         /// oapiCreateVessel
         /// Local2Rel
         /// GetStatus

@@ -82,6 +82,10 @@ void SpacecraftWrapper::SetThrusterDir(uintptr_t th, const Vector3 &dir) const
 {
     VESSEL4::SetThrusterDir(THRUSTER_HANDLE(th), _V(dir.x, dir.y, dir.z));
 }
+void SpacecraftWrapper::SetThrusterLevel(uintptr_t th, double level) const
+{
+    VESSEL4::SetThrusterLevel(THRUSTER_HANDLE(th), level);
+}
 
 void SpacecraftWrapper::clbkSetClassCaps(FILEHANDLE cfg)
 {
