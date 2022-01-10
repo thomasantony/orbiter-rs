@@ -69,6 +69,19 @@ impl Surveyor {
             context.AddMeshWithOffset(mesh, &ofs);
         }
     }
+    fn calc_empty_mass(&self, context: &SpacecraftWrapper) -> f64{
+        let mut empty_mass = 0.0;
+        // Jettison AMR when retro starts firing
+        if context.GetPropellantMass(self.ph_retro) > 0.999 * RETRO_PROP_MASS {
+            empty_mass += AMR_MASS;
+        }
+        // Add in retro mass while there is still retro fuel left
+        if context.GetPropellantMass(self.ph_retro) > 1. {
+            empty_mass += RETRO_EMPTY_MASS;
+        }
+        empty_mass += LANDER_EMPTY_MASS;
+        return empty_mass;
+    }
 }
 impl OrbiterVessel for Surveyor {
     fn set_class_caps(&mut self, context: &SpacecraftWrapper) {
@@ -233,8 +246,8 @@ impl OrbiterVessel for Surveyor {
         context.SetCameraOffset(_V!(0.0, 0.8, 0.0));
         self.setup_meshes(context)
     }
-    fn pre_step(&mut self, _context: &SpacecraftWrapper, sim_t: f64, sim_dt: f64, mjd: f64) {
-        // ffi::debugLog(& format!("{:?}", self.th_vernier));
+    fn pre_step(&mut self, context: &SpacecraftWrapper, sim_t: f64, sim_dt: f64, mjd: f64) {
+        context.SetEmptyMass(self.calc_empty_mass(context));
         debugLog(&format!("Hello world! {} {} {}", sim_t, sim_dt, mjd));
     }
 }
