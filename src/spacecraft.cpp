@@ -27,16 +27,21 @@ SpacecraftWrapper::~SpacecraftWrapper()
 {
 }
 
+// Rust shims
 void SpacecraftWrapper::AddMesh(rust::Str mesh_name) const
 {
     const std::string _mesh_name(mesh_name);
-    VESSEL::AddMesh(_mesh_name.data());
+    VESSEL4::AddMesh(_mesh_name.data());
+}
+void SpacecraftWrapper::SetPMI(const Vector3& pmi) const
+{
+    VESSEL4::SetPMI(_V(pmi.x, pmi.y, pmi.z));
 }
 
 void SpacecraftWrapper::clbkSetClassCaps(FILEHANDLE cfg)
 {
     // physical vessel parameters
-    SetPMI(_V(0.50, 0.50, 0.50));
+    // SetPMI(_V(0.50, 0.50, 0.50));
     dyn_vessel_set_class_caps(rust_spacecraft_, *this);
 }
 

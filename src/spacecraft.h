@@ -6,9 +6,7 @@
 
 void debugLog(rust::Str);
 
-// struct RustSpacecraft;
-// struct DynVessel;
-// struct BoxDynVessel;
+struct Vector3;
 
 class BoxDynVessel
 {
@@ -33,6 +31,7 @@ public:
     void clbkPreStep(double SimT, double SimDT, double MJD);
 
     void AddMesh(rust::Str mesh_name) const;
+    void SetPMI(const Vector3& pmi) const;
     // double CalcEmptyMass();
     // int clbkConsumeBufferedKey(DWORD key, bool down, char *kstate);
 
