@@ -33,6 +33,10 @@ void SpacecraftWrapper::AddMesh(rust::Str mesh_name) const
     const std::string _mesh_name(mesh_name);
     VESSEL4::AddMesh(_mesh_name.data());
 }
+size_t SpacecraftWrapper::AddExhaust(uintptr_t th, double lscale, double wscale) const
+{
+    return VESSEL4::AddExhaust(THRUSTER_HANDLE(th), lscale, wscale);
+}
 void SpacecraftWrapper::SetPMI(const Vector3& pmi) const
 {
     VESSEL4::SetPMI(_V(pmi.x, pmi.y, pmi.z));
@@ -40,22 +44,17 @@ void SpacecraftWrapper::SetPMI(const Vector3& pmi) const
 
 uintptr_t SpacecraftWrapper::CreateThruster(const Vector3 &pos, const Vector3 &dir, double maxth0, uintptr_t ph, double isp) const
 {
-    auto _ph = reinterpret_cast<PROPELLANT_HANDLE>(ph);
-    return reinterpret_cast<uintptr_t>(VESSEL4::CreateThruster(_V(pos.x, pos.y, pos.z), _V(dir.x, dir.y, dir.z), maxth0, _ph, isp));
+    return reinterpret_cast<uintptr_t>(VESSEL4::CreateThruster(_V(pos.x, pos.y, pos.z), _V(dir.x, dir.y, dir.z), maxth0, PROPELLANT_HANDLE(ph), isp));
 }
 uintptr_t SpacecraftWrapper::CreatePropellantResource(double mass) const
 {
     return reinterpret_cast<uintptr_t>(VESSEL4::CreatePropellantResource(mass));
 }
-uintptr_t SpacecraftWrapper::CreateThrusterGroup(const rust::Vec<uintptr_t>& thrusters) const
+uintptr_t SpacecraftWrapper::CreateThrusterGroup(rust::Slice<const uintptr_t> thrusters) const
 {
-    std::vector<THRUSTER_HANDLE> th_vec(thrusters.size());
+    const uintptr_t *th_ptr = thrusters.data();
 
-    for (auto i = 0; i < thrusters.size(); i++)
-    {
-        th_vec.push_back(reinterpret_cast<THRUSTER_HANDLE>(thrusters[i]));
-    }
-    return reinterpret_cast<uintptr_t>(VESSEL4::CreateThrusterGroup(&th_vec[0], thrusters.size(), THGROUP_MAIN));
+    return reinterpret_cast<uintptr_t>(VESSEL4::CreateThrusterGroup((THRUSTER_HANDLE *)th_ptr, thrusters.size(), THGROUP_MAIN));
 }
 
 void SpacecraftWrapper::clbkSetClassCaps(FILEHANDLE cfg)

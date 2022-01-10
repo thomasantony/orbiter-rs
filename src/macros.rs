@@ -8,7 +8,7 @@
 macro_rules! make_orbiter_vessel {
     ($vessel:expr) => {
         #[no_mangle]
-        fn create_rust_spacecraft() -> Box<dyn OrbiterVessel> {
+        pub fn create_rust_spacecraft() -> Box<dyn OrbiterVessel> {
             Box::new($vessel)
         }
     }
