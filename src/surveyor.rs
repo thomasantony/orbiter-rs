@@ -11,7 +11,7 @@ const RCS_PROP_MASS: f64 = 2.0;
 const RCS_ISP: f64 = 630.0;
 const RCS_THRUST: f64 = 0.25;
 const RCS_RAD: f64 = 1.0;
-const RCS_STA: f64 = -0.5;
+const RCS_Z: f64 = -0.5;
 const RCS_SPACE: f64 = 0.1;
 
 const RETRO_PROP_MASS: f64 = 560.64;
@@ -28,27 +28,30 @@ const AMR_MASS: f64 = 3.82;
 const LEG_RAD: f64 = 1.5;
 const LEG_STA: f64 = -0.6;
 
+#[derive(Default, Debug)]
 pub struct RustSpacecraft {
     th_vernier: Vec<usize>,
-}
-impl RustSpacecraft {
-    pub fn new() -> Self {
-        Self {
-            th_vernier: Vec::new(),
-        }
-    }
+    th_rcs: Vec<usize>,
+    th_retro: usize,
+    ph_vernier: usize,
+    ph_retro: usize,
+    ph_rcs: usize,
 }
 impl OrbiterVessel for RustSpacecraft {
     fn set_class_caps(&mut self, context: &SpacecraftWrapper) {
         context.SetSize(1.0);
         context.SetPMI(_V!(0.50, 0.50, 0.50));
 
-        let ph_vernier = context.CreatePropellantResource(VERNIER_PROP_MASS);
+        // Create Propellant Resources
+        self.ph_vernier = context.CreatePropellantResource(VERNIER_PROP_MASS);
+	    self.ph_rcs = context.CreatePropellantResource(RCS_PROP_MASS);
+	    self.ph_retro = context.CreatePropellantResource(RETRO_PROP_MASS);
+
         self.th_vernier.push(context.CreateThruster(
             _V!(0.0 * VERNIER_RAD, 1.0 * VERNIER_RAD, VERNIER_Z),
             _V!(0.0, 0.0, 1.0),
             VERNIER_THRUST,
-            ph_vernier,
+            self.ph_vernier,
             VERNIER_ISP,
         ));
         self.th_vernier.push(context.CreateThruster(
@@ -59,7 +62,7 @@ impl OrbiterVessel for RustSpacecraft {
             ),
             _V!(0.0, 0.0, 1.0),
             VERNIER_THRUST,
-            ph_vernier,
+            self.ph_vernier,
             VERNIER_ISP,
         ));
         self.th_vernier.push(context.CreateThruster(
@@ -70,13 +73,56 @@ impl OrbiterVessel for RustSpacecraft {
             ),
             _V!(0.0, 0.0, 1.0),
             VERNIER_THRUST,
-            ph_vernier,
+            self.ph_vernier,
             VERNIER_ISP,
         ));
         context.CreateThrusterGroup(&self.th_vernier, THGROUP_TYPE::Main);
         for th in self.th_vernier.iter() {
             context.AddExhaust(*th, 1.0, 0.1);
         }
+
+        // Roll (Leg1) jets
+        self.th_rcs.push(context.CreateThruster(_V!(-RCS_SPACE, RCS_RAD, RCS_Z), _V!(1.0, 0.0, 0.0), RCS_THRUST, self.ph_rcs, RCS_ISP));
+        self.th_rcs.push(context.CreateThruster(_V!(RCS_SPACE, RCS_RAD, RCS_Z), _V!(-1.0, 0.0, 0.0), RCS_THRUST, self.ph_rcs, RCS_ISP));
+
+        // Leg2 jets
+        self.th_rcs.push(context.CreateThruster(_V!((60.0f64).to_radians().sin() * RCS_RAD, -0.5 * RCS_RAD, RCS_Z - RCS_SPACE), _V!(0., 0., 1.), RCS_THRUST, self.ph_rcs, RCS_ISP));
+        self.th_rcs.push(context.CreateThruster(_V!((60.0f64).to_radians().sin() * RCS_RAD, -0.5 * RCS_RAD, RCS_Z + RCS_SPACE), _V!(0., 0., -1.), RCS_THRUST, self.ph_rcs, RCS_ISP));
+
+        // Leg3 jets
+        self.th_rcs.push(context.CreateThruster(_V!(-(60.0f64).to_radians().sin() * RCS_RAD, -0.5 * RCS_RAD, RCS_Z - RCS_SPACE), _V!(0., 0., 1.), RCS_THRUST, self.ph_rcs, RCS_ISP));
+        self.th_rcs.push(context.CreateThruster(_V!(-(60.0f64).to_radians().sin() * RCS_RAD, -0.5 * RCS_RAD, RCS_Z + RCS_SPACE), _V!(0., 0., -1.), RCS_THRUST, self.ph_rcs, RCS_ISP));
+
+        // Create RCS thruster groups
+        let mut th_group: [usize; 2] = [0, 0];
+        th_group[0] = self.th_rcs[3];	// -Z #1
+        th_group[1] = self.th_rcs[5];	// -Z #2
+        context.CreateThrusterGroup(&th_group, THGROUP_TYPE::AttPitchdown);
+
+        th_group[0] = self.th_rcs[2];	// +Z #1
+        th_group[1] = self.th_rcs[4];	// +Z #2
+        context.CreateThrusterGroup(&th_group,THGROUP_TYPE::AttPitchup);
+
+        th_group[0] = self.th_rcs[0];	// +X
+        context.CreateThrusterGroup(&th_group[..1], THGROUP_TYPE::AttBankright);
+
+        th_group[0] = self.th_rcs[1];	// -X
+        context.CreateThrusterGroup(&th_group, THGROUP_TYPE::AttBankleft);
+
+        th_group[0] = self.th_rcs[3];	// -Z #1
+        th_group[1] = self.th_rcs[4];	// +Z #2
+        context.CreateThrusterGroup(&th_group, THGROUP_TYPE::AttYawright);
+
+        th_group[0] = self.th_rcs[2];	// +Z #1
+        th_group[1] = self.th_rcs[5];	// -Z #2
+        context.CreateThrusterGroup(&th_group, THGROUP_TYPE::AttYawleft);
+
+        for th in self.th_rcs.iter() {
+            context.AddExhaust(*th, 0.1, 0.05);
+        }
+        
+        self.th_retro = context.CreateThruster(_V!(0.0, 0.0, RETRO_STA), _V!(0.0, 0.0, 1.0), RETRO_THRUST, self.ph_retro, RETRO_ISP);
+	    context.AddExhaust(self.th_retro, 2.0, 0.3);
 
         context.SetEmptyMass(LANDER_EMPTY_MASS);
         context.AddMesh("ShuttlePB");
@@ -87,4 +133,4 @@ impl OrbiterVessel for RustSpacecraft {
     }
 }
 
-make_orbiter_vessel!(RustSpacecraft::new());
+make_orbiter_vessel!(RustSpacecraft::default());
