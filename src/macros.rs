@@ -52,6 +52,7 @@ macro_rules! init_vessel {
         #[no_mangle]
         pub extern "C" fn ovcExit (vessel: *mut $crate::VESSEL)
         {
+            $body_exit
             unsafe { $crate::vessel_ovcExit(vessel); }
         }
     };
