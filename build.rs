@@ -1,6 +1,6 @@
 fn main() {
     cxx_build::bridge("src/lib.rs")
-        .file("src/vessel_context.cpp")
+        .file("src/cpp/vessel_context.cpp")
         .include(".")
         .include("./include")
         .include("D:\\code\\Orbitersdk\\include\\")

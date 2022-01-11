@@ -125,12 +125,6 @@ pub mod ffi {
         #[cxx_name = "THGROUP_USER"]
         User = 0x40,
     }
-    enum SmallPrime {
-        Two = 2,
-        Three = 3,
-        Five = 5,
-        Seven = 7,
-    }
     unsafe extern "C++" {
         include!("include/vessel_context.h");
 

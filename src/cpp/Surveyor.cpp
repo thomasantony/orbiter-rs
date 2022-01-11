@@ -11,7 +11,11 @@
 // capabilities and otherwise uses the default VESSEL class
 // behaviour.
 // ==============================================================
-
+//
+// This file was created using the tutorial at https://www.orbiterwiki.org/wiki/Vessel_Tutorial_1
+// 
+// This file is here only as a reference. The implementation in surveyor.rs re-creates all the 
+// functionality in this file in Rust
 #define STRICT
 #define ORBITER_MODULE
 
