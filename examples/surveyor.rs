@@ -3,7 +3,7 @@
 /// This is a port of Surveyor.cpp to Rust
 /// 
 use orbiter_rs::{
-    ODebug, oapi_create_vessel, OrbiterVessel, init_vessel, KeyStates, Key,
+    ODebug, oapi_create_vessel, OrbiterVessel, init_vessel, KeyStates, Key, FileHandle,
     PropellantHandle, ThrusterHandle, Vector3, VesselContext, VesselStatus, THGROUP_TYPE, _V,
 };
 
@@ -116,7 +116,7 @@ impl Surveyor {
     }
 }
 impl OrbiterVessel for Surveyor {
-    fn set_class_caps(&mut self, context: &VesselContext) {
+    fn set_class_caps(&mut self, context: &VesselContext, _cfg: FileHandle) {
         context.SetSize(1.0);
         context.SetPMI(_V!(0.50, 0.50, 0.50));
         context.SetTouchdownPoints(

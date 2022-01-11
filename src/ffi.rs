@@ -22,6 +22,7 @@ pub type Vector3 = VECTOR3;
 ctype_wrapper!(THRUSTER_HANDLE, usize, ThrusterHandle);
 ctype_wrapper!(PROPELLANT_HANDLE, usize, PropellantHandle);
 ctype_wrapper!(THGROUP_HANDLE, usize, ThrustGroupHandle);
+ctype_wrapper!(FILEHANDLE, usize, FileHandle);
 ctype_wrapper!(OBJHANDLE, usize);
 ctype_wrapper!(DWORD, u32);
 
@@ -146,6 +147,7 @@ pub mod ffi {
         type THGROUP_HANDLE = crate::ThrustGroupHandle;
         type OBJHANDLE = crate::OBJHANDLE;
         type DWORD = crate::DWORD;
+        type FILEHANDLE = crate::FILEHANDLE;
         type THGROUP_TYPE;
 
         type VESSELSTATUS = crate::VesselStatus;
@@ -200,7 +202,7 @@ pub mod ffi {
         fn ODebug(s: &str);
     }
     extern "Rust" {
-        fn dyn_vessel_set_class_caps(vessel: &mut BoxDynVessel, context: &VesselContext);
+        fn dyn_vessel_set_class_caps(vessel: &mut BoxDynVessel, context: &VesselContext, cfg: FILEHANDLE);
         fn dyn_vessel_pre_step(
             vessel: &mut BoxDynVessel,
             context: &VesselContext,
@@ -238,8 +240,8 @@ unsafe fn dyn_vessel_drop_in_place(ptr: PtrBoxDynVessel) {
 }
 
 // trait fn shims
-fn dyn_vessel_set_class_caps(vessel: &mut Box<dyn OrbiterVessel>, context: &VesselContext) {
-    (**vessel).set_class_caps(context);
+fn dyn_vessel_set_class_caps(vessel: &mut Box<dyn OrbiterVessel>, context: &VesselContext, cfg: FileHandle) {
+    (**vessel).set_class_caps(context, cfg);
 }
 fn dyn_vessel_pre_step(
     vessel: &mut Box<dyn OrbiterVessel>,

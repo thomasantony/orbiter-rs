@@ -68,7 +68,7 @@ rust::Str VesselContext::GetName() const
 
 void VesselContext::clbkSetClassCaps(FILEHANDLE cfg)
 {
-    dyn_vessel_set_class_caps(rust_spacecraft_, *this);
+    dyn_vessel_set_class_caps(rust_spacecraft_, *this, cfg);
 }
 
 // Pre-step callback
