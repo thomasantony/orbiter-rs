@@ -109,7 +109,7 @@ pub const OAPI_KEY_DOWN: usize = 0xD0; // < down-arrow on cursor keypad
 pub const OAPI_KEY_NEXT: usize = 0xD1; // < PgDn on cursor keypad
 pub const OAPI_KEY_INSERT: usize = 0xD2; // < Insert on cursor keypad
 pub const OAPI_KEY_DELETE: usize = 0xD3; // < Delete on cursor keypad
-                                       //@}
+                                         //@}
 
 // const KEYDOW: usize = N; (buf,key) (buf[key] & 0x80)
 // const RESETKE: usize = Y; (buf,key) (buf[key] = 0)

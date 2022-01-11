@@ -1,7 +1,7 @@
 #[macro_export]
 macro_rules! ctype_wrapper {
     ($r:ident, $c:ty) => {
-        /// Newtype wrapper for a `$c`        
+        /// Newtype wrapper for a `$c`
         #[derive(Debug, Eq, Clone, PartialEq, Hash, Default, Copy)]
         #[allow(non_camel_case_types)]
         #[repr(transparent)]
@@ -12,7 +12,7 @@ macro_rules! ctype_wrapper {
         }
     };
     ($r:ident, $c:ty, $nice_name:ident) => {
-        /// Newtype wrapper for a `$c`        
+        /// Newtype wrapper for a `$c`
         #[derive(Debug, Eq, Clone, PartialEq, Hash, Default, Copy)]
         #[allow(non_camel_case_types)]
         #[repr(transparent)]

@@ -1,6 +1,7 @@
 /// Surveyor spacecraft definition using the SDK
 use crate::{
-    debugLog, make_orbiter_vessel, oapi_create_vessel, OrbiterVessel, VesselContext, Vector3, THGROUP_TYPE, _V, PropellantHandle, ThrusterHandle, VesselStatus, oapi_consts
+    debugLog, make_orbiter_vessel, oapi_consts, oapi_create_vessel, OrbiterVessel,
+    PropellantHandle, ThrusterHandle, Vector3, VesselContext, VesselStatus, THGROUP_TYPE, _V,
 };
 
 const VERNIER_PROP_MASS: f64 = 70.98;
@@ -69,7 +70,7 @@ impl Surveyor {
             context.AddMeshWithOffset(mesh.to_string(), &ofs);
         }
     }
-    fn calc_empty_mass(&self, context: &VesselContext) -> f64{
+    fn calc_empty_mass(&self, context: &VesselContext) -> f64 {
         let mut empty_mass = 0.0;
         // Jettison AMR when retro starts firing
         if context.GetPropellantMass(self.ph_retro) > 0.999 * RETRO_PROP_MASS {
@@ -82,8 +83,7 @@ impl Surveyor {
         empty_mass += LANDER_EMPTY_MASS;
         return empty_mass;
     }
-    fn spawn_object(&self, context: &VesselContext, classname: &str, ext: &str, offset: &Vector3)
-    {
+    fn spawn_object(&self, context: &VesselContext, classname: &str, ext: &str, offset: &Vector3) {
         let mut vs = VesselStatus::default();
 
         context.GetStatus(&mut vs);
@@ -96,19 +96,17 @@ impl Surveyor {
 
         oapi_create_vessel(new_object_name, classname.to_owned(), &vs);
     }
-    fn jettison(&mut self, context: &VesselContext)
-    {
+    fn jettison(&mut self, context: &VesselContext) {
         use SurveyorState::*;
         match self.vehicle_state {
             BeforeRetroIgnition => {
                 self.vehicle_state = RetroFiring;
                 self.spawn_object(context, "Surveyor_AMR", "-AMR", _V!(0., 0., -0.6));
-            },
+            }
             RetroFiring => {
                 self.vehicle_state = AfterRetro;
                 self.spawn_object(context, "Surveyor_Retro", "-Retro", _V!(0., 0., -0.5));
-             
-            },
+            }
             _ => {}
         }
         self.setup_meshes(context);
@@ -281,20 +279,36 @@ impl OrbiterVessel for Surveyor {
     fn pre_step(&mut self, context: &VesselContext, _sim_t: f64, _sim_dt: f64, _mjd: f64) {
         context.SetEmptyMass(self.calc_empty_mass(context));
 
-        let pitch = context.GetThrusterGroupLevelByType(THGROUP_TYPE::AttPitchup) - context.GetThrusterGroupLevelByType(THGROUP_TYPE::AttPitchdown);
-        let yaw = context.GetThrusterGroupLevelByType(THGROUP_TYPE::AttYawright) - context.GetThrusterGroupLevelByType(THGROUP_TYPE::AttYawleft);
-        let roll = context.GetThrusterGroupLevelByType(THGROUP_TYPE::AttBankright) - context.GetThrusterGroupLevelByType(THGROUP_TYPE::AttBankleft);
+        let pitch = context.GetThrusterGroupLevelByType(THGROUP_TYPE::AttPitchup)
+            - context.GetThrusterGroupLevelByType(THGROUP_TYPE::AttPitchdown);
+        let yaw = context.GetThrusterGroupLevelByType(THGROUP_TYPE::AttYawright)
+            - context.GetThrusterGroupLevelByType(THGROUP_TYPE::AttYawleft);
+        let roll = context.GetThrusterGroupLevelByType(THGROUP_TYPE::AttBankright)
+            - context.GetThrusterGroupLevelByType(THGROUP_TYPE::AttBankleft);
 
         // Differential thrusting for attitude control
-        context.SetThrusterDir(self.th_vernier[0], _V!(5.0f64.to_radians().sin() * roll, 0.0, 1.0));	            // Roll using the 5 degree offset
-        context.SetThrusterDir(self.th_vernier[1], _V!(0.0, 0.0, 1.0 + 0.05 * (pitch - yaw)));
-        context.SetThrusterDir(self.th_vernier[2], _V!(0.0, 0.0, 1.0 + 0.05 * (pitch + yaw)));
+        context.SetThrusterDir(
+            self.th_vernier[0],
+            _V!(5.0f64.to_radians().sin() * roll, 0.0, 1.0),
+        ); // Roll using the 5 degree offset
+        context.SetThrusterDir(
+            self.th_vernier[1],
+            _V!(0.0, 0.0, 1.0 + 0.05 * (pitch - yaw)),
+        );
+        context.SetThrusterDir(
+            self.th_vernier[2],
+            _V!(0.0, 0.0, 1.0 + 0.05 * (pitch + yaw)),
+        );
 
-        if self.vehicle_state == SurveyorState::RetroFiring && context.GetPropellantMass(self.ph_retro) < 1.0 {
+        if self.vehicle_state == SurveyorState::RetroFiring
+            && context.GetPropellantMass(self.ph_retro) < 1.0
+        {
             //Jettison the spent main retro
             self.jettison(context);
         }
-        if self.vehicle_state == SurveyorState::BeforeRetroIgnition && context.GetPropellantMass(self.ph_retro) < 0.999 * RETRO_PROP_MASS {
+        if self.vehicle_state == SurveyorState::BeforeRetroIgnition
+            && context.GetPropellantMass(self.ph_retro) < 0.999 * RETRO_PROP_MASS
+        {
             //Jettison the AMR if the retro has started burning
             self.jettison(context);
             //Relight the retro if needed
@@ -302,17 +316,24 @@ impl OrbiterVessel for Surveyor {
         }
         debugLog(&format!("Pitch: {}, Yaw: {}, Roll: {}", pitch, yaw, roll));
     }
-    fn consume_buffered_key(&mut self, context: &VesselContext, key: crate::DWORD, down: bool, kstate: [u8; crate::oapi_consts::LKEY_COUNT]) -> i32 {
-        if !down
+    fn consume_buffered_key(
+        &mut self,
+        context: &VesselContext,
+        key: crate::DWORD,
+        down: bool,
+        kstate: [u8; crate::oapi_consts::LKEY_COUNT],
+    ) -> i32 {
+        if !down {
+            0
+        } else if kstate[oapi_consts::OAPI_KEY_LSHIFT] & 0x80 == 1
+            || kstate[oapi_consts::OAPI_KEY_RSHIFT] & 0x80 == 1
         {
             0
-        }else if kstate[oapi_consts::OAPI_KEY_LSHIFT] & 0x80 == 1 && kstate[oapi_consts::OAPI_KEY_RSHIFT] & 0x80 == 1 {
-            0
-        }
-        else { // unmodified keys
-            match key.0 as usize
-            {
-                oapi_consts::OAPI_KEY_L => {    // Fire Retro
+        } else {
+            // unmodified keys
+            match key.0 as usize {
+                oapi_consts::OAPI_KEY_L => {
+                    // Fire Retro
                     context.SetThrusterLevel(self.th_retro, 1.0);
                     1
                 }
