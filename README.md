@@ -7,7 +7,7 @@ This project is a proof of concept for creating a spacecraft addon for the [Orbi
 The initial goal of this project is to be able to re-create the core logic from this [tutorial](https://www.orbiterwiki.org/wiki/Vessel_Tutorial_1) in Rust. The source-code from the tutorial can be found in [src/cpp/Surveyor.cpp](src/cpp/Surveyor.cpp). This exists purely as a reference and is not used during the build. Only the functions/classes required to implement this tutorial is currently available in Rust. This has been completed and it is possible to build a DLL file that can be loaded in Orbiter and re-creates the functionality of the Surveyor spacecraft to the extent shown in the aforementioned tutorial.
 
 ### Implementation
-As of now, all the spacecraft-specific implementation details can be found in [`src/surveyor.rs`](src/surveyor.rs). In order to link this code to the final DLL, [`src/lib.rs`](src/lib.rs) has the following stub:
+As of now, all the spacecraft-specific implementation details can be found in [`src/surveyor.rs`](src/surveyor.rs). An addon module must include a struct implementing the `OrbiterVessel` trait and it must call the `make_orbiter_vessel!` macro or provide its own `create_rust_spacecraft` function. In order to link this code to the final DLL, [`src/lib.rs`](src/lib.rs) has the following stub:
 
 ```rust
 mod surveyor;
