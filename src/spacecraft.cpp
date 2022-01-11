@@ -7,6 +7,7 @@
 #include "orbiter-rs/src/lib.rs.h"
 #include <memory>
 #include <cstring>
+#include <array>
 
 using std::unique_ptr;
 
@@ -78,7 +79,9 @@ void VesselContext::clbkPreStep(double SimT, double SimDT, double MJD)
 }
 int VesselContext::clbkConsumeBufferedKey(DWORD key, bool down, char *kstate)
 {
-    return dyn_vessel_consume_buffered_key(rust_spacecraft_, *this, key, down, kstate);
+    std::array<uint8_t, LKEY_COUNT> kstate_arr;
+    std::copy_n(kstate, LKEY_COUNT, kstate_arr.begin());
+    return dyn_vessel_consume_buffered_key(rust_spacecraft_, *this, key, down, kstate_arr);
 }
 
 BoxDynVessel::BoxDynVessel(BoxDynVessel &&other) noexcept : repr(other.repr)

@@ -209,7 +209,7 @@ pub mod ffi {
         fn dyn_vessel_consume_buffered_key(
             vessel: &mut BoxDynVessel,
             context: &VesselContext,
-            key: DWORD, down: bool, kstate: &str
+            key: DWORD, down: bool, kstate: [u8; 103],
         ) -> i32;
         unsafe fn dyn_vessel_drop_in_place(ptr: PtrBoxDynVessel);
     }
@@ -222,7 +222,7 @@ use cxx::ExternType;
 pub trait OrbiterVessel {
     fn set_class_caps(&mut self, context: &VesselContext);
     fn pre_step(&mut self, context: &VesselContext, sim_t: f64, sim_dt: f64, mjd: f64);
-    fn consume_buffered_key(&mut self, context: &VesselContext, key: DWORD, down: bool, kstate: &str) -> i32;
+    fn consume_buffered_key(&mut self, context: &VesselContext, key: DWORD, down: bool, kstate: [u8; oapi_consts::LKEY_COUNT]) -> i32;
 }
 unsafe impl ExternType for Box<dyn OrbiterVessel> {
     type Id = cxx::type_id!("BoxDynVessel");
@@ -255,7 +255,7 @@ fn dyn_vessel_pre_step(
 fn dyn_vessel_consume_buffered_key(
     vessel: &mut BoxDynVessel,
     context: &VesselContext,
-    key: DWORD, down: bool, kstate: &str
+    key: DWORD, down: bool, kstate: [u8; oapi_consts::LKEY_COUNT]
 ) -> i32 {
     (**vessel).consume_buffered_key(context, key, down, kstate)
 }

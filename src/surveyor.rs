@@ -1,6 +1,6 @@
 /// Surveyor spacecraft definition using the SDK
 use crate::{
-    debugLog, make_orbiter_vessel, oapi_create_vessel, OrbiterVessel, VesselContext, Vector3, THGROUP_TYPE, _V, PropellantHandle, ThrusterHandle, VesselStatus
+    debugLog, make_orbiter_vessel, oapi_create_vessel, OrbiterVessel, VesselContext, Vector3, THGROUP_TYPE, _V, PropellantHandle, ThrusterHandle, VesselStatus, oapi_consts
 };
 
 const VERNIER_PROP_MASS: f64 = 70.98;
@@ -302,8 +302,7 @@ impl OrbiterVessel for Surveyor {
         }
         debugLog(&format!("Pitch: {}, Yaw: {}, Roll: {}", pitch, yaw, roll));
     }
-    fn consume_buffered_key(&mut self, context: &VesselContext, key: crate::DWORD, down: bool, kstate: &str) -> i32 {
-        
+    fn consume_buffered_key(&mut self, context: &VesselContext, key: crate::DWORD, down: bool, kstate: [u8; crate::oapi_consts::LKEY_COUNT]) -> i32 {
         0
     }
 }
