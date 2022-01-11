@@ -233,15 +233,15 @@ unsafe impl ExternType for PtrBoxDynVessel {
     type Id = cxx::type_id!("PtrBoxDynVessel");
     type Kind = cxx::kind::Trivial;
 }
-pub unsafe fn dyn_vessel_drop_in_place(ptr: PtrBoxDynVessel) {
+unsafe fn dyn_vessel_drop_in_place(ptr: PtrBoxDynVessel) {
     std::ptr::drop_in_place(ptr.0);
 }
 
 // trait fn shims
-pub fn dyn_vessel_set_class_caps(vessel: &mut Box<dyn OrbiterVessel>, context: &VesselContext) {
+fn dyn_vessel_set_class_caps(vessel: &mut Box<dyn OrbiterVessel>, context: &VesselContext) {
     (**vessel).set_class_caps(context);
 }
-pub fn dyn_vessel_pre_step(
+fn dyn_vessel_pre_step(
     vessel: &mut Box<dyn OrbiterVessel>,
     context: &VesselContext,
     sim_t: f64,
