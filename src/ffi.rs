@@ -2,6 +2,7 @@
 ///  
 /// Binding for OrbiterSDK's `VECTOR3`
 #[derive(Debug, Default)]
+#[repr(C)]
 pub struct VECTOR3([f64; 3]);
 impl VECTOR3 {
     pub fn new(x: f64, y: f64, z: f64) -> Self {
@@ -12,7 +13,7 @@ unsafe impl cxx::ExternType for VECTOR3 {
     type Id = cxx::type_id!("VECTOR3");
     type Kind = cxx::kind::Trivial;
 }
-type Vector3 = VECTOR3;
+pub type Vector3 = VECTOR3;
 
 // Define simpler pointer types as `usize`
 ctype_wrapper!(THRUSTER_HANDLE, usize, ThrusterHandle);
@@ -23,6 +24,7 @@ ctype_wrapper!(DWORD, u32);
 
 /// Binding for OrbiterSDK's `VESSELSTATUS` struct
 #[allow(dead_code)]
+#[repr(C)]
 #[derive(Debug, Default)]
 pub struct VESSELSTATUS {
     /// position relative to rbody in ecliptic frame [<b>m</b>]
@@ -38,38 +40,38 @@ pub struct VESSELSTATUS {
     pub arot: VECTOR3,
 
     /// fuel level [0..1]
-    fuel: f64,
+    pub fuel: f64,
 
     /// main/retro engine setting [-1..1]
-    eng_main: f64,
+    pub eng_main: f64,
 
     /// hover engine setting [0..1]
-    eng_hovr: f64,
+    pub eng_hovr: f64,
 
     /// handle of reference body
-    rbody: OBJHANDLE,
+    pub rbody: OBJHANDLE,
 
     /// handle of docking or landing target
-    base: OBJHANDLE,
+    pub base: OBJHANDLE,
 
     /// index of designated docking or landing port
-    port: i32,
+    pub port: i32,
 
     /// \brief flight status indicator
     /// \note
     /// - 0=active (freeflight)
     /// - 1=inactive (landed)
-    status: i32,
+    pub status: i32,
 
     /// \brief additional vector parameters
     /// \note
     /// - vdata[0]: contains landing paramters if status == 1:
     ///   vdata[0].x = longitude, vdata[0].y = latitude, vdata[0].z = heading of landed vessel
     /// - vdata[1] - vdata[9]: not used
-    vdata: [VECTOR3; 10],
+    pub vdata: [VECTOR3; 10],
 
     /// additional floating point parameters (not used)
-    fdata: [f64; 10],
+    pub fdata: [f64; 10],
 
     /// \brief additional integer and bitflag parameters
     ///
@@ -80,13 +82,13 @@ pub struct VESSELSTATUS {
     ///   - 0: ignore fuel level, do not change fuel levels
     ///   - 1: set fuel level of first propellant resource from fuel
     /// \note flag[1] - flag[9]: not used
-    flag: [DWORD; 10],
+    pub flag: [DWORD; 10],
 }
 unsafe impl cxx::ExternType for VESSELSTATUS {
     type Id = cxx::type_id!("VESSELSTATUS");
     type Kind = cxx::kind::Trivial;
 }
-type VesselStatus = VESSELSTATUS;
+pub type VesselStatus = VESSELSTATUS;
 
 #[cxx::bridge]
 pub mod ffi {
