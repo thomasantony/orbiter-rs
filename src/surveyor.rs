@@ -1,6 +1,6 @@
 /// Surveyor spacecraft definition using the SDK
 use crate::{
-    debugLog, make_orbiter_vessel, OrbiterVessel, VesselContext, Vector3, THGROUP_TYPE, _V, PropellantHandle, ThrusterHandle
+    debugLog, make_orbiter_vessel, oapi_create_vessel, OrbiterVessel, VesselContext, Vector3, THGROUP_TYPE, _V, PropellantHandle, ThrusterHandle, VesselStatus
 };
 
 const VERNIER_PROP_MASS: f64 = 70.98;
@@ -30,7 +30,7 @@ const AMR_MASS: f64 = 3.82;
 const LEG_RAD: f64 = 1.5;
 const LEG_Z: f64 = -0.6;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 enum SurveyorState {
     BeforeRetroIgnition,
     RetroFiring,
@@ -81,6 +81,37 @@ impl Surveyor {
         }
         empty_mass += LANDER_EMPTY_MASS;
         return empty_mass;
+    }
+    fn spawn_object(&self, context: &VesselContext, classname: &str, ext: &str, offset: &Vector3)
+    {
+        let mut vs = VesselStatus::default();
+
+        context.GetStatus(&mut vs);
+        context.Local2Rel(offset, &mut vs.rpos);
+
+        vs.eng_main = 0.0;
+        vs.eng_hovr = 0.0;
+        vs.status = 0;
+        let new_object_name = format!("{}{}", context.GetName(), ext);
+
+        oapi_create_vessel(new_object_name, classname.to_owned(), &vs);
+    }
+    fn jettison(&mut self, context: &VesselContext)
+    {
+        use SurveyorState::*;
+        match self.vehicle_state {
+            BeforeRetroIgnition => {
+                self.vehicle_state = RetroFiring;
+                self.spawn_object(context, "Surveyor_AMR", "-AMR", _V!(0., 0., -0.6));
+            },
+            RetroFiring => {
+                self.vehicle_state = AfterRetro;
+                self.spawn_object(context, "Surveyor_Retro", "-Retro", _V!(0., 0., -0.5));
+             
+            },
+            _ => {}
+        }
+        self.setup_meshes(context);
     }
 }
 impl OrbiterVessel for Surveyor {
@@ -250,9 +281,6 @@ impl OrbiterVessel for Surveyor {
     fn pre_step(&mut self, context: &VesselContext, _sim_t: f64, _sim_dt: f64, _mjd: f64) {
         context.SetEmptyMass(self.calc_empty_mass(context));
 
-        let mut status = crate::VESSELSTATUS::default();
-        context.GetStatus(&mut status);
-
         let pitch = context.GetThrusterGroupLevelByType(THGROUP_TYPE::AttPitchup) - context.GetThrusterGroupLevelByType(THGROUP_TYPE::AttPitchdown);
         let yaw = context.GetThrusterGroupLevelByType(THGROUP_TYPE::AttYawright) - context.GetThrusterGroupLevelByType(THGROUP_TYPE::AttYawleft);
         let roll = context.GetThrusterGroupLevelByType(THGROUP_TYPE::AttBankright) - context.GetThrusterGroupLevelByType(THGROUP_TYPE::AttBankleft);
@@ -262,7 +290,17 @@ impl OrbiterVessel for Surveyor {
         context.SetThrusterDir(self.th_vernier[1], _V!(0.0, 0.0, 1.0 + 0.05 * (pitch - yaw)));
         context.SetThrusterDir(self.th_vernier[2], _V!(0.0, 0.0, 1.0 + 0.05 * (pitch + yaw)));
 
-        debugLog(&format!("Pitch: {}, Yaw: {}, Roll: {}, {:?}", pitch, yaw, roll, status.arot));
+        if self.vehicle_state == SurveyorState::RetroFiring && context.GetPropellantMass(self.ph_retro) < 1.0 {
+            //Jettison the spent main retro
+            self.jettison(context);
+        }
+        if self.vehicle_state == SurveyorState::BeforeRetroIgnition && context.GetPropellantMass(self.ph_retro) < 0.999 * RETRO_PROP_MASS {
+            //Jettison the AMR if the retro has started burning
+            self.jettison(context);
+            //Relight the retro if needed
+            context.SetThrusterLevel(self.th_retro, 1.0);
+        }
+        debugLog(&format!("Pitch: {}, Yaw: {}, Roll: {}", pitch, yaw, roll));
     }
 }
 

@@ -191,9 +191,7 @@ pub mod ffi {
         fn GetStatus(self: &VesselContext, status: &mut VESSELSTATUS);
         fn GetPropellantMass(self: &VesselContext, ph: PROPELLANT_HANDLE) -> f64;
         fn GetThrusterGroupLevelByType(self: &VesselContext, thgroup_type: THGROUP_TYPE) -> f64;
-        /// oapiCreateVessel
-        /// Local2Rel
-        /// GetStatus
+ 
         fn debugLog(s: &str);
     }
     extern "Rust" {
