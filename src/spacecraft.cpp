@@ -15,6 +15,10 @@ void debugLog(rust::Str s)
     std::string _s(s.data(), s.length());
     sprintf(oapiDebugString(), _s.c_str());
 }
+OBJHANDLE oapi_create_vessel(rust::String name, rust::String classname, const VESSELSTATUS &status)
+{
+    return oapiCreateVessel(name.c_str(), classname.c_str(), status);
+}
 
 VesselContext::VesselContext(OBJHANDLE hVessel, int flightmodel)
     : VESSEL4(hVessel, flightmodel),

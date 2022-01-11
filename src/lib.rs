@@ -144,8 +144,11 @@ pub mod ffi {
         type PROPELLANT_HANDLE = crate::PropellantHandle;
         type THRUSTER_HANDLE = crate::ThrusterHandle;
         type THGROUP_HANDLE = crate::ThrustGroupHandle;
+        type OBJHANDLE = crate::OBJHANDLE;
         type THGROUP_TYPE;
         type VESSELSTATUS = crate::VesselStatus;
+
+        fn oapi_create_vessel(name: String, classname: String, status: &VESSELSTATUS) -> OBJHANDLE;
 
         // VESSEL API
         fn Local2Rel(self: &VesselContext, local: &VECTOR3, rel: &mut VECTOR3);

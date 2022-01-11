@@ -18,6 +18,10 @@ private:
     std::array<std::uintptr_t, 2> repr;
 };
 using PtrBoxDynVessel = BoxDynVessel *;
+
+// Wrapper for oapiCreateVessel
+OBJHANDLE oapi_create_vessel(rust::String name, rust::String classname, const VESSELSTATUS& status);
+
 // ==============================================================
 // Spacecraft class interface
 // ==============================================================
