@@ -10,15 +10,6 @@ pub mod utils;
 //     type Id = cxx::type_id!("std::ffi::c_void");
 //     type Kind = cxx::kind::Trivial;
 // }
-// #[derive(Debug, Eq, Clone, PartialEq, Hash)]
-// #[allow(non_camel_case_types)]
-// #[repr(transparent)]
-// pub struct PROPELLANTHANDLE(pub *const std::ffi::c_void);
-// unsafe impl cxx::ExternType for PROPELLANTHANDLE {
-//     type Id = cxx::type_id!("std::ffi::c_void");
-//     type Kind = cxx::kind::Trivial;
-// }
-// // ctype_wrapper!(PROPELLANTHANDLE, &std::os::raw::c_void, "PROPELLANTHANDLE");
 
 #[allow(dead_code)]
 pub struct VECTOR3([f64; 3]);
@@ -32,6 +23,9 @@ unsafe impl cxx::ExternType for VECTOR3 {
     type Kind = cxx::kind::Trivial;
 }
 use VECTOR3 as Vector3;
+
+ctype_wrapper!(PROPELLANT_HANDLE, usize);
+type PropellantHandle = PROPELLANT_HANDLE;
 
 #[cxx::bridge]
 pub mod ffi {
@@ -87,6 +81,7 @@ pub mod ffi {
 
         type VesselContext;
         type VECTOR3 = crate::VECTOR3;
+        type PROPELLANT_HANDLE = crate::PropellantHandle;
         type THGROUP_TYPE;
 
         // VESSEL API
@@ -107,13 +102,13 @@ pub mod ffi {
         fn AddMeshWithOffset(self: &VesselContext, mesh_name: &str, ofs: &VECTOR3);
         fn AddExhaust(self: &VesselContext, th: usize, lscale: f64, wscale: f64) -> usize;
 
-        fn CreatePropellantResource(self: &VesselContext, mass: f64) -> usize;
+        fn CreatePropellantResource(self: &VesselContext, mass: f64) -> PROPELLANT_HANDLE;
         fn CreateThruster(
             self: &VesselContext,
             pos: &VECTOR3,
             dir: &VECTOR3,
             maxth0: f64,
-            ph: usize,
+            ph: PROPELLANT_HANDLE,
             isp: f64,
         ) -> usize;
         fn CreateThrusterGroup(
@@ -125,7 +120,7 @@ pub mod ffi {
         fn ClearMeshes(self: &VesselContext);
 
         fn GetName(self: &VesselContext) -> &str;
-        fn GetPropellantMass(self: &VesselContext, ph: usize) -> f64;
+        fn GetPropellantMass(self: &VesselContext, ph: PROPELLANT_HANDLE) -> f64;
         fn GetThrusterGroupLevelByType(self: &VesselContext, thgroup_type: THGROUP_TYPE) -> f64;
         /// oapiCreateVessel
         /// Local2Rel

@@ -55,21 +55,22 @@ void VesselContext::SetTouchdownPoints(const Vector3 &pt1, const Vector3 &pt2, c
     VESSEL4::SetTouchdownPoints(pt1, pt2, pt3);
 }
 
-uintptr_t VesselContext::CreateThruster(const Vector3 &pos, const Vector3 &dir, double maxth0, uintptr_t ph, double isp) const
+uintptr_t VesselContext::CreateThruster(const Vector3 &pos, const Vector3 &dir, double maxth0, PROPELLANT_HANDLE ph, double isp) const
 {
     return reinterpret_cast<uintptr_t>(VESSEL4::CreateThruster(pos, dir, maxth0, PROPELLANT_HANDLE(ph), isp));
 }
-uintptr_t VesselContext::CreatePropellantResource(double mass) const
+PROPELLANT_HANDLE VesselContext::CreatePropellantResource(double mass) const
 {
-    return reinterpret_cast<uintptr_t>(VESSEL4::CreatePropellantResource(mass));
+    return VESSEL4::CreatePropellantResource(mass);
 }
+
 uintptr_t VesselContext::CreateThrusterGroup(rust::Slice<const uintptr_t> thrusters, THGROUP_TYPE thgroup_type) const
 {
     const uintptr_t *th_ptr = thrusters.data();
 
     return reinterpret_cast<uintptr_t>(VESSEL4::CreateThrusterGroup((THRUSTER_HANDLE *)th_ptr, thrusters.size(), thgroup_type));
 }
-double VesselContext::GetPropellantMass(uintptr_t ph) const
+double VesselContext::GetPropellantMass(PROPELLANT_HANDLE ph) const
 {
     return VESSEL4::GetPropellantMass(PROPELLANT_HANDLE(ph));
 }

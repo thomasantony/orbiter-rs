@@ -1,6 +1,6 @@
 /// Surveyor spacecraft definition using the SDK
 use crate::{
-    debugLog, make_orbiter_vessel, OrbiterVessel, VesselContext, Vector3, THGROUP_TYPE, _V,
+    debugLog, make_orbiter_vessel, OrbiterVessel, VesselContext, Vector3, THGROUP_TYPE, _V, PropellantHandle,
 };
 
 const VERNIER_PROP_MASS: f64 = 70.98;
@@ -47,9 +47,9 @@ pub struct Surveyor {
     th_vernier: Vec<usize>,
     th_rcs: Vec<usize>,
     th_retro: usize,
-    ph_vernier: usize,
-    ph_retro: usize,
-    ph_rcs: usize,
+    ph_vernier: PropellantHandle,
+    ph_retro: PropellantHandle,
+    ph_rcs: PropellantHandle,
     vehicle_state: SurveyorState,
 }
 impl Surveyor {
