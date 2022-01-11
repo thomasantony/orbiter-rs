@@ -302,6 +302,10 @@ impl OrbiterVessel for Surveyor {
         }
         debugLog(&format!("Pitch: {}, Yaw: {}, Roll: {}", pitch, yaw, roll));
     }
+    fn consume_buffered_key(&mut self, context: &VesselContext, key: crate::DWORD, down: bool, kstate: &str) -> i32 {
+        
+        0
+    }
 }
 
 make_orbiter_vessel!(Surveyor::default());

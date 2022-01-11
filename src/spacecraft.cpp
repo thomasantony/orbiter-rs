@@ -76,13 +76,10 @@ void VesselContext::clbkPreStep(double SimT, double SimDT, double MJD)
 {
     dyn_vessel_pre_step(rust_spacecraft_, *this, SimT, SimDT, MJD);
 }
-
-
-
-
-
-
-
+int VesselContext::clbkConsumeBufferedKey(DWORD key, bool down, char *kstate)
+{
+    return dyn_vessel_consume_buffered_key(rust_spacecraft_, *this, key, down, kstate);
+}
 
 BoxDynVessel::BoxDynVessel(BoxDynVessel &&other) noexcept : repr(other.repr)
 {
