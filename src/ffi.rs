@@ -1,6 +1,9 @@
 /// This file is included directly from lib.rs as making it into a module created too many hassles
 ///  
 /// Binding for OrbiterSDK's `VECTOR3`
+
+use std::os::raw::c_char;
+
 #[derive(Debug, Default)]
 #[repr(C)]
 pub struct VECTOR3([f64; 3]);
@@ -205,12 +208,12 @@ pub mod ffi {
             sim_dt: f64,
             mjd: f64,
         );
-        fn dyn_vessel_consume_buffered_key(
+        unsafe fn dyn_vessel_consume_buffered_key(
             vessel: &mut BoxDynVessel,
             context: &VesselContext,
             key: DWORD,
             down: bool,
-            kstate: [u8; 103],
+            kstate: *mut c_char,
         ) -> i32;
         unsafe fn dyn_vessel_drop_in_place(ptr: PtrBoxDynVessel);
     }
@@ -247,14 +250,15 @@ pub fn dyn_vessel_pre_step(
 ) {
     (**vessel).pre_step(context, sim_t, sim_dt, mjd);
 }
-pub fn dyn_vessel_consume_buffered_key(
+unsafe fn dyn_vessel_consume_buffered_key(
     vessel: &mut BoxDynVessel,
     context: &VesselContext,
     key: DWORD,
     down: bool,
-    kstate: [u8; crate::consts::LKEY_COUNT],
+    kstate: *mut c_char,
 ) -> i32 {
-    (**vessel).consume_buffered_key(context, key, down, kstate)
+    let kstate = crate::KeyStates::from(kstate);
+    (**vessel).consume_buffered_key(context, crate::Key::from(key.0 as u8), down, kstate)
 }
 
 pub use ffi::*;

@@ -78,9 +78,7 @@ void VesselContext::clbkPreStep(double SimT, double SimDT, double MJD)
 }
 int VesselContext::clbkConsumeBufferedKey(DWORD key, bool down, char *kstate)
 {
-    std::array<uint8_t, LKEY_COUNT> kstate_arr;
-    std::copy_n(kstate, LKEY_COUNT, kstate_arr.begin());
-    return dyn_vessel_consume_buffered_key(rust_spacecraft_, *this, key, down, kstate_arr);
+    return dyn_vessel_consume_buffered_key(rust_spacecraft_, *this, key, down, kstate);
 }
 
 BoxDynVessel::BoxDynVessel(BoxDynVessel &&other) noexcept : repr(other.repr)

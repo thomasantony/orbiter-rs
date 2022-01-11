@@ -1,5 +1,5 @@
 /// This module defines the `OrbiterVessel` trait to be implemented by the addon
-use crate::ffi::{VesselContext, DWORD};
+use crate::{VesselContext, Key, KeyStates};
 
 pub trait OrbiterVessel {
     fn set_class_caps(&mut self, context: &VesselContext);
@@ -7,8 +7,8 @@ pub trait OrbiterVessel {
     fn consume_buffered_key(
         &mut self,
         _context: &VesselContext,
-        _key: DWORD,
+        _key: Key,
         _down: bool,
-        _kstate: [u8; crate::consts::LKEY_COUNT],
+        _kstate: KeyStates,
     ) -> i32 { 0 }
 }

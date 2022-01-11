@@ -1,7 +1,10 @@
-/// Surveyor spacecraft definition using the SDK
+/// Surveyor spacecraft implementation using orbiter-rs
+/// 
+/// This is a port of Surveyor.cpp to Rust
+/// 
 use orbiter_rs::{
-    ODebug, consts, oapi_create_vessel, OrbiterVessel, init_vessel,
-    PropellantHandle, ThrusterHandle, Vector3, VesselContext, VesselStatus, THGROUP_TYPE, _V, DWORD,
+    ODebug, oapi_create_vessel, OrbiterVessel, init_vessel, KeyStates, Key,
+    PropellantHandle, ThrusterHandle, Vector3, VesselContext, VesselStatus, THGROUP_TYPE, _V,
 };
 
 const VERNIER_PROP_MASS: f64 = 70.98;
@@ -319,25 +322,24 @@ impl OrbiterVessel for Surveyor {
     fn consume_buffered_key(
         &mut self,
         context: &VesselContext,
-        key: DWORD,
+        key: Key,
         down: bool,
-        kstate: [u8; consts::LKEY_COUNT],
+        kstate: KeyStates,
     ) -> i32 {
         if !down {
             0
-        } else if kstate[consts::OAPI_KEY_LSHIFT] & 0x80 == 1
-            || kstate[consts::OAPI_KEY_RSHIFT] & 0x80 == 1
+        } else if kstate.shift()
         {
             0
         } else {
             // unmodified keys
-            match key.0 as usize {
-                consts::OAPI_KEY_L => {
-                    // Fire Retro
-                    context.SetThrusterLevel(self.th_retro, 1.0);
-                    1
-                }
-                _ => 0,
+            if key == Key::L
+            {
+                // Fire Retro
+                context.SetThrusterLevel(self.th_retro, 1.0);
+                1
+            }else{
+                1
             }
         }
     }
