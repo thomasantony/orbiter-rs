@@ -29,7 +29,6 @@ VesselContext::VesselContext(OBJHANDLE hVessel, int flightmodel, BoxDynVessel& b
 VesselContext::~VesselContext()
 {
 }
-
 // Rust shims
 void VesselContext::AddMesh(rust::String mesh_name) const
 {
@@ -79,19 +78,6 @@ void VesselContext::clbkPreStep(double SimT, double SimDT, double MJD)
 int VesselContext::clbkConsumeBufferedKey(DWORD key, bool down, char *kstate)
 {
     return dyn_vessel_consume_buffered_key(rust_spacecraft_, *this, key, down, kstate);
-}
-
-BoxDynVessel::BoxDynVessel(BoxDynVessel &&other) noexcept : repr(other.repr)
-{
-    other.repr = {0, 0};
-}
-
-BoxDynVessel::~BoxDynVessel() noexcept
-{
-    if (repr != std::array<std::uintptr_t, 2>{0, 0})
-    {
-        dyn_vessel_drop_in_place(this);
-    }
 }
 
 // ==============================================================

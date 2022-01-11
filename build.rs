@@ -54,6 +54,7 @@ fn main() {
     }
     cxx_build::bridge("src/ffi.rs")
         .file("src/cpp/vessel_context.cpp")
+        .file("src/cpp/box_dyn_vessel.cpp")
         .include(".")
         .include("./include")
         .include(orbiter_include_path)
