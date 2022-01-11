@@ -148,6 +148,7 @@ pub mod ffi {
         type VESSELSTATUS = crate::VesselStatus;
 
         // VESSEL API
+        fn Local2Rel(self: &VesselContext, local: &VECTOR3, rel: &mut VECTOR3);
         fn SetSize(self: &VesselContext, size: f64);
         fn SetPMI(self: &VesselContext, pmi: &VECTOR3);
 
