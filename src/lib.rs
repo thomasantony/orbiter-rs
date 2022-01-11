@@ -1,7 +1,7 @@
 pub mod oapi_consts;
 pub mod utils;
 
-#[allow(dead_code)]
+#[derive(Debug, Default)]
 pub struct VECTOR3([f64; 3]);
 impl VECTOR3 {
     pub fn new(x: f64, y: f64, z: f64) -> Self {
@@ -12,11 +12,79 @@ unsafe impl cxx::ExternType for VECTOR3 {
     type Id = cxx::type_id!("VECTOR3");
     type Kind = cxx::kind::Trivial;
 }
-use VECTOR3 as Vector3;
+type Vector3 = VECTOR3;
 
 ctype_wrapper!(THRUSTER_HANDLE, usize, ThrusterHandle);
 ctype_wrapper!(PROPELLANT_HANDLE, usize, PropellantHandle);
 ctype_wrapper!(THGROUP_HANDLE, usize, ThrustGroupHandle);
+ctype_wrapper!(OBJHANDLE, usize);
+ctype_wrapper!(DWORD, u32);
+
+#[allow(dead_code)]
+#[derive(Debug, Default)]
+pub struct VESSELSTATUS {
+	/// position relative to rbody in ecliptic frame [<b>m</b>]
+	pub rpos: VECTOR3,
+
+	/// velocity relative to rbody in ecliptic frame [<b>m/s</b>]
+	pub rvel: VECTOR3,
+
+	/// rotation velocity about principal axes in ecliptic frame [<b>rad/s</b>]
+	pub vrot: VECTOR3,
+
+	/// vessel orientation against ecliptic frame
+	pub arot: VECTOR3,
+
+	/// fuel level [0..1]
+	fuel: f64,
+
+	/// main/retro engine setting [-1..1]
+	eng_main: f64,
+
+	/// hover engine setting [0..1]
+	eng_hovr: f64,
+
+	/// handle of reference body
+	rbody: OBJHANDLE,
+
+    /// handle of docking or landing target
+	base: OBJHANDLE,
+
+    /// index of designated docking or landing port
+	port: i32,
+
+    /// \brief flight status indicator
+	/// \note
+	/// - 0=active (freeflight)
+	/// - 1=inactive (landed)
+	status: i32,
+
+	/// \brief additional vector parameters
+	/// \note
+	/// - vdata[0]: contains landing paramters if status == 1:
+	///   vdata[0].x = longitude, vdata[0].y = latitude, vdata[0].z = heading of landed vessel
+	/// - vdata[1] - vdata[9]: not used
+	vdata: [VECTOR3; 10],
+
+	/// additional floating point parameters (not used)
+	fdata: [f64; 10],
+
+	/// \brief additional integer and bitflag parameters
+	///
+	/// \par flag[0]&1:
+	///   - 0: ingore eng_main and eng_hovr entries, do not change thruster settings
+	///   - 1: set THGROUP_MAIN and THGROUP_RETRO thruster groups from eng_main, and THGROUP_HOVER from eng_hovr.
+	/// \par flag[0]&2:
+	///   - 0: ignore fuel level, do not change fuel levels
+	///   - 1: set fuel level of first propellant resource from fuel
+	/// \note flag[1] - flag[9]: not used
+	flag: [DWORD; 10],
+}
+unsafe impl cxx::ExternType for VESSELSTATUS {
+    type Id = cxx::type_id!("VESSELSTATUS");
+    type Kind = cxx::kind::Trivial;
+}
+type VesselStatus = VESSELSTATUS;
 
 #[cxx::bridge]
 pub mod ffi {
@@ -77,6 +145,7 @@ pub mod ffi {
         type THRUSTER_HANDLE = crate::ThrusterHandle;
         type THGROUP_HANDLE = crate::ThrustGroupHandle;
         type THGROUP_TYPE;
+        type VESSELSTATUS = crate::VesselStatus;
 
         // VESSEL API
         fn SetSize(self: &VesselContext, size: f64);
@@ -115,6 +184,7 @@ pub mod ffi {
         fn ClearMeshes(self: &VesselContext);
 
         fn GetName(self: &VesselContext) -> &str;
+        fn GetStatus(self: &VesselContext, status: &mut VESSELSTATUS);
         fn GetPropellantMass(self: &VesselContext, ph: PROPELLANT_HANDLE) -> f64;
         fn GetThrusterGroupLevelByType(self: &VesselContext, thgroup_type: THGROUP_TYPE) -> f64;
         /// oapiCreateVessel

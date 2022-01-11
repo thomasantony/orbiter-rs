@@ -250,6 +250,9 @@ impl OrbiterVessel for Surveyor {
     fn pre_step(&mut self, context: &VesselContext, _sim_t: f64, _sim_dt: f64, _mjd: f64) {
         context.SetEmptyMass(self.calc_empty_mass(context));
 
+        let mut status = crate::VESSELSTATUS::default();
+        context.GetStatus(&mut status);
+
         let pitch = context.GetThrusterGroupLevelByType(THGROUP_TYPE::AttPitchup) - context.GetThrusterGroupLevelByType(THGROUP_TYPE::AttPitchdown);
         let yaw = context.GetThrusterGroupLevelByType(THGROUP_TYPE::AttYawright) - context.GetThrusterGroupLevelByType(THGROUP_TYPE::AttYawleft);
         let roll = context.GetThrusterGroupLevelByType(THGROUP_TYPE::AttBankright) - context.GetThrusterGroupLevelByType(THGROUP_TYPE::AttBankleft);
@@ -259,7 +262,7 @@ impl OrbiterVessel for Surveyor {
         context.SetThrusterDir(self.th_vernier[1], _V!(0.0, 0.0, 1.0 + 0.05 * (pitch - yaw)));
         context.SetThrusterDir(self.th_vernier[2], _V!(0.0, 0.0, 1.0 + 0.05 * (pitch + yaw)));
 
-        debugLog(&format!("Pitch: {}, Yaw: {}, Roll: {}", pitch, yaw, roll));
+        debugLog(&format!("Pitch: {}, Yaw: {}, Roll: {}, {:?}", pitch, yaw, roll, status.arot));
     }
 }
 
