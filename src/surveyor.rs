@@ -66,7 +66,7 @@ impl Surveyor {
             SurveyorState::AfterRetro => &meshes[2..],
         };
         for (mesh, ofs) in meshes_used {
-            context.AddMeshWithOffset(mesh, &ofs);
+            context.AddMeshWithOffset(mesh.to_string(), &ofs);
         }
     }
     fn calc_empty_mass(&self, context: &VesselContext) -> f64{

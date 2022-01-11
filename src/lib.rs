@@ -162,8 +162,8 @@ pub mod ffi {
         fn SetThrusterDir(self: &VesselContext, th: THRUSTER_HANDLE, dir: &VECTOR3);
         fn SetThrusterLevel(self: &VesselContext, th: THRUSTER_HANDLE, level: f64);
 
-        fn AddMesh(self: &VesselContext, mesh_name: &str);
-        fn AddMeshWithOffset(self: &VesselContext, mesh_name: &str, ofs: &VECTOR3);
+        fn AddMesh(self: &VesselContext, mesh_name: String);
+        fn AddMeshWithOffset(self: &VesselContext, mesh_name: String, ofs: &VECTOR3);
         fn AddExhaust(self: &VesselContext, th: THRUSTER_HANDLE, lscale: f64, wscale: f64) -> usize;
 
         fn CreatePropellantResource(self: &VesselContext, mass: f64) -> PROPELLANT_HANDLE;

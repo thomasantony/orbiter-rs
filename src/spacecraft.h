@@ -29,8 +29,8 @@ public:
     void clbkSetClassCaps(FILEHANDLE cfg);
     void clbkPreStep(double SimT, double SimDT, double MJD);
 
-    void AddMesh(rust::Str mesh_name) const;
-    void AddMeshWithOffset(rust::Str mesh_name, const Vector3& ofs) const;
+    void AddMesh(rust::String mesh_name) const;
+    void AddMeshWithOffset(rust::String mesh_name, const Vector3& ofs) const;
     size_t AddExhaust(THRUSTER_HANDLE th, double lscale, double wscale) const;
 
     THRUSTER_HANDLE CreateThruster(const Vector3 &pos, const Vector3 &dir, double maxth0, PROPELLANT_HANDLE ph, double isp) const;

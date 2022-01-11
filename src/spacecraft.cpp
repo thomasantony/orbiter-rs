@@ -27,15 +27,13 @@ VesselContext::~VesselContext()
 }
 
 // Rust shims
-void VesselContext::AddMesh(rust::Str mesh_name) const
+void VesselContext::AddMesh(rust::String mesh_name) const
 {
-    const std::string _mesh_name(mesh_name);
-    VESSEL4::AddMesh(_mesh_name.data());
+    VESSEL4::AddMesh(mesh_name.c_str());
 }
-void VesselContext::AddMeshWithOffset(rust::Str mesh_name, const Vector3& ofs) const
+void VesselContext::AddMeshWithOffset(rust::String mesh_name, const Vector3& ofs) const
 {
-    const std::string _mesh_name(mesh_name);
-    VESSEL4::AddMesh(_mesh_name.data(), &ofs);
+    VESSEL4::AddMesh(mesh_name.c_str(), &ofs);
 }
 size_t VesselContext::AddExhaust(THRUSTER_HANDLE th, double lscale, double wscale) const
 {
