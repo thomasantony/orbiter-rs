@@ -20,13 +20,22 @@ pub mod utils;
 // }
 // // ctype_wrapper!(PROPELLANTHANDLE, &std::os::raw::c_void, "PROPELLANTHANDLE");
 
+#[allow(dead_code)]
+pub struct VECTOR3([f64; 3]);
+impl VECTOR3 {
+    pub fn new(x: f64, y: f64, z: f64) -> Self {
+        Self([x, y, z])
+    }
+}
+unsafe impl cxx::ExternType for VECTOR3 {
+    type Id = cxx::type_id!("VECTOR3");
+    type Kind = cxx::kind::Trivial;
+}
+use VECTOR3 as Vector3;
+
 #[cxx::bridge]
 pub mod ffi {
-    pub struct Vector3 {
-        x: f64,
-        y: f64,
-        z: f64,
-    }
+    
     #[derive(Debug)]
     #[repr(usize)]
     // #[cxx_name = "THGROUP_TYPE"]
@@ -72,38 +81,37 @@ pub mod ffi {
     }
     unsafe extern "C++" {
         include!("src/spacecraft.h");
-        type c_void;
 
         type BoxDynVessel = Box<dyn crate::OrbiterVessel>;
         type PtrBoxDynVessel = crate::PtrBoxDynVessel;
 
         type SpacecraftWrapper;
-        type VECTOR3;
+        type VECTOR3 = crate::VECTOR3;
         type THGROUP_TYPE;
 
         // VESSEL API
         fn SetSize(self: &SpacecraftWrapper, size: f64);
-        fn SetPMI(self: &SpacecraftWrapper, pmi: &Vector3);
+        fn SetPMI(self: &SpacecraftWrapper, pmi: &VECTOR3);
         fn SetEmptyMass(self: &SpacecraftWrapper, empty_mass: f64);
-        fn SetCameraOffset(self: &SpacecraftWrapper, camera_offset: &Vector3);
+        fn SetCameraOffset(self: &SpacecraftWrapper, camera_offset: &VECTOR3);
         fn SetTouchdownPoints(
             self: &SpacecraftWrapper,
-            pt1: &Vector3,
-            pt2: &Vector3,
-            pt3: &Vector3,
+            pt1: &VECTOR3,
+            pt2: &VECTOR3,
+            pt3: &VECTOR3,
         );
-        fn SetThrusterDir(self: &SpacecraftWrapper, th: usize, dir: &Vector3);
+        fn SetThrusterDir(self: &SpacecraftWrapper, th: usize, dir: &VECTOR3);
         fn SetThrusterLevel(self: &SpacecraftWrapper, th: usize, level: f64);
 
         fn AddMesh(self: &SpacecraftWrapper, mesh_name: &str);
-        fn AddMeshWithOffset(self: &SpacecraftWrapper, mesh_name: &str, ofs: &Vector3);
+        fn AddMeshWithOffset(self: &SpacecraftWrapper, mesh_name: &str, ofs: &VECTOR3);
         fn AddExhaust(self: &SpacecraftWrapper, th: usize, lscale: f64, wscale: f64) -> usize;
 
         fn CreatePropellantResource(self: &SpacecraftWrapper, mass: f64) -> usize;
         fn CreateThruster(
             self: &SpacecraftWrapper,
-            pos: &Vector3,
-            dir: &Vector3,
+            pos: &VECTOR3,
+            dir: &VECTOR3,
             maxth0: f64,
             ph: usize,
             isp: f64,
@@ -140,11 +148,6 @@ pub mod ffi {
 
 pub use ffi::*;
 
-impl Vector3 {
-    pub fn new(x: f64, y: f64, z: f64) -> Self {
-        Self { x, y, z }
-    }
-}
 // Based on https://github.com/dtolnay/cxx/pull/672
 use cxx::ExternType;
 pub trait OrbiterVessel {

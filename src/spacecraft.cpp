@@ -36,8 +36,7 @@ void SpacecraftWrapper::AddMesh(rust::Str mesh_name) const
 void SpacecraftWrapper::AddMeshWithOffset(rust::Str mesh_name, const Vector3& ofs) const
 {
     const std::string _mesh_name(mesh_name);
-    auto _ofs = _V(ofs.x, ofs.y, ofs.z);
-    VESSEL4::AddMesh(_mesh_name.data(), &_ofs);
+    VESSEL4::AddMesh(_mesh_name.data(), &ofs);
 }
 size_t SpacecraftWrapper::AddExhaust(uintptr_t th, double lscale, double wscale) const
 {
@@ -45,20 +44,20 @@ size_t SpacecraftWrapper::AddExhaust(uintptr_t th, double lscale, double wscale)
 }
 void SpacecraftWrapper::SetPMI(const Vector3& pmi) const
 {
-    VESSEL4::SetPMI(_V(pmi.x, pmi.y, pmi.z));
+    VESSEL4::SetPMI(pmi);
 }
 void SpacecraftWrapper::SetCameraOffset(const Vector3 &co) const
 {
-    VESSEL4::SetCameraOffset(_V(co.x, co.y, co.z));
+    VESSEL4::SetCameraOffset(co);
 }
 void SpacecraftWrapper::SetTouchdownPoints(const Vector3 &pt1, const Vector3 &pt2, const Vector3 &pt3) const
 {
-    VESSEL4::SetTouchdownPoints(_V(pt1.x, pt1.y, pt1.z), _V(pt2.x, pt2.y, pt2.z), _V(pt3.x, pt3.y, pt3.z));
+    VESSEL4::SetTouchdownPoints(pt1, pt2, pt3);
 }
 
 uintptr_t SpacecraftWrapper::CreateThruster(const Vector3 &pos, const Vector3 &dir, double maxth0, uintptr_t ph, double isp) const
 {
-    return reinterpret_cast<uintptr_t>(VESSEL4::CreateThruster(_V(pos.x, pos.y, pos.z), _V(dir.x, dir.y, dir.z), maxth0, PROPELLANT_HANDLE(ph), isp));
+    return reinterpret_cast<uintptr_t>(VESSEL4::CreateThruster(pos, dir, maxth0, PROPELLANT_HANDLE(ph), isp));
 }
 uintptr_t SpacecraftWrapper::CreatePropellantResource(double mass) const
 {
@@ -84,7 +83,7 @@ rust::Str SpacecraftWrapper::GetName() const
 }
 void SpacecraftWrapper::SetThrusterDir(uintptr_t th, const Vector3 &dir) const
 {
-    VESSEL4::SetThrusterDir(THRUSTER_HANDLE(th), _V(dir.x, dir.y, dir.z));
+    VESSEL4::SetThrusterDir(THRUSTER_HANDLE(th), dir);
 }
 void SpacecraftWrapper::SetThrusterLevel(uintptr_t th, double level) const
 {

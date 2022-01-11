@@ -5,9 +5,7 @@
 #include <cstdint>
 void debugLog(rust::Str);
 
-struct Vector3;
-using c_void = void;
-
+using Vector3 = VECTOR3;
 
 class BoxDynVessel
 {
