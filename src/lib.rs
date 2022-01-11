@@ -1,5 +1,4 @@
 pub mod oapi_consts;
-pub mod utils;
 
 #[derive(Debug, Default)]
 pub struct VECTOR3([f64; 3]);
