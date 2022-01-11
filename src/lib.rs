@@ -133,7 +133,7 @@ pub mod ffi {
         Seven = 7,
     }
     unsafe extern "C++" {
-        include!("src/spacecraft.h");
+        include!("src/vessel_context.h");
 
         type BoxDynVessel = Box<dyn crate::OrbiterVessel>;
         type PtrBoxDynVessel = crate::PtrBoxDynVessel;

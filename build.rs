@@ -1,6 +1,6 @@
 fn main() {
     cxx_build::bridge("src/lib.rs")
-        .file("src/spacecraft.cpp")
+        .file("src/vessel_context.cpp")
         .include(".")
         .include("D:\\code\\Orbitersdk\\include\\")
         .flag_if_supported("-std=c++14")
