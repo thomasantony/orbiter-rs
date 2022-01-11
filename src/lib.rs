@@ -116,12 +116,12 @@ pub mod ffi {
 
         fn ClearMeshes(self: &SpacecraftWrapper);
 
+        fn GetName(self: &SpacecraftWrapper) -> &str;
         fn GetPropellantMass(self: &SpacecraftWrapper, ph: usize) -> f64;
         fn GetThrusterGroupLevelByType(self: &SpacecraftWrapper, thgroup_type: THGROUP_TYPE) -> f64;
         /// oapiCreateVessel
         /// Local2Rel
         /// GetStatus
-        /// SpawnObject
         fn debugLog(s: &str);
     }
     extern "Rust" {

@@ -78,6 +78,10 @@ double SpacecraftWrapper::GetThrusterGroupLevelByType(THGROUP_TYPE thgroup_type)
 {
     return VESSEL4::GetThrusterGroupLevel(thgroup_type);
 }
+rust::Str SpacecraftWrapper::GetName() const
+{
+    return rust::Str(VESSEL4::GetName());
+}
 void SpacecraftWrapper::SetThrusterDir(uintptr_t th, const Vector3 &dir) const
 {
     VESSEL4::SetThrusterDir(THRUSTER_HANDLE(th), _V(dir.x, dir.y, dir.z));

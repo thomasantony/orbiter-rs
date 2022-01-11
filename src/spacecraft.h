@@ -46,6 +46,7 @@ public:
     uintptr_t CreatePropellantResource(double mass) const;
     uintptr_t CreateThrusterGroup(rust::Slice<const uintptr_t> thrusters, THGROUP_TYPE thgroup_type) const;
 
+    rust::Str GetName() const;
     double GetPropellantMass(uintptr_t ph) const;
     double GetThrusterGroupLevelByType(THGROUP_TYPE thgroup_type) const;
     // int clbkConsumeBufferedKey(DWORD key, bool down, char *kstate);
