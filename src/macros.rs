@@ -1,13 +1,3 @@
-/// Helper macro for defining the struct to be used by the addon
-#[macro_export]
-macro_rules! make_orbiter_vessel {
-    ($vessel:expr) => {
-        #[no_mangle]
-        pub fn create_rust_spacecraft() -> Box<dyn OrbiterVessel> {
-            Box::new($vessel)
-        }
-    };
-}
 /// Helper macro for defining Vector3 objects
 #[macro_export]
 macro_rules! _V {
@@ -41,5 +31,28 @@ macro_rules! ctype_wrapper {
             type Kind = cxx::kind::Trivial;
         }
         type $nice_name = $r;
+    };
+}
+
+/// Helper macro for defining entry point into a Vessel addon
+/// Inspired by emgre's orbiter-rs 
+/// https://github.com/emgre/orbiter-rs/blob/107068c6e66564b9dff86c8b964515da9771a3af/orbiter/src/lib.rs#L37
+#[macro_export]
+macro_rules! init_vessel {
+    (fn init($hvessel_ident:ident :OBJHANDLE, $flightmodel_ident:ident :i32) $body_init:block fn exit() $body_exit:block) => {
+        #[no_mangle]
+        pub extern "C" fn ovcInit (hvessel: crate::OBJHANDLE, flightmodel: i32) -> *mut crate::VESSEL
+        {
+            let ($hvessel_ident, $flightmodel_ident) = (hvessel, flightmodel);
+            let spacecraft = {
+                $body_init
+            };
+            unsafe { crate::vessel_ovcInit(hvessel, flightmodel, Box::new(spacecraft)) }
+        }
+        #[no_mangle]
+        pub extern "C" fn ovcExit (vessel: *mut crate::VESSEL)
+        {
+            unsafe { crate::vessel_ovcExit(vessel); }
+        }
     };
 }

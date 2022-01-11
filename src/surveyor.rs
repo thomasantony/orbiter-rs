@@ -1,6 +1,6 @@
 /// Surveyor spacecraft definition using the SDK
 use crate::{
-    ODebug, make_orbiter_vessel, consts, oapi_create_vessel, OrbiterVessel,
+    ODebug, consts, oapi_create_vessel, OrbiterVessel,
     PropellantHandle, ThrusterHandle, Vector3, VesselContext, VesselStatus, THGROUP_TYPE, _V,
 };
 
@@ -343,4 +343,9 @@ impl OrbiterVessel for Surveyor {
     }
 }
 
-make_orbiter_vessel!(Surveyor::default());
+crate::init_vessel!(
+    fn init(_h_vessel: OBJHANDLE, _flight_model: i32) {
+        Surveyor::default()
+    }
+    fn exit() {}
+);

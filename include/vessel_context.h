@@ -10,6 +10,8 @@ using Vector3 = VECTOR3;
 
 // Wrapper for oapiCreateVessel
 OBJHANDLE oapi_create_vessel(rust::String name, rust::String classname, const VESSELSTATUS& status);
+VESSEL *vessel_ovcInit(OBJHANDLE hvessel, int flightmodel, BoxDynVessel box_vessel);
+void vessel_ovcExit(VESSEL *vessel);
 
 // ==============================================================
 // Spacecraft class interface
@@ -17,7 +19,7 @@ OBJHANDLE oapi_create_vessel(rust::String name, rust::String classname, const VE
 class VesselContext : public VESSEL4
 {
 public:
-    VesselContext(OBJHANDLE hVessel, int flightmodel);
+    VesselContext(OBJHANDLE hVessel, int flightmodel, BoxDynVessel& box_vessel);
     ~VesselContext();
     void clbkSetClassCaps(FILEHANDLE cfg);
     void clbkPreStep(double SimT, double SimDT, double MJD);

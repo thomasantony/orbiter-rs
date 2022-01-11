@@ -144,6 +144,10 @@ pub mod ffi {
         type THGROUP_TYPE;
 
         type VESSELSTATUS = crate::VesselStatus;
+        type VESSEL;
+
+        unsafe fn vessel_ovcInit(hvessel: OBJHANDLE, flightmodel: i32, box_vessel: BoxDynVessel) -> *mut VESSEL;
+        unsafe fn vessel_ovcExit(vessel: *mut VESSEL);
 
         fn oapi_create_vessel(name: String, classname: String, status: &VESSELSTATUS) -> OBJHANDLE;
 
@@ -191,7 +195,6 @@ pub mod ffi {
         fn ODebug(s: &str);
     }
     extern "Rust" {
-        fn create_rust_spacecraft() -> BoxDynVessel;
         fn dyn_vessel_set_class_caps(vessel: &mut BoxDynVessel, context: &VesselContext);
         fn dyn_vessel_pre_step(
             vessel: &mut BoxDynVessel,

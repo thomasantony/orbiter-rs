@@ -21,9 +21,8 @@ OBJHANDLE oapi_create_vessel(rust::String name, rust::String classname, const VE
     return oapiCreateVessel(name.c_str(), classname.c_str(), status);
 }
 
-VesselContext::VesselContext(OBJHANDLE hVessel, int flightmodel)
-    : VESSEL4(hVessel, flightmodel),
-      rust_spacecraft_(std::move(create_rust_spacecraft()))
+VesselContext::VesselContext(OBJHANDLE hVessel, int flightmodel, BoxDynVessel& box_vessel)
+    : VESSEL4(hVessel, flightmodel), rust_spacecraft_(std::move(box_vessel))
 {
 }
 
@@ -98,21 +97,21 @@ BoxDynVessel::~BoxDynVessel() noexcept
 }
 
 // ==============================================================
-// API callback interface
+// API callback interface used by the init_vessel! macro
 // ==============================================================
 
 // --------------------------------------------------------------
 // Vessel initialisation
 // --------------------------------------------------------------
-DLLCLBK VESSEL *ovcInit(OBJHANDLE hvessel, int flightmodel)
+VESSEL *vessel_ovcInit(OBJHANDLE hvessel, int flightmodel, BoxDynVessel box_vessel)
 {
-    return new VesselContext(hvessel, flightmodel);
+    return new VesselContext(hvessel, flightmodel, box_vessel);
 }
 
 // --------------------------------------------------------------
 // Vessel cleanup
 // --------------------------------------------------------------
-DLLCLBK void ovcExit(VESSEL *vessel)
+void vessel_ovcExit(VESSEL *vessel)
 {
     if (vessel)
         delete (VesselContext *)vessel;

@@ -201,7 +201,7 @@ void Surveyor::clbkSetClassCaps (FILEHANDLE cfg)
 // --------------------------------------------------------------
 // Vessel initialisation
 // --------------------------------------------------------------
-DLLCLBK VESSEL *ovcInit (OBJHANDLE hvessel, int flightmodel)
+DLLCLBK VESSEL *vessel_ovcInit (OBJHANDLE hvessel, int flightmodel)
 {
 	return new Surveyor (hvessel, flightmodel);
 }
