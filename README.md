@@ -1,10 +1,10 @@
-## Orbiter spacecraft addon in Rust
+## Orbiter spacecraft addon development in Rust
 
-This project is a proof of concept for creating a spacecraft addon for the [Orbiter](https://github.com/orbitersim/orbiter) spaceflight simulator in Rust. It uses the [cxx](https://www.cxx.rs) crate for building wrapper to the C++ code in the Orbiter SDK. 
+This project is a proof of concept for creating a spacecraft addon for the [Orbiter](https://github.com/orbitersim/orbiter) spaceflight simulator in Rust. It uses the [cxx](https://www.cxx.rs) crate creating Rust bindings for the Orbiter SDK. 
 
 ### Goals
 
-The initial goal of this project is to be able to re-create the core logic from this [tutorial](https://www.orbiterwiki.org/wiki/Vessel_Tutorial_1) in Rust. The source-code from the tutorial can be found in [src/cpp/Surveyor.cpp](src/cpp/Surveyor.cpp). This exists purely as a reference and is not used during the build. Only the functions/classes required to implement this tutorial is currently available in Rust. This has been completed and it is possible to build a DLL file that can be loaded in Orbiter and re-creates the functionality of the Surveyor spacecraft to the extent shown in the aforementioned tutorial.
+The initial goal of this project is to be able to re-create the core logic from this [tutorial](https://www.orbiterwiki.org/wiki/Vessel_Tutorial_1) in Rust. The source-code from the tutorial can be found in [src/cpp/Surveyor.cpp](src/cpp/Surveyor.cpp). This file exists purely as a reference and is not used during the build. Only the functions/classes required for this tutorial is currently implemented for Rust. This has been completed and it is possible to build a DLL file that can be loaded in Orbiter and re-creates the functionality of the Surveyor spacecraft to the extent shown in the aforementioned tutorial.
 
 ### Implementation
 As of now, all the spacecraft-specific implementation details can be found in [`src/surveyor.rs`](src/surveyor.rs). An addon module must include a struct implementing the `OrbiterVessel` trait and it must call the `make_orbiter_vessel!` macro or provide its own `create_rust_spacecraft` function. In order to link this code to the final DLL, [`src/lib.rs`](src/lib.rs) has the following stub:
@@ -16,9 +16,9 @@ pub use surveyor::create_rust_spacecraft;
 
 ### Building
 
-This addon has been tested with Rust 1.57.0 and Visual Studio 2019 Commuity Edition on Windows 10. It should be suffice to run `cargo build` to generate the DLL file.
+This addon has been tested with Rust 1.57.0 and Visual Studio 2019 Commuity Edition on Windows 10. Running `cargo build` should build the project generate a DLL file.
 
-### Installing and Testing the addon
+### Installing and Testing the Addon
 
 Once you build the addon, you should have a file called `orbiter_rs.dll` in `target\i686-pc-windows-msvc\Debug`. Copy this file to the `Modules` folder in your Orbiter installation and rename it to `Surveyor.dll`. Also copy over the files in the `Config`, `Meshes` and `Scenarios` folders into the corresponding folders in your Orbiter installation. Launch the `SurveyorInOrbit` scenario in Orbiter and make sure that the spacecraft shows up. Pressing "L" should activate the retro thruster firing sequence.
 
