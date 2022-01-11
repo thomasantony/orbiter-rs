@@ -24,7 +24,7 @@ macro_rules! ctype_wrapper {
         #[derive(Debug, Eq, Clone, PartialEq, Hash, Default, Copy)]
         #[allow(non_camel_case_types)]
         #[repr(transparent)]
-        pub struct $r(pub usize);
+        pub struct $r(pub $c);
         unsafe impl cxx::ExternType for $r {
             type Id = cxx::type_id!($r);
             type Kind = cxx::kind::Trivial;
@@ -35,7 +35,7 @@ macro_rules! ctype_wrapper {
         #[derive(Debug, Eq, Clone, PartialEq, Hash, Default, Copy)]
         #[allow(non_camel_case_types)]
         #[repr(transparent)]
-        pub struct $r(pub usize);
+        pub struct $r(pub $c);
         unsafe impl cxx::ExternType for $r {
             type Id = cxx::type_id!($r);
             type Kind = cxx::kind::Trivial;

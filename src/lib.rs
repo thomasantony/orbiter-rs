@@ -6,7 +6,7 @@ mod macros;
 mod vessel;
 pub use vessel::OrbiterVessel;
 
-/// FFI interface to orbiter.rs
+// FFI interface to orbiter.rs
 include!("ffi.rs");
 
 /// Spacecraft implementation
