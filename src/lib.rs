@@ -71,6 +71,7 @@ pub mod ffi {
         type PtrBoxDynVessel = crate::PtrBoxDynVessel;
 
         type VesselContext;
+        
         type VECTOR3 = crate::VECTOR3;
         type PROPELLANT_HANDLE = crate::PropellantHandle;
         type THRUSTER_HANDLE = crate::ThrusterHandle;
@@ -80,6 +81,7 @@ pub mod ffi {
         // VESSEL API
         fn SetSize(self: &VesselContext, size: f64);
         fn SetPMI(self: &VesselContext, pmi: &VECTOR3);
+
         fn SetEmptyMass(self: &VesselContext, empty_mass: f64);
         fn SetCameraOffset(self: &VesselContext, camera_offset: &VECTOR3);
         fn SetTouchdownPoints(

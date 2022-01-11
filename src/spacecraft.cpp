@@ -18,7 +18,6 @@ void debugLog(rust::Str s)
 
 VesselContext::VesselContext(OBJHANDLE hVessel, int flightmodel)
     : VESSEL4(hVessel, flightmodel),
-      // rust_spacecraft_(box_to_uptr(create_rust_spacecraft()))
       rust_spacecraft_(std::move(create_rust_spacecraft()))
 {
 }
@@ -40,24 +39,12 @@ void VesselContext::AddMeshWithOffset(rust::Str mesh_name, const Vector3& ofs) c
 }
 size_t VesselContext::AddExhaust(THRUSTER_HANDLE th, double lscale, double wscale) const
 {
-    return VESSEL4::AddExhaust(THRUSTER_HANDLE(th), lscale, wscale);
-}
-void VesselContext::SetPMI(const Vector3& pmi) const
-{
-    VESSEL4::SetPMI(pmi);
-}
-void VesselContext::SetCameraOffset(const Vector3 &co) const
-{
-    VESSEL4::SetCameraOffset(co);
-}
-void VesselContext::SetTouchdownPoints(const Vector3 &pt1, const Vector3 &pt2, const Vector3 &pt3) const
-{
-    VESSEL4::SetTouchdownPoints(pt1, pt2, pt3);
+    return VESSEL4::AddExhaust(th, lscale, wscale);
 }
 
 THRUSTER_HANDLE VesselContext::CreateThruster(const Vector3 &pos, const Vector3 &dir, double maxth0, PROPELLANT_HANDLE ph, double isp) const
 {
-    return reinterpret_cast<THRUSTER_HANDLE>(VESSEL4::CreateThruster(pos, dir, maxth0, PROPELLANT_HANDLE(ph), isp));
+    return VESSEL4::CreateThruster(pos, dir, maxth0, PROPELLANT_HANDLE(ph), isp);
 }
 PROPELLANT_HANDLE VesselContext::CreatePropellantResource(double mass) const
 {
@@ -67,10 +54,7 @@ THGROUP_HANDLE VesselContext::CreateThrusterGroup(rust::Slice<const THRUSTER_HAN
 {
     return VESSEL4::CreateThrusterGroup((THRUSTER_HANDLE*)thrusters.data(), thrusters.size(), thgroup_type);
 }
-double VesselContext::GetPropellantMass(PROPELLANT_HANDLE ph) const
-{
-    return VESSEL4::GetPropellantMass(PROPELLANT_HANDLE(ph));
-}
+
 double VesselContext::GetThrusterGroupLevelByType(THGROUP_TYPE thgroup_type) const
 {
     return VESSEL4::GetThrusterGroupLevel(thgroup_type);
@@ -79,19 +63,9 @@ rust::Str VesselContext::GetName() const
 {
     return rust::Str(VESSEL4::GetName());
 }
-void VesselContext::SetThrusterDir(THRUSTER_HANDLE th, const Vector3 &dir) const
-{
-    VESSEL4::SetThrusterDir(th, dir);
-}
-void VesselContext::SetThrusterLevel(THRUSTER_HANDLE th, double level) const
-{
-    VESSEL4::SetThrusterLevel(th, level);
-}
 
 void VesselContext::clbkSetClassCaps(FILEHANDLE cfg)
 {
-    // physical vessel parameters
-    // SetPMI(_V(0.50, 0.50, 0.50));
     dyn_vessel_set_class_caps(rust_spacecraft_, *this);
 }
 
