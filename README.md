@@ -4,27 +4,37 @@ This project is a proof of concept for creating a spacecraft addon for the [Orbi
 
 ### Goals
 
-The initial goal of this project is to be able to re-create the core logic from this [tutorial](https://www.orbiterwiki.org/wiki/Vessel_Tutorial_1) in Rust. The source-code from the tutorial can be found in [src/cpp/Surveyor.cpp](src/cpp/Surveyor.cpp). This file exists purely as a reference and is not used during the build. Only the functions/classes required for this tutorial is currently implemented for Rust. This has been completed and it is possible to build a DLL file that can be loaded in Orbiter and re-creates the functionality of the Surveyor spacecraft to the extent shown in the aforementioned tutorial.
+The initial goal of this project is to be able to re-create the core logic from this [tutorial](https://www.orbiterwiki.org/wiki/Vessel_Tutorial_1) in Rust. The source-code from the tutorial can be found in [examples/Surveyor.cpp](examples/Surveyor.cpp). This file exists purely as a reference and is not used during the build. Only the functions/classes required for this tutorial is currently implemented for Rust. This has been completed and it is possible to build a DLL file that can be loaded in Orbiter and re-creates the functionality of the Surveyor spacecraft to the extent shown in the aforementioned tutorial.
 
 ### Implementation
-As of now, all the spacecraft-specific implementation details can be found in [`src/surveyor.rs`](src/surveyor.rs). An addon module must include a struct implementing the `OrbiterVessel` trait and it must call the `make_orbiter_vessel!` macro or provide its own `create_rust_spacecraft` function. In order to link this code to the final DLL, [`src/lib.rs`](src/lib.rs) has the following stub:
+
+The crate can now be imported and used like a library. A demo implementation can be found in [`src/examples/surveyor.rs`](src/examples/surveyor.rs). An addon module must include a struct implementing the `OrbiterVessel` trait. Then it must use the `init_vessel!` macro to generate the code that links it to Orbiter SDK. For example:
 
 ```rust
-mod surveyor;
-pub use surveyor::create_rust_spacecraft;
+init_vessel!(
+    fn init(_h_vessel: OBJHANDLE, _flight_model: i32) {
+        Surveyor::default()
+    }
+    fn exit() {}
+);
 ```
 
 ### Building
+
+1. Download/Install Orbiter
+2. Install Visual Studio 2019
+3. Install Rust using `rustup` (https://rustup.rs)
+4. Install the win32 target by running `rustup add target i686-pc-windows-msvc`
 
 This addon has been tested with Rust 1.57.0 and Visual Studio 2019 Commuity Edition on Windows 10. Running `cargo build` should build the project generate a DLL file.
 
 ### Installing and Testing the Addon
 
-Once you build the addon, you should have a file called `orbiter_rs.dll` in `target\i686-pc-windows-msvc\Debug`. Copy this file to the `Modules` folder in your Orbiter installation and rename it to `Surveyor.dll`. Also copy over the files in the `Config`, `Meshes` and `Scenarios` folders into the corresponding folders in your Orbiter installation. Launch the `SurveyorInOrbit` scenario in Orbiter and make sure that the spacecraft shows up. Pressing "L" should activate the retro thruster firing sequence.
+Once you build the addon, you should have a file called `Surveyor.dll` in ` target/i686-pc-windows-msvc/debug/examples/`. Copy this file to the `Modules` folder in your Orbiter installation. Also copy over the files in the `Config`, `Meshes` and `Scenarios` folders into the corresponding folders in your Orbiter installation. Launch the `SurveyorInOrbit` scenario in Orbiter and make sure that the spacecraft shows up. Pressing "L" should activate the retro thruster firing sequence.
 
 ### Future
 
-Right now, the only way to build a Rust addon is to clone/fork this repository and modify the spacecraft specific code. Due to limitations of the `cxx` library and my own lack of knowledge about it currently prevents me from making this into a crate that can be freely pulled into addon-projects. Do this will probably require custom code generation using the `gen` module from `cxx`. I intend to tackle this at some point.
+Only a limited number of Orbiter functions are now available to Rust bindings. This list will expand in the future to hopefully include all of Orbiter SDK. Pull requests are welcome!
 
 ### Meshes
 
@@ -36,4 +46,3 @@ An older proof-of-concept for building MFDs can be found at [https://github.com/
 
 ### Notes
 - Uses `.cargo/config` to force i686 as target
-

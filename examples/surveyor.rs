@@ -25,7 +25,7 @@ const RETRO_THRUST: f64 = 39140.0;
 const RETRO_BURNTIME: f64 = 40.5;
 const RETRO_ITOT: f64 = RETRO_THRUST * RETRO_BURNTIME;
 const RETRO_ISP: f64 = RETRO_ITOT / RETRO_PROP_MASS;
-const RETRO_STA: f64 = -0.75;
+const RETRO_Z: f64 = -0.75;
 
 const LANDER_EMPTY_MASS: f64 = 289.10; //Basic bus plus payload minus AMR minus retro case
 const RETRO_EMPTY_MASS: f64 = 64.88;
@@ -265,7 +265,7 @@ impl OrbiterVessel for Surveyor {
         }
 
         self.th_retro = context.CreateThruster(
-            _V!(0.0, 0.0, RETRO_STA),
+            _V!(0.0, 0.0, RETRO_Z),
             _V!(0.0, 0.0, 1.0),
             RETRO_THRUST,
             self.ph_retro,
