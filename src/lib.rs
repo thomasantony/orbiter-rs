@@ -14,13 +14,9 @@ unsafe impl cxx::ExternType for VECTOR3 {
 }
 use VECTOR3 as Vector3;
 
-ctype_wrapper!(THRUSTER_HANDLE, usize);
-ctype_wrapper!(PROPELLANT_HANDLE, usize);
-ctype_wrapper!(THGROUP_HANDLE, usize);
-
-type ThrusterHandle = THRUSTER_HANDLE;
-type PropellantHandle = PROPELLANT_HANDLE;
-type ThrustGroupHandle = THGROUP_HANDLE;
+ctype_wrapper!(THRUSTER_HANDLE, usize, ThrusterHandle);
+ctype_wrapper!(PROPELLANT_HANDLE, usize, PropellantHandle);
+ctype_wrapper!(THGROUP_HANDLE, usize, ThrustGroupHandle);
 
 #[cxx::bridge]
 pub mod ffi {
