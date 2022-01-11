@@ -38,7 +38,7 @@ void VesselContext::AddMeshWithOffset(rust::Str mesh_name, const Vector3& ofs) c
     const std::string _mesh_name(mesh_name);
     VESSEL4::AddMesh(_mesh_name.data(), &ofs);
 }
-size_t VesselContext::AddExhaust(uintptr_t th, double lscale, double wscale) const
+size_t VesselContext::AddExhaust(THRUSTER_HANDLE th, double lscale, double wscale) const
 {
     return VESSEL4::AddExhaust(THRUSTER_HANDLE(th), lscale, wscale);
 }
@@ -55,20 +55,17 @@ void VesselContext::SetTouchdownPoints(const Vector3 &pt1, const Vector3 &pt2, c
     VESSEL4::SetTouchdownPoints(pt1, pt2, pt3);
 }
 
-uintptr_t VesselContext::CreateThruster(const Vector3 &pos, const Vector3 &dir, double maxth0, PROPELLANT_HANDLE ph, double isp) const
+THRUSTER_HANDLE VesselContext::CreateThruster(const Vector3 &pos, const Vector3 &dir, double maxth0, PROPELLANT_HANDLE ph, double isp) const
 {
-    return reinterpret_cast<uintptr_t>(VESSEL4::CreateThruster(pos, dir, maxth0, PROPELLANT_HANDLE(ph), isp));
+    return reinterpret_cast<THRUSTER_HANDLE>(VESSEL4::CreateThruster(pos, dir, maxth0, PROPELLANT_HANDLE(ph), isp));
 }
 PROPELLANT_HANDLE VesselContext::CreatePropellantResource(double mass) const
 {
     return VESSEL4::CreatePropellantResource(mass);
 }
-
-uintptr_t VesselContext::CreateThrusterGroup(rust::Slice<const uintptr_t> thrusters, THGROUP_TYPE thgroup_type) const
+uintptr_t VesselContext::CreateThrusterGroup(rust::Slice<const THRUSTER_HANDLE> thrusters, THGROUP_TYPE thgroup_type) const
 {
-    const uintptr_t *th_ptr = thrusters.data();
-
-    return reinterpret_cast<uintptr_t>(VESSEL4::CreateThrusterGroup((THRUSTER_HANDLE *)th_ptr, thrusters.size(), thgroup_type));
+    return reinterpret_cast<uintptr_t>(VESSEL4::CreateThrusterGroup((THRUSTER_HANDLE*)thrusters.data(), thrusters.size(), thgroup_type));
 }
 double VesselContext::GetPropellantMass(PROPELLANT_HANDLE ph) const
 {
@@ -82,13 +79,13 @@ rust::Str VesselContext::GetName() const
 {
     return rust::Str(VESSEL4::GetName());
 }
-void VesselContext::SetThrusterDir(uintptr_t th, const Vector3 &dir) const
+void VesselContext::SetThrusterDir(THRUSTER_HANDLE th, const Vector3 &dir) const
 {
-    VESSEL4::SetThrusterDir(THRUSTER_HANDLE(th), dir);
+    VESSEL4::SetThrusterDir(th, dir);
 }
-void VesselContext::SetThrusterLevel(uintptr_t th, double level) const
+void VesselContext::SetThrusterLevel(THRUSTER_HANDLE th, double level) const
 {
-    VESSEL4::SetThrusterLevel(THRUSTER_HANDLE(th), level);
+    VESSEL4::SetThrusterLevel(th, level);
 }
 
 void VesselContext::clbkSetClassCaps(FILEHANDLE cfg)

@@ -1,16 +1,6 @@
 pub mod oapi_consts;
 pub mod utils;
 
-// // ctype_wrapper!(THRUSTERHANDLE, &std::os::raw::c_void, "THRUSTERHANDLE");
-// #[derive(Debug, Eq, Clone, PartialEq, Hash)]
-// #[allow(non_camel_case_types)]
-// #[repr(transparent)]
-// pub struct THRUSTERHANDLE(pub *const std::ffi::c_void);
-// unsafe impl cxx::ExternType for THRUSTERHANDLE {
-//     type Id = cxx::type_id!("std::ffi::c_void");
-//     type Kind = cxx::kind::Trivial;
-// }
-
 #[allow(dead_code)]
 pub struct VECTOR3([f64; 3]);
 impl VECTOR3 {
@@ -24,7 +14,9 @@ unsafe impl cxx::ExternType for VECTOR3 {
 }
 use VECTOR3 as Vector3;
 
+ctype_wrapper!(THRUSTER_HANDLE, usize);
 ctype_wrapper!(PROPELLANT_HANDLE, usize);
+type ThrusterHandle = THRUSTER_HANDLE;
 type PropellantHandle = PROPELLANT_HANDLE;
 
 #[cxx::bridge]
@@ -82,6 +74,7 @@ pub mod ffi {
         type VesselContext;
         type VECTOR3 = crate::VECTOR3;
         type PROPELLANT_HANDLE = crate::PropellantHandle;
+        type THRUSTER_HANDLE = crate::ThrusterHandle;
         type THGROUP_TYPE;
 
         // VESSEL API
@@ -95,12 +88,12 @@ pub mod ffi {
             pt2: &VECTOR3,
             pt3: &VECTOR3,
         );
-        fn SetThrusterDir(self: &VesselContext, th: usize, dir: &VECTOR3);
-        fn SetThrusterLevel(self: &VesselContext, th: usize, level: f64);
+        fn SetThrusterDir(self: &VesselContext, th: THRUSTER_HANDLE, dir: &VECTOR3);
+        fn SetThrusterLevel(self: &VesselContext, th: THRUSTER_HANDLE, level: f64);
 
         fn AddMesh(self: &VesselContext, mesh_name: &str);
         fn AddMeshWithOffset(self: &VesselContext, mesh_name: &str, ofs: &VECTOR3);
-        fn AddExhaust(self: &VesselContext, th: usize, lscale: f64, wscale: f64) -> usize;
+        fn AddExhaust(self: &VesselContext, th: THRUSTER_HANDLE, lscale: f64, wscale: f64) -> usize;
 
         fn CreatePropellantResource(self: &VesselContext, mass: f64) -> PROPELLANT_HANDLE;
         fn CreateThruster(
@@ -110,10 +103,10 @@ pub mod ffi {
             maxth0: f64,
             ph: PROPELLANT_HANDLE,
             isp: f64,
-        ) -> usize;
+        ) -> THRUSTER_HANDLE;
         fn CreateThrusterGroup(
             self: &VesselContext,
-            thrusters: &[usize],
+            thrusters: &[THRUSTER_HANDLE],
             thgroup_type: THGROUP_TYPE,
         ) -> usize;
 

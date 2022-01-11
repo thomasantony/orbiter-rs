@@ -1,6 +1,6 @@
 /// Surveyor spacecraft definition using the SDK
 use crate::{
-    debugLog, make_orbiter_vessel, OrbiterVessel, VesselContext, Vector3, THGROUP_TYPE, _V, PropellantHandle,
+    debugLog, make_orbiter_vessel, OrbiterVessel, VesselContext, Vector3, THGROUP_TYPE, _V, PropellantHandle, ThrusterHandle
 };
 
 const VERNIER_PROP_MASS: f64 = 70.98;
@@ -44,9 +44,9 @@ impl Default for SurveyorState {
 
 #[derive(Default, Debug)]
 pub struct Surveyor {
-    th_vernier: Vec<usize>,
-    th_rcs: Vec<usize>,
-    th_retro: usize,
+    th_vernier: Vec<ThrusterHandle>,
+    th_rcs: Vec<ThrusterHandle>,
+    th_retro: ThrusterHandle,
     ph_vernier: PropellantHandle,
     ph_retro: PropellantHandle,
     ph_rcs: PropellantHandle,
@@ -204,7 +204,8 @@ impl OrbiterVessel for Surveyor {
         ));
 
         // Create RCS thruster groups
-        let mut th_group: [usize; 2] = [0, 0];
+        let mut th_group = [ThrusterHandle::default(), ThrusterHandle::default()];
+
         th_group[0] = self.th_rcs[3]; // -Z #1
         th_group[1] = self.th_rcs[5]; // -Z #2
         context.CreateThrusterGroup(&th_group, THGROUP_TYPE::AttPitchdown);

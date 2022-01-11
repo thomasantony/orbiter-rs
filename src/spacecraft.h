@@ -32,18 +32,18 @@ public:
     void AddMesh(rust::Str mesh_name) const;
     void AddMeshWithOffset(rust::Str mesh_name, const Vector3& ofs) const;
     void AddExhaust(rust::Str mesh_name) const;
-    size_t AddExhaust(uintptr_t th, double lscale, double wscale) const;
+    size_t AddExhaust(THRUSTER_HANDLE th, double lscale, double wscale) const;
 
     void SetPMI(const Vector3& pmi) const;
     void SetCameraOffset(const Vector3& co) const;
     void SetTouchdownPoints(const Vector3 &pt1, const Vector3 &pt2, const Vector3 &pt3) const;
-    void SetThrusterDir(uintptr_t th, const Vector3 &dir) const;
-    void SetThrusterLevel(uintptr_t th, double level) const;
+    void SetThrusterDir(THRUSTER_HANDLE th, const Vector3 &dir) const;
+    void SetThrusterLevel(THRUSTER_HANDLE th, double level) const;
 
-    uintptr_t CreateThruster(const Vector3 &pos, const Vector3 &dir, double maxth0, PROPELLANT_HANDLE ph, double isp) const;
+    THRUSTER_HANDLE CreateThruster(const Vector3 &pos, const Vector3 &dir, double maxth0, PROPELLANT_HANDLE ph, double isp) const;
     PROPELLANT_HANDLE CreatePropellantResource(double mass) const;
 
-    uintptr_t CreateThrusterGroup(rust::Slice<const uintptr_t> thrusters, THGROUP_TYPE thgroup_type) const;
+    uintptr_t CreateThrusterGroup(rust::Slice<const THRUSTER_HANDLE> thrusters, THGROUP_TYPE thgroup_type) const;
 
     rust::Str GetName() const;
     double GetPropellantMass(PROPELLANT_HANDLE ph) const;
