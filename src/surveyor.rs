@@ -303,7 +303,22 @@ impl OrbiterVessel for Surveyor {
         debugLog(&format!("Pitch: {}, Yaw: {}, Roll: {}", pitch, yaw, roll));
     }
     fn consume_buffered_key(&mut self, context: &VesselContext, key: crate::DWORD, down: bool, kstate: [u8; crate::oapi_consts::LKEY_COUNT]) -> i32 {
-        0
+        if !down
+        {
+            0
+        }else if kstate[oapi_consts::OAPI_KEY_LSHIFT] & 0x80 == 1 && kstate[oapi_consts::OAPI_KEY_RSHIFT] & 0x80 == 1 {
+            0
+        }
+        else { // unmodified keys
+            match key.0 as usize
+            {
+                oapi_consts::OAPI_KEY_L => {    // Fire Retro
+                    context.SetThrusterLevel(self.th_retro, 1.0);
+                    1
+                }
+                _ => 0,
+            }
+        }
     }
 }
 
