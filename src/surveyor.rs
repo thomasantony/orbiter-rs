@@ -1,6 +1,6 @@
 /// Surveyor spacecraft definition using the SDK
 use crate::{
-    debugLog, make_orbiter_vessel, OrbiterVessel, SpacecraftWrapper, Vector3, THGROUP_TYPE, _V,
+    debugLog, make_orbiter_vessel, OrbiterVessel, VesselContext, Vector3, THGROUP_TYPE, _V,
 };
 
 const VERNIER_PROP_MASS: f64 = 70.98;
@@ -53,7 +53,7 @@ pub struct Surveyor {
     vehicle_state: SurveyorState,
 }
 impl Surveyor {
-    fn setup_meshes(&mut self, context: &SpacecraftWrapper) {
+    fn setup_meshes(&mut self, context: &VesselContext) {
         context.ClearMeshes();
         let mut meshes = Vec::new();
         meshes.push(("Surveyor-AMR", Vector3::new(0., 0., -0.6)));
@@ -69,7 +69,7 @@ impl Surveyor {
             context.AddMeshWithOffset(mesh, &ofs);
         }
     }
-    fn calc_empty_mass(&self, context: &SpacecraftWrapper) -> f64{
+    fn calc_empty_mass(&self, context: &VesselContext) -> f64{
         let mut empty_mass = 0.0;
         // Jettison AMR when retro starts firing
         if context.GetPropellantMass(self.ph_retro) > 0.999 * RETRO_PROP_MASS {
@@ -84,7 +84,7 @@ impl Surveyor {
     }
 }
 impl OrbiterVessel for Surveyor {
-    fn set_class_caps(&mut self, context: &SpacecraftWrapper) {
+    fn set_class_caps(&mut self, context: &VesselContext) {
         context.SetSize(1.0);
         context.SetPMI(_V!(0.50, 0.50, 0.50));
         context.SetTouchdownPoints(
@@ -246,7 +246,7 @@ impl OrbiterVessel for Surveyor {
         context.SetCameraOffset(_V!(0.0, 0.8, 0.0));
         self.setup_meshes(context)
     }
-    fn pre_step(&mut self, context: &SpacecraftWrapper, _sim_t: f64, _sim_dt: f64, _mjd: f64) {
+    fn pre_step(&mut self, context: &VesselContext, _sim_t: f64, _sim_dt: f64, _mjd: f64) {
         context.SetEmptyMass(self.calc_empty_mass(context));
 
         let pitch = context.GetThrusterGroupLevelByType(THGROUP_TYPE::AttPitchup) - context.GetThrusterGroupLevelByType(THGROUP_TYPE::AttPitchdown);

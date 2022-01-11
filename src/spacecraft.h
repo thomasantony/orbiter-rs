@@ -21,11 +21,11 @@ using PtrBoxDynVessel = BoxDynVessel *;
 // ==============================================================
 // Spacecraft class interface
 // ==============================================================
-class SpacecraftWrapper : public VESSEL4
+class VesselContext : public VESSEL4
 {
 public:
-    SpacecraftWrapper(OBJHANDLE hVessel, int flightmodel);
-    ~SpacecraftWrapper();
+    VesselContext(OBJHANDLE hVessel, int flightmodel);
+    ~VesselContext();
     void clbkSetClassCaps(FILEHANDLE cfg);
     void clbkPreStep(double SimT, double SimDT, double MJD);
 

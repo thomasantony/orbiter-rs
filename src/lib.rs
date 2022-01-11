@@ -85,31 +85,31 @@ pub mod ffi {
         type BoxDynVessel = Box<dyn crate::OrbiterVessel>;
         type PtrBoxDynVessel = crate::PtrBoxDynVessel;
 
-        type SpacecraftWrapper;
+        type VesselContext;
         type VECTOR3 = crate::VECTOR3;
         type THGROUP_TYPE;
 
         // VESSEL API
-        fn SetSize(self: &SpacecraftWrapper, size: f64);
-        fn SetPMI(self: &SpacecraftWrapper, pmi: &VECTOR3);
-        fn SetEmptyMass(self: &SpacecraftWrapper, empty_mass: f64);
-        fn SetCameraOffset(self: &SpacecraftWrapper, camera_offset: &VECTOR3);
+        fn SetSize(self: &VesselContext, size: f64);
+        fn SetPMI(self: &VesselContext, pmi: &VECTOR3);
+        fn SetEmptyMass(self: &VesselContext, empty_mass: f64);
+        fn SetCameraOffset(self: &VesselContext, camera_offset: &VECTOR3);
         fn SetTouchdownPoints(
-            self: &SpacecraftWrapper,
+            self: &VesselContext,
             pt1: &VECTOR3,
             pt2: &VECTOR3,
             pt3: &VECTOR3,
         );
-        fn SetThrusterDir(self: &SpacecraftWrapper, th: usize, dir: &VECTOR3);
-        fn SetThrusterLevel(self: &SpacecraftWrapper, th: usize, level: f64);
+        fn SetThrusterDir(self: &VesselContext, th: usize, dir: &VECTOR3);
+        fn SetThrusterLevel(self: &VesselContext, th: usize, level: f64);
 
-        fn AddMesh(self: &SpacecraftWrapper, mesh_name: &str);
-        fn AddMeshWithOffset(self: &SpacecraftWrapper, mesh_name: &str, ofs: &VECTOR3);
-        fn AddExhaust(self: &SpacecraftWrapper, th: usize, lscale: f64, wscale: f64) -> usize;
+        fn AddMesh(self: &VesselContext, mesh_name: &str);
+        fn AddMeshWithOffset(self: &VesselContext, mesh_name: &str, ofs: &VECTOR3);
+        fn AddExhaust(self: &VesselContext, th: usize, lscale: f64, wscale: f64) -> usize;
 
-        fn CreatePropellantResource(self: &SpacecraftWrapper, mass: f64) -> usize;
+        fn CreatePropellantResource(self: &VesselContext, mass: f64) -> usize;
         fn CreateThruster(
-            self: &SpacecraftWrapper,
+            self: &VesselContext,
             pos: &VECTOR3,
             dir: &VECTOR3,
             maxth0: f64,
@@ -117,16 +117,16 @@ pub mod ffi {
             isp: f64,
         ) -> usize;
         fn CreateThrusterGroup(
-            self: &SpacecraftWrapper,
+            self: &VesselContext,
             thrusters: &[usize],
             thgroup_type: THGROUP_TYPE,
         ) -> usize;
 
-        fn ClearMeshes(self: &SpacecraftWrapper);
+        fn ClearMeshes(self: &VesselContext);
 
-        fn GetName(self: &SpacecraftWrapper) -> &str;
-        fn GetPropellantMass(self: &SpacecraftWrapper, ph: usize) -> f64;
-        fn GetThrusterGroupLevelByType(self: &SpacecraftWrapper, thgroup_type: THGROUP_TYPE) -> f64;
+        fn GetName(self: &VesselContext) -> &str;
+        fn GetPropellantMass(self: &VesselContext, ph: usize) -> f64;
+        fn GetThrusterGroupLevelByType(self: &VesselContext, thgroup_type: THGROUP_TYPE) -> f64;
         /// oapiCreateVessel
         /// Local2Rel
         /// GetStatus
@@ -134,10 +134,10 @@ pub mod ffi {
     }
     extern "Rust" {
         fn create_rust_spacecraft() -> BoxDynVessel;
-        fn dyn_vessel_set_class_caps(vessel: &mut BoxDynVessel, context: &SpacecraftWrapper);
+        fn dyn_vessel_set_class_caps(vessel: &mut BoxDynVessel, context: &VesselContext);
         fn dyn_vessel_pre_step(
             vessel: &mut BoxDynVessel,
-            context: &SpacecraftWrapper,
+            context: &VesselContext,
             sim_t: f64,
             sim_dt: f64,
             mjd: f64,
@@ -151,8 +151,8 @@ pub use ffi::*;
 // Based on https://github.com/dtolnay/cxx/pull/672
 use cxx::ExternType;
 pub trait OrbiterVessel {
-    fn set_class_caps(&mut self, context: &SpacecraftWrapper);
-    fn pre_step(&mut self, context: &SpacecraftWrapper, sim_t: f64, sim_dt: f64, mjd: f64);
+    fn set_class_caps(&mut self, context: &VesselContext);
+    fn pre_step(&mut self, context: &VesselContext, sim_t: f64, sim_dt: f64, mjd: f64);
 }
 unsafe impl ExternType for Box<dyn OrbiterVessel> {
     type Id = cxx::type_id!("BoxDynVessel");
@@ -170,12 +170,12 @@ unsafe fn dyn_vessel_drop_in_place(ptr: PtrBoxDynVessel) {
 }
 
 // trait fn shims
-fn dyn_vessel_set_class_caps(vessel: &mut Box<dyn OrbiterVessel>, context: &SpacecraftWrapper) {
+fn dyn_vessel_set_class_caps(vessel: &mut Box<dyn OrbiterVessel>, context: &VesselContext) {
     (**vessel).set_class_caps(context);
 }
 fn dyn_vessel_pre_step(
     vessel: &mut Box<dyn OrbiterVessel>,
-    context: &SpacecraftWrapper,
+    context: &VesselContext,
     sim_t: f64,
     sim_dt: f64,
     mjd: f64,
