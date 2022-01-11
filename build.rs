@@ -1,5 +1,5 @@
 fn main() {
-    cxx_build::bridge("src/lib.rs")
+    cxx_build::bridge("src/ffi.rs")
         .file("src/cpp/vessel_context.cpp")
         .include(".")
         .include("./include")

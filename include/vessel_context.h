@@ -4,7 +4,7 @@
 #include "orbitersdk.h"
 #include "box_dyn_vessel.h"
 
-void debugLog(rust::Str);
+void ODebug(rust::Str);
 
 using Vector3 = VECTOR3;
 

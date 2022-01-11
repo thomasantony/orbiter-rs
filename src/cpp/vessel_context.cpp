@@ -11,7 +11,7 @@
 
 using std::unique_ptr;
 
-void debugLog(rust::Str s)
+void ODebug(rust::Str s)
 {
     std::string _s(s.data(), s.length());
     sprintf(oapiDebugString(), _s.c_str());

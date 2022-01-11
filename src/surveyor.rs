@@ -1,6 +1,6 @@
 /// Surveyor spacecraft definition using the SDK
 use crate::{
-    debugLog, make_orbiter_vessel, consts, oapi_create_vessel, OrbiterVessel,
+    ODebug, make_orbiter_vessel, consts, oapi_create_vessel, OrbiterVessel,
     PropellantHandle, ThrusterHandle, Vector3, VesselContext, VesselStatus, THGROUP_TYPE, _V,
 };
 
@@ -314,12 +314,12 @@ impl OrbiterVessel for Surveyor {
             //Relight the retro if needed
             context.SetThrusterLevel(self.th_retro, 1.0);
         }
-        debugLog(&format!("Pitch: {}, Yaw: {}, Roll: {}", pitch, yaw, roll));
+        ODebug(&format!("Pitch: {}, Yaw: {}, Roll: {}", pitch, yaw, roll));
     }
     fn consume_buffered_key(
         &mut self,
         context: &VesselContext,
-        key: crate::DWORD,
+        key: crate::ffi::DWORD,
         down: bool,
         kstate: [u8; crate::consts::LKEY_COUNT],
     ) -> i32 {
