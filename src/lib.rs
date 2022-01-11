@@ -16,8 +16,11 @@ use VECTOR3 as Vector3;
 
 ctype_wrapper!(THRUSTER_HANDLE, usize);
 ctype_wrapper!(PROPELLANT_HANDLE, usize);
+ctype_wrapper!(THGROUP_HANDLE, usize);
+
 type ThrusterHandle = THRUSTER_HANDLE;
 type PropellantHandle = PROPELLANT_HANDLE;
+type ThrustGroupHandle = THGROUP_HANDLE;
 
 #[cxx::bridge]
 pub mod ffi {
@@ -75,6 +78,7 @@ pub mod ffi {
         type VECTOR3 = crate::VECTOR3;
         type PROPELLANT_HANDLE = crate::PropellantHandle;
         type THRUSTER_HANDLE = crate::ThrusterHandle;
+        type THGROUP_HANDLE = crate::ThrustGroupHandle;
         type THGROUP_TYPE;
 
         // VESSEL API
@@ -108,7 +112,7 @@ pub mod ffi {
             self: &VesselContext,
             thrusters: &[THRUSTER_HANDLE],
             thgroup_type: THGROUP_TYPE,
-        ) -> usize;
+        ) -> THGROUP_HANDLE;
 
         fn ClearMeshes(self: &VesselContext);
 

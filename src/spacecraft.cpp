@@ -63,9 +63,9 @@ PROPELLANT_HANDLE VesselContext::CreatePropellantResource(double mass) const
 {
     return VESSEL4::CreatePropellantResource(mass);
 }
-uintptr_t VesselContext::CreateThrusterGroup(rust::Slice<const THRUSTER_HANDLE> thrusters, THGROUP_TYPE thgroup_type) const
+THGROUP_HANDLE VesselContext::CreateThrusterGroup(rust::Slice<const THRUSTER_HANDLE> thrusters, THGROUP_TYPE thgroup_type) const
 {
-    return reinterpret_cast<uintptr_t>(VESSEL4::CreateThrusterGroup((THRUSTER_HANDLE*)thrusters.data(), thrusters.size(), thgroup_type));
+    return VESSEL4::CreateThrusterGroup((THRUSTER_HANDLE*)thrusters.data(), thrusters.size(), thgroup_type);
 }
 double VesselContext::GetPropellantMass(PROPELLANT_HANDLE ph) const
 {

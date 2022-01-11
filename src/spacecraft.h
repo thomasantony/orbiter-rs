@@ -42,8 +42,7 @@ public:
 
     THRUSTER_HANDLE CreateThruster(const Vector3 &pos, const Vector3 &dir, double maxth0, PROPELLANT_HANDLE ph, double isp) const;
     PROPELLANT_HANDLE CreatePropellantResource(double mass) const;
-
-    uintptr_t CreateThrusterGroup(rust::Slice<const THRUSTER_HANDLE> thrusters, THGROUP_TYPE thgroup_type) const;
+    THGROUP_HANDLE CreateThrusterGroup(rust::Slice<const THRUSTER_HANDLE> thrusters, THGROUP_TYPE thgroup_type) const;
 
     rust::Str GetName() const;
     double GetPropellantMass(PROPELLANT_HANDLE ph) const;
