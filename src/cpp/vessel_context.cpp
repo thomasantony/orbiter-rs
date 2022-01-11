@@ -4,7 +4,7 @@
 #include "windows.h"
 #include "orbitersdk.h"
 #include "vessel_context.h"
-#include "orbiter-rs/src/lib.rs.h"
+#include "orbiter-rs/src/ffi.rs.h"
 #include <memory>
 #include <cstring>
 #include <array>

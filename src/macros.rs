@@ -30,7 +30,7 @@ macro_rules! ctype_wrapper {
             type Id = cxx::type_id!($r);
             type Kind = cxx::kind::Trivial;
         }
-        type $nice_name = $r;
+        pub type $nice_name = $r;
     };
 }
 
@@ -41,18 +41,18 @@ macro_rules! ctype_wrapper {
 macro_rules! init_vessel {
     (fn init($hvessel_ident:ident :OBJHANDLE, $flightmodel_ident:ident :i32) $body_init:block fn exit() $body_exit:block) => {
         #[no_mangle]
-        pub extern "C" fn ovcInit (hvessel: crate::OBJHANDLE, flightmodel: i32) -> *mut crate::VESSEL
+        pub extern "C" fn ovcInit (hvessel: $crate::OBJHANDLE, flightmodel: i32) -> *mut $crate::VESSEL
         {
             let ($hvessel_ident, $flightmodel_ident) = (hvessel, flightmodel);
             let spacecraft = {
                 $body_init
             };
-            unsafe { crate::vessel_ovcInit(hvessel, flightmodel, Box::new(spacecraft)) }
+            unsafe { $crate::vessel_ovcInit(hvessel, flightmodel, Box::new(spacecraft)) }
         }
         #[no_mangle]
-        pub extern "C" fn ovcExit (vessel: *mut crate::VESSEL)
+        pub extern "C" fn ovcExit (vessel: *mut $crate::VESSEL)
         {
-            unsafe { crate::vessel_ovcExit(vessel); }
+            unsafe { $crate::vessel_ovcExit(vessel); }
         }
     };
 }

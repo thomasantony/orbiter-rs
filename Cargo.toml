@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [lib]
-crate-type = ["cdylib"]
+crate-type = ["rlib"]
 bench = false
 
 [dependencies]
@@ -13,3 +13,8 @@ winapi = "0.3.9"
 
 [build-dependencies]
 cxx-build = "1.0.62"
+
+[[example]]
+name = "Surveyor"
+path = "examples/surveyor.rs"
+crate-type = ["cdylib"]
