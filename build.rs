@@ -2,6 +2,7 @@ fn main() {
     cxx_build::bridge("src/lib.rs")
         .file("src/vessel_context.cpp")
         .include(".")
+        .include("./include")
         .include("D:\\code\\Orbitersdk\\include\\")
         .flag_if_supported("-std=c++14")
         .compile("orbiter-rs");
