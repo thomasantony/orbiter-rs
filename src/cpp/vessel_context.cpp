@@ -29,6 +29,7 @@ VesselContext::VesselContext(OBJHANDLE hVessel, int flightmodel, BoxDynVessel& b
 VesselContext::~VesselContext()
 {
 }
+
 // Rust shims
 void VesselContext::AddMesh(rust::String mesh_name) const
 {
@@ -70,7 +71,7 @@ void VesselContext::clbkSetClassCaps(FILEHANDLE cfg)
     dyn_vessel_set_class_caps(rust_spacecraft_, *this);
 }
 
-// Pre-step logic for differential thrust
+// Pre-step callback
 void VesselContext::clbkPreStep(double SimT, double SimDT, double MJD)
 {
     dyn_vessel_pre_step(rust_spacecraft_, *this, SimT, SimDT, MJD);
@@ -83,7 +84,6 @@ int VesselContext::clbkConsumeBufferedKey(DWORD key, bool down, char *kstate)
 // ==============================================================
 // API callback interface used by the init_vessel! macro
 // ==============================================================
-
 // --------------------------------------------------------------
 // Vessel initialisation
 // --------------------------------------------------------------

@@ -346,7 +346,8 @@ impl OrbiterVessel for Surveyor {
 }
 
 init_vessel!(
-    fn init(_h_vessel: OBJHANDLE, _flight_model: i32) {
+    fn init(_h_vessel: OBJHANDLE, _flight_model: i32) -> Surveyor 
+    {
         Surveyor::default()
     }
     fn exit() {}
