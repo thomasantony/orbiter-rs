@@ -1,6 +1,6 @@
 /// Surveyor spacecraft definition using the SDK
 use crate::{
-    debugLog, make_orbiter_vessel, oapi_consts, oapi_create_vessel, OrbiterVessel,
+    debugLog, make_orbiter_vessel, consts, oapi_create_vessel, OrbiterVessel,
     PropellantHandle, ThrusterHandle, Vector3, VesselContext, VesselStatus, THGROUP_TYPE, _V,
 };
 
@@ -321,18 +321,18 @@ impl OrbiterVessel for Surveyor {
         context: &VesselContext,
         key: crate::DWORD,
         down: bool,
-        kstate: [u8; crate::oapi_consts::LKEY_COUNT],
+        kstate: [u8; crate::consts::LKEY_COUNT],
     ) -> i32 {
         if !down {
             0
-        } else if kstate[oapi_consts::OAPI_KEY_LSHIFT] & 0x80 == 1
-            || kstate[oapi_consts::OAPI_KEY_RSHIFT] & 0x80 == 1
+        } else if kstate[consts::OAPI_KEY_LSHIFT] & 0x80 == 1
+            || kstate[consts::OAPI_KEY_RSHIFT] & 0x80 == 1
         {
             0
         } else {
             // unmodified keys
             match key.0 as usize {
-                oapi_consts::OAPI_KEY_L => {
+                consts::OAPI_KEY_L => {
                     // Fire Retro
                     context.SetThrusterLevel(self.th_retro, 1.0);
                     1

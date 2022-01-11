@@ -1,4 +1,4 @@
-pub mod oapi_consts;
+pub mod consts;
 
 #[derive(Debug, Default)]
 pub struct VECTOR3([f64; 3]);
@@ -218,7 +218,7 @@ pub trait OrbiterVessel {
         context: &VesselContext,
         key: DWORD,
         down: bool,
-        kstate: [u8; oapi_consts::LKEY_COUNT],
+        kstate: [u8; consts::LKEY_COUNT],
     ) -> i32;
 }
 unsafe impl ExternType for Box<dyn OrbiterVessel> {
@@ -254,7 +254,7 @@ fn dyn_vessel_consume_buffered_key(
     context: &VesselContext,
     key: DWORD,
     down: bool,
-    kstate: [u8; oapi_consts::LKEY_COUNT],
+    kstate: [u8; consts::LKEY_COUNT],
 ) -> i32 {
     (**vessel).consume_buffered_key(context, key, down, kstate)
 }
