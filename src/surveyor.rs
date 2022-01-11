@@ -319,7 +319,7 @@ impl OrbiterVessel for Surveyor {
     fn consume_buffered_key(
         &mut self,
         context: &VesselContext,
-        key: crate::ffi::DWORD,
+        key: crate::DWORD,
         down: bool,
         kstate: [u8; crate::consts::LKEY_COUNT],
     ) -> i32 {
