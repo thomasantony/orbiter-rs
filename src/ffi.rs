@@ -264,4 +264,5 @@ unsafe fn dyn_vessel_consume_buffered_key(
 }
 
 pub use ffi::*;
+pub type ThrustGroupType = THGROUP_TYPE;
 

@@ -4,7 +4,7 @@
 /// 
 use orbiter_rs::{
     ODebug, oapi_create_vessel, OrbiterVessel, init_vessel, KeyStates, Key, FileHandle,
-    PropellantHandle, ThrusterHandle, Vector3, VesselContext, VesselStatus, THGROUP_TYPE, _V,
+    PropellantHandle, ThrusterHandle, Vector3, VesselContext, VesselStatus, ThrustGroupType, _V,
 };
 
 const VERNIER_PROP_MASS: f64 = 70.98;
@@ -166,7 +166,7 @@ impl OrbiterVessel for Surveyor {
             self.ph_vernier,
             VERNIER_ISP,
         ));
-        context.CreateThrusterGroup(&self.th_vernier, THGROUP_TYPE::Main);
+        context.CreateThrusterGroup(&self.th_vernier, ThrustGroupType::Main);
         for th in self.th_vernier.iter() {
             context.AddExhaust(*th, 1.0, 0.1);
         }
@@ -240,25 +240,25 @@ impl OrbiterVessel for Surveyor {
 
         th_group[0] = self.th_rcs[3]; // -Z #1
         th_group[1] = self.th_rcs[5]; // -Z #2
-        context.CreateThrusterGroup(&th_group, THGROUP_TYPE::AttPitchdown);
+        context.CreateThrusterGroup(&th_group, ThrustGroupType::AttPitchdown);
 
         th_group[0] = self.th_rcs[2]; // +Z #1
         th_group[1] = self.th_rcs[4]; // +Z #2
-        context.CreateThrusterGroup(&th_group, THGROUP_TYPE::AttPitchup);
+        context.CreateThrusterGroup(&th_group, ThrustGroupType::AttPitchup);
 
         th_group[0] = self.th_rcs[0]; // +X
-        context.CreateThrusterGroup(&th_group[..1], THGROUP_TYPE::AttBankright);
+        context.CreateThrusterGroup(&th_group[..1], ThrustGroupType::AttBankright);
 
         th_group[0] = self.th_rcs[1]; // -X
-        context.CreateThrusterGroup(&th_group, THGROUP_TYPE::AttBankleft);
+        context.CreateThrusterGroup(&th_group, ThrustGroupType::AttBankleft);
 
         th_group[0] = self.th_rcs[3]; // -Z #1
         th_group[1] = self.th_rcs[4]; // +Z #2
-        context.CreateThrusterGroup(&th_group, THGROUP_TYPE::AttYawright);
+        context.CreateThrusterGroup(&th_group, ThrustGroupType::AttYawright);
 
         th_group[0] = self.th_rcs[2]; // +Z #1
         th_group[1] = self.th_rcs[5]; // -Z #2
-        context.CreateThrusterGroup(&th_group, THGROUP_TYPE::AttYawleft);
+        context.CreateThrusterGroup(&th_group, ThrustGroupType::AttYawleft);
 
         for th in self.th_rcs.iter() {
             context.AddExhaust(*th, 0.1, 0.05);
@@ -282,12 +282,12 @@ impl OrbiterVessel for Surveyor {
     fn pre_step(&mut self, context: &VesselContext, _sim_t: f64, _sim_dt: f64, _mjd: f64) {
         context.SetEmptyMass(self.calc_empty_mass(context));
 
-        let pitch = context.GetThrusterGroupLevelByType(THGROUP_TYPE::AttPitchup)
-            - context.GetThrusterGroupLevelByType(THGROUP_TYPE::AttPitchdown);
-        let yaw = context.GetThrusterGroupLevelByType(THGROUP_TYPE::AttYawright)
-            - context.GetThrusterGroupLevelByType(THGROUP_TYPE::AttYawleft);
-        let roll = context.GetThrusterGroupLevelByType(THGROUP_TYPE::AttBankright)
-            - context.GetThrusterGroupLevelByType(THGROUP_TYPE::AttBankleft);
+        let pitch = context.GetThrusterGroupLevelByType(ThrustGroupType::AttPitchup)
+            - context.GetThrusterGroupLevelByType(ThrustGroupType::AttPitchdown);
+        let yaw = context.GetThrusterGroupLevelByType(ThrustGroupType::AttYawright)
+            - context.GetThrusterGroupLevelByType(ThrustGroupType::AttYawleft);
+        let roll = context.GetThrusterGroupLevelByType(ThrustGroupType::AttBankright)
+            - context.GetThrusterGroupLevelByType(ThrustGroupType::AttBankleft);
 
         // Differential thrusting for attitude control
         context.SetThrusterDir(
