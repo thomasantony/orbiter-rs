@@ -1,7 +1,7 @@
 /// Thanks to Émile Grégoire (https://github.com/emgre/orbiter-rs/blob/master/orbiter/src/input.rs)
 use std::os::raw::c_char;
 
-/// Keyboard key.
+/// Keyboard keys
 #[derive(Debug, Copy, Clone, PartialOrd, PartialEq)]
 pub enum Key {
     /// Escape key
@@ -430,7 +430,7 @@ impl Key {
     }
 }
 
-/// Keyboard key states.
+/// Keyboard key states
 ///
 /// Helper methods are provided to check the state of key modifiers
 /// (shift, control and alt).

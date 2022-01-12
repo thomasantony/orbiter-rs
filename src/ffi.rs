@@ -106,44 +106,62 @@ pub mod ffi {
     #[derive(Debug)]
     #[repr(usize)]
     enum THGROUP_TYPE {
+        /// Main Thrusters
         #[cxx_name = "THGROUP_MAIN"]
         Main,
+        /// Retro Thrusters
         #[cxx_name = "THGROUP_RETRO"]
         Retro,
+        /// Hover Thrusters
         #[cxx_name = "THGROUP_HOVER"]
         Hover,
+        /// Rotation: Pitch Up
         #[cxx_name = "THGROUP_ATT_PITCHUP"]
         AttPitchup,
+        /// Rotation: Pitch Down
         #[cxx_name = "THGROUP_ATT_PITCHDOWN"]
         AttPitchdown,
+        /// Rotation: Yaw Left
         #[cxx_name = "THGROUP_ATT_YAWLEFT"]
         AttYawleft,
+        /// Rotation: Yaw Right
         #[cxx_name = "THGROUP_ATT_YAWRIGHT"]
         AttYawright,
+        /// Rotation: Bank Left
         #[cxx_name = "THGROUP_ATT_BANKLEFT"]
         AttBankleft,
+        /// Rotation: Bank Right
         #[cxx_name = "THGROUP_ATT_BANKRIGHT"]
         AttBankright,
+        /// Translation: Move Right
         #[cxx_name = "THGROUP_ATT_RIGHT"]
         AttRight,
+        /// Translation: Move Left
         #[cxx_name = "THGROUP_ATT_LEFT"]
         AttLeft,
+        /// Translation: Move Up
         #[cxx_name = "THGROUP_ATT_UP"]
         AttUp,
+        /// Translation: Move Down
         #[cxx_name = "THGROUP_ATT_DOWN"]
         AttDown,
+        /// Translation: Move Forward
         #[cxx_name = "THGROUP_ATT_FORWARD"]
         AttForward,
+        /// Translation: Move Back
         #[cxx_name = "THGROUP_ATT_BACK"]
         AttBack,
+        /// User-Defined Thruster Group
         #[cxx_name = "THGROUP_USER"]
         User = 0x40,
     }
     unsafe extern "C++" {
         include!("include/vessel_context.h");
+        #[doc(hidden)]
         type BoxDynVessel = Box<dyn crate::OrbiterVessel>;
         type PtrBoxDynVessel = crate::PtrBoxDynVessel;
 
+        /// Rust interface to the `VESSELx` abstract classes in Orbiter SDK
         type VesselContext;
 
         type VECTOR3 = crate::VECTOR3;
@@ -245,6 +263,7 @@ unsafe impl ExternType for Box<dyn OrbiterVessel> {
     type Id = cxx::type_id!("BoxDynVessel");
     type Kind = cxx::kind::Trivial;
 }
+#[doc(hidden)]
 #[repr(transparent)]
 pub struct PtrBoxDynVessel(*mut Box<dyn OrbiterVessel>);
 unsafe impl ExternType for PtrBoxDynVessel {
@@ -288,7 +307,9 @@ unsafe fn dyn_vessel_consume_buffered_key(
     (**vessel).consume_buffered_key(context, crate::Key::from(key.0 as u8), down, kstate)
 }
 
+pub use ffi::VesselContext;
+
 #[doc(hidden)]
-pub use ffi::*;
+pub use ffi::BoxDynVessel;
 /// Type alias for [THGROUP_TYPE]
 pub use ffi::THGROUP_TYPE as ThrusterGroupType;
