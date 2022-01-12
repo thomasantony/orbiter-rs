@@ -67,10 +67,17 @@ void VesselContext::clbkSetClassCaps(FILEHANDLE cfg)
     dyn_vessel_set_class_caps(rust_spacecraft_, *this, cfg);
 }
 
+// ==============================================================
+// VESSEL callback interface
+// ==============================================================
 // Pre-step callback
 void VesselContext::clbkPreStep(double SimT, double SimDT, double MJD)
 {
     dyn_vessel_pre_step(rust_spacecraft_, *this, SimT, SimDT, MJD);
+}
+void VesselContext::clbkPostStep(double SimT, double SimDT, double MJD)
+{
+    dyn_vessel_post_step(rust_spacecraft_, *this, SimT, SimDT, MJD);
 }
 int VesselContext::clbkConsumeBufferedKey(DWORD key, bool down, char *kstate)
 {

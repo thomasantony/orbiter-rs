@@ -23,6 +23,7 @@ public:
     ~VesselContext();
     void clbkSetClassCaps(FILEHANDLE cfg);
     void clbkPreStep(double SimT, double SimDT, double MJD);
+    void clbkPostStep(double SimT, double SimDT, double MJD);
     int clbkConsumeBufferedKey(DWORD key, bool down, char *kstate);
 
     void AddMesh(rust::String mesh_name) const;

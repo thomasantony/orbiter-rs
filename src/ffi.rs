@@ -213,6 +213,13 @@ pub mod ffi {
             sim_dt: f64,
             mjd: f64,
         );
+        fn dyn_vessel_post_step(
+            vessel: &mut BoxDynVessel,
+            context: &VesselContext,
+            sim_t: f64,
+            sim_dt: f64,
+            mjd: f64,
+        );
         unsafe fn dyn_vessel_consume_buffered_key(
             vessel: &mut BoxDynVessel,
             context: &VesselContext,
@@ -254,6 +261,15 @@ fn dyn_vessel_pre_step(
     mjd: f64,
 ) {
     (**vessel).pre_step(context, sim_t, sim_dt, mjd);
+}
+fn dyn_vessel_post_step(
+    vessel: &mut Box<dyn OrbiterVessel>,
+    context: &VesselContext,
+    sim_t: f64,
+    sim_dt: f64,
+    mjd: f64,
+) {
+    (**vessel).post_step(context, sim_t, sim_dt, mjd);
 }
 unsafe fn dyn_vessel_consume_buffered_key(
     vessel: &mut BoxDynVessel,
