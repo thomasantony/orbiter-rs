@@ -1,4 +1,4 @@
-## Orbiter spacecraft addon development in Rust
+## Rust Bindings for Orbiter SDK
 
 This project is a proof of concept for creating a spacecraft addon for the [Orbiter](https://github.com/orbitersim/orbiter) spaceflight simulator in Rust. It uses the [cxx](https://www.cxx.rs) crate creating Rust bindings for the Orbiter SDK. 
 

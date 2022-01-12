@@ -1,3 +1,6 @@
+//! # Rust bindings for Orbiter SDK
+//!  
+
 use cxx::ExternType;
 
 mod macros;

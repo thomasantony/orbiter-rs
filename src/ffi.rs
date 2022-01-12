@@ -1,10 +1,7 @@
-/// This file is included directly from lib.rs as making it into a module created too many hassles
-///  
-/// Binding for OrbiterSDK's `VECTOR3`
-
+// This file is included directly from lib.rs as making it into a module created too many hassles
 use std::os::raw::c_char;
 
-/// Rust binding for `VECTOR3` type
+/// Rust binding for `VECTOR3`
 #[derive(Debug, Default)]
 #[repr(C)]
 pub struct VECTOR3([f64; 3]);
