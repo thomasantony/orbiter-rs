@@ -4,6 +4,7 @@
 
 use std::os::raw::c_char;
 
+/// Rust binding for `VECTOR3` type
 #[derive(Debug, Default)]
 #[repr(C)]
 pub struct VECTOR3([f64; 3]);
@@ -16,10 +17,10 @@ unsafe impl cxx::ExternType for VECTOR3 {
     type Id = cxx::type_id!("VECTOR3");
     type Kind = cxx::kind::Trivial;
 }
+/// Type alias for [VECTOR3](VECTOR3)
 pub type Vector3 = VECTOR3;
-
-// Define simpler pointer types as `usize`
-ctype_wrapper!(THRUSTER_HANDLE, usize, ThrusterHandle);
+ 
+ctype_wrapper!(THRUSTER_HANDLE, usize, ThrusterHandle); 
 ctype_wrapper!(PROPELLANT_HANDLE, usize, PropellantHandle);
 ctype_wrapper!(THGROUP_HANDLE, usize, ThrustGroupHandle);
 ctype_wrapper!(FILEHANDLE, usize, FileHandle);
@@ -30,72 +31,78 @@ ctype_wrapper!(DWORD, u32);
 #[repr(C)]
 #[derive(Debug, Default)]
 pub struct VESSELSTATUS {
-    /// position relative to rbody in ecliptic frame [<b>m</b>]
+    /// Position relative to rbody in ecliptic frame \[**m**\]
     pub rpos: VECTOR3,
 
-    /// velocity relative to rbody in ecliptic frame [<b>m/s</b>]
+    /// Velocity relative to rbody in ecliptic frame \[**m/s**\]
     pub rvel: VECTOR3,
 
-    /// rotation velocity about principal axes in ecliptic frame [<b>rad/s</b>]
+    /// Rotation velocity about principal axes in ecliptic frame \[**rad/s**\]
     pub vrot: VECTOR3,
 
-    /// vessel orientation against ecliptic frame
+    /// Vessel orientation against ecliptic frame
     pub arot: VECTOR3,
 
-    /// fuel level [0..1]
+    /// Fuel level. Between 0 and 1.
     pub fuel: f64,
 
-    /// main/retro engine setting [-1..1]
+    /// Main/retro engine setting. Between -1 and 1.
     pub eng_main: f64,
 
-    /// hover engine setting [0..1]
+    /// Hover engine setting. Between 0 and 1.
     pub eng_hovr: f64,
 
-    /// handle of reference body
+    /// Handle of reference body
     pub rbody: OBJHANDLE,
 
-    /// handle of docking or landing target
+    /// Handle of docking or landing target
     pub base: OBJHANDLE,
 
-    /// index of designated docking or landing port
+    /// Index of designated docking or landing port
     pub port: i32,
 
-    /// \brief flight status indicator
-    /// \note
-    /// - 0=active (freeflight)
-    /// - 1=inactive (landed)
+    /// Flight status indicator
+    /// 
+    /// - 0 = active (freeflight)
+    /// - 1 = inactive (landed)
     pub status: i32,
 
-    /// \brief additional vector parameters
-    /// \note
-    /// - vdata[0]: contains landing paramters if status == 1:
-    ///   vdata[0].x = longitude, vdata[0].y = latitude, vdata[0].z = heading of landed vessel
-    /// - vdata[1] - vdata[9]: not used
+    /// Additional vector parameters
+    /// 
+    /// - `vdata[0]`: contains landing parameters 
+    /// 
+    ///    if `status` is equal to 1, `vdata[0]` contains the longitude, latitude, and heading of landed vessel
+    /// 
+    /// - `vdata[1]` - `vdata[9]`: not used
     pub vdata: [VECTOR3; 10],
 
     /// additional floating point parameters (not used)
     pub fdata: [f64; 10],
 
-    /// \brief additional integer and bitflag parameters
+    /// Additional integer and bitflag parameters
     ///
-    /// \par flag[0]&1:
+    /// - `flag[0] & 1`:
     ///   - 0: ingore eng_main and eng_hovr entries, do not change thruster settings
-    ///   - 1: set THGROUP_MAIN and THGROUP_RETRO thruster groups from eng_main, and THGROUP_HOVER from eng_hovr.
-    /// \par flag[0]&2:
+    ///   - 1: set [ThrusterGroupType::Main] and [ThrusterGroupType::Retro] thruster groups from `eng_main`, and [ThrusterGroupType::Hover] from `eng_hovr`.
+    ///
+    /// - `flag[0] & 2`:
     ///   - 0: ignore fuel level, do not change fuel levels
     ///   - 1: set fuel level of first propellant resource from fuel
-    /// \note flag[1] - flag[9]: not used
+    /// 
+    /// - `flag[1]` - `flag[9]`: not used
     pub flag: [DWORD; 10],
 }
 unsafe impl cxx::ExternType for VESSELSTATUS {
     type Id = cxx::type_id!("VESSELSTATUS");
     type Kind = cxx::kind::Trivial;
 }
+/// Type alias for [VESSELSTATUS]
 pub type VesselStatus = VESSELSTATUS;
 
+#[doc(hidden)]
 #[cxx::bridge]
 pub mod ffi {
-
+    /// Thruster Group Type
     #[derive(Debug)]
     #[repr(usize)]
     enum THGROUP_TYPE {
@@ -134,7 +141,6 @@ pub mod ffi {
     }
     unsafe extern "C++" {
         include!("include/vessel_context.h");
-
         type BoxDynVessel = Box<dyn crate::OrbiterVessel>;
         type PtrBoxDynVessel = crate::PtrBoxDynVessel;
 
@@ -234,7 +240,7 @@ pub mod ffi {
 /// The following is a workaround for passing Boxed trait objects to C++ code
 /// and then calling trait methods on them
 /// 
-/// Based on https://github.com/dtolnay/cxx/pull/672
+/// Based on [https://github.com/dtolnay/cxx/pull/672](https://github.com/dtolnay/cxx/pull/672)
 unsafe impl ExternType for Box<dyn OrbiterVessel> {
     type Id = cxx::type_id!("BoxDynVessel");
     type Kind = cxx::kind::Trivial;
@@ -282,6 +288,7 @@ unsafe fn dyn_vessel_consume_buffered_key(
     (**vessel).consume_buffered_key(context, crate::Key::from(key.0 as u8), down, kstate)
 }
 
+#[doc(hidden)]
 pub use ffi::*;
-pub type ThrustGroupType = THGROUP_TYPE;
-
+/// Type alias for [THGROUP_TYPE]
+pub use ffi::THGROUP_TYPE as ThrusterGroupType;

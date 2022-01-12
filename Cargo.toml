@@ -14,3 +14,9 @@ cxx-build = "1.0.62"
 name = "Surveyor"
 path = "examples/surveyor.rs"
 crate-type = ["cdylib"]
+
+[features]
+docs = []
+
+[package.metadata.docs.rs]
+features = [ "docs" ] # This feature will be enabled during the docs.rs build

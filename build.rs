@@ -1,7 +1,6 @@
-// The OrbiterSDK detection code of this build script is from the emgre/orbiter-rs repository
-use std::env;
-use std::path::PathBuf;
+// The OrbiterSDK detection code for this build script is from the emgre/orbiter-rs repository
 
+#[cfg(not(feature = "docs"))]
 macro_rules! error {
     ($($args:tt)+) => ({
         let msg = format!($($args)*);
@@ -10,7 +9,14 @@ macro_rules! error {
     })
 }
 
+#[cfg(feature = "docs")]
+fn main() { }
+
+#[cfg(not(feature = "docs"))]
 fn main() {
+    use std::path::PathBuf;
+    use std::env;
+
     const ORBITER_DIR_ENV: &str = "ORBITER_DIR";
     const ORBITER_SDK_ENV: &str = "ORBITER_SDK";
 

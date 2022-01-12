@@ -1,16 +1,22 @@
-/// Helper macro for defining Vector3 objects
+/// Helper macro for defining [`Vector3`](super::VECTOR3) objects
 #[macro_export]
 macro_rules! _V {
     ($x:expr, $y:expr, $z:expr) => {
         &$crate::Vector3::new($x, $y, $z)
     };
 }
-/// Macro for defining ctype wrapper
-/// Adapted from https://github.com/dtolnay/cxx/issues/254#issuecomment-747860504 by Adrian Taylor
+/// Macro for defining ctype wrappers
+/// 
+/// Adapted from [comment](https://github.com/dtolnay/cxx/issues/254#issuecomment-747860504) by Adrian Taylor
 #[macro_export]
 macro_rules! ctype_wrapper {
     ($r:ident, $c:ty) => {
-        /// Newtype wrapper for a `$c`
+        
+        #[doc = "Newtype wrapper for `"]
+        #[doc = stringify!($r)]
+        #[doc = "` as a [`"]
+        #[doc = stringify!($c)]
+        #[doc = "`]"]
         #[derive(Debug, Eq, Clone, PartialEq, Hash, Default, Copy)]
         #[allow(non_camel_case_types)]
         #[repr(transparent)]
@@ -21,7 +27,11 @@ macro_rules! ctype_wrapper {
         }
     };
     ($r:ident, $c:ty, $nice_name:ident) => {
-        /// Newtype wrapper for a `$c`
+        #[doc = "Newtype wrapper for `"]
+        #[doc = stringify!($r)]
+        #[doc = "` as a ["]
+        #[doc = stringify!($c)]
+        #[doc = "]"]
         #[derive(Debug, Eq, Clone, PartialEq, Hash, Default, Copy)]
         #[allow(non_camel_case_types)]
         #[repr(transparent)]
@@ -30,16 +40,19 @@ macro_rules! ctype_wrapper {
             type Id = cxx::type_id!($r);
             type Kind = cxx::kind::Trivial;
         }
+        #[doc = "Type alias for ["]
+        #[doc = stringify!($r)]
+        #[doc = "]"]
         pub type $nice_name = $r;
     };
 }
 
 /// Helper macro for defining entry point into a Vessel addon
-/// Inspired by emgre's orbiter-rs 
-/// https://github.com/emgre/orbiter-rs/blob/107068c6e66564b9dff86c8b964515da9771a3af/orbiter/src/lib.rs#L37
+/// 
+/// Inspired by emgre's [orbiter-rs](https://github.com/emgre/orbiter-rs/blob/107068c6e66564b9dff86c8b964515da9771a3af/orbiter/src/lib.rs#L37)
 /// 
 /// The macro should contain two function blocks `init()` and `exit()`. The `init` function takes two arguments,
-/// and `OBJHANDLE` and an `i32` and returns an instance of a struct that implements the [`OrbiterVessel`] trait. This function is called each time a scenario containing the vessel is loaded.
+/// and [`OBJHANDLE`](super::OBJHANDLE) and an [`i32`] and returns an instance of a struct that implements the `[OrbiterVessel]` trait. This function is called each time a scenario containing the vessel is loaded.
 /// 
 /// The `exit` function is called at the end of a simulation session and can be used to perform cleanup functions.
 /// 
