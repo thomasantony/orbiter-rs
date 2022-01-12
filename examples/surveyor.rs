@@ -279,7 +279,7 @@ impl OrbiterVessel for Surveyor {
         context.SetCameraOffset(_V!(0.0, 0.8, 0.0));
         self.setup_meshes(context)
     }
-    fn pre_step(&mut self, context: &VesselContext, _sim_t: f64, _sim_dt: f64, _mjd: f64) {
+    fn on_pre_step(&mut self, context: &VesselContext, _sim_t: f64, _sim_dt: f64, _mjd: f64) {
         context.SetEmptyMass(self.calc_empty_mass(context));
 
         let pitch = context.GetThrusterGroupLevelByType(ThrustGroupType::AttPitchup)

@@ -260,7 +260,7 @@ fn dyn_vessel_pre_step(
     sim_dt: f64,
     mjd: f64,
 ) {
-    (**vessel).pre_step(context, sim_t, sim_dt, mjd);
+    (**vessel).on_pre_step(context, sim_t, sim_dt, mjd);
 }
 fn dyn_vessel_post_step(
     vessel: &mut Box<dyn OrbiterVessel>,
@@ -269,7 +269,7 @@ fn dyn_vessel_post_step(
     sim_dt: f64,
     mjd: f64,
 ) {
-    (**vessel).post_step(context, sim_t, sim_dt, mjd);
+    (**vessel).on_post_step(context, sim_t, sim_dt, mjd);
 }
 unsafe fn dyn_vessel_consume_buffered_key(
     vessel: &mut BoxDynVessel,
