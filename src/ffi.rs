@@ -27,7 +27,6 @@ ctype_wrapper!(OBJHANDLE, usize);
 ctype_wrapper!(DWORD, u32);
 
 /// Binding for OrbiterSDK's `VESSELSTATUS` struct
-#[allow(dead_code)]
 #[repr(C)]
 #[derive(Debug, Default)]
 pub struct VESSELSTATUS {
@@ -196,7 +195,11 @@ pub mod ffi {
         fn GetName(self: &VesselContext) -> &str;
         fn GetStatus(self: &VesselContext, status: &mut VESSELSTATUS);
         fn GetPropellantMass(self: &VesselContext, ph: PROPELLANT_HANDLE) -> f64;
-        fn GetThrusterGroupLevelByType(self: &VesselContext, thgroup_type: THGROUP_TYPE) -> f64;
+        
+        #[rust_name = "GetThrusterGroupLevelByType"]
+        fn GetThrusterGroupLevel(self: &VesselContext, thgroup_type: THGROUP_TYPE) -> f64;
+        #[rust_name = "GetThrusterGroupLevel"]
+        fn GetThrusterGroupLevel(self: &VesselContext, th: THGROUP_HANDLE) -> f64;
 
         /// Helper function for logging to the Orbiter debug log on-screen
         fn ODebug(s: &str);

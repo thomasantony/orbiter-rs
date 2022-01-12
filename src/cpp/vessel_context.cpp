@@ -57,10 +57,6 @@ THGROUP_HANDLE VesselContext::CreateThrusterGroup(rust::Slice<const THRUSTER_HAN
     return VESSEL4::CreateThrusterGroup((THRUSTER_HANDLE*)thrusters.data(), thrusters.size(), thgroup_type);
 }
 
-double VesselContext::GetThrusterGroupLevelByType(THGROUP_TYPE thgroup_type) const
-{
-    return VESSEL4::GetThrusterGroupLevel(thgroup_type);
-}
 rust::Str VesselContext::GetName() const
 {
     return rust::Str(VESSEL4::GetName());
