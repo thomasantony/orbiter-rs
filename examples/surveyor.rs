@@ -6,6 +6,7 @@ use orbiter_rs::{
     ODebug, oapi_create_vessel, OrbiterVessel, init_vessel, KeyStates, Key, FileHandle,
     PropellantHandle, ThrusterHandle, Vector3, VesselContext, VesselStatus, ThrusterGroupType, _V,
 };
+use lazy_static::lazy_static;
 
 const VERNIER_PROP_MASS: f64 = 70.98;
 const VERNIER_ISP: f64 = 3200.0;
@@ -33,6 +34,28 @@ const AMR_MASS: f64 = 3.82;
 
 const LEG_RAD: f64 = 1.5;
 const LEG_Z: f64 = -0.6;
+
+
+lazy_static! {
+    static ref THRUSTER1_POS: Vector3 = Vector3::new(0.0 * VERNIER_RAD, 1.0 * VERNIER_RAD, VERNIER_Z);
+    static ref THRUSTER2_POS: Vector3 = Vector3::new(
+        (60.0f64).to_radians().sin() * VERNIER_RAD,
+        -0.5 * VERNIER_RAD,
+        VERNIER_Z
+    );
+    static ref THRUSTER3_POS: Vector3 = Vector3::new(
+        -(60.0f64).to_radians().sin() * VERNIER_RAD,
+        -0.5 * VERNIER_RAD,
+        VERNIER_Z
+    );
+
+    static ref DIR_X_PLUS: Vector3 = Vector3::new(1., 0., 0.);
+    static ref DIR_X_MINUS: Vector3 = Vector3::new(-1., 0., 0.);
+    static ref DIR_Y_PLUS: Vector3 = Vector3::new(0., 1., 0.);
+    static ref DIR_Y_MINUS: Vector3 = Vector3::new(0., -1., 0.);
+    static ref DIR_Z_PLUS: Vector3 = Vector3::new(0., 0., 1.);
+    static ref DIR_Z_MINUS: Vector3 = Vector3::new(0., 0., 1.);
+}
 
 #[derive(Debug, PartialEq)]
 enum SurveyorState {
@@ -138,30 +161,22 @@ impl OrbiterVessel for Surveyor {
         self.ph_retro = context.CreatePropellantResource(RETRO_PROP_MASS);
 
         self.th_vernier.push(context.CreateThruster(
-            _V!(0.0 * VERNIER_RAD, 1.0 * VERNIER_RAD, VERNIER_Z),
-            _V!(0.0, 0.0, 1.0),
+            &THRUSTER1_POS,
+            &DIR_Z_PLUS,
             VERNIER_THRUST,
             self.ph_vernier,
             VERNIER_ISP,
         ));
         self.th_vernier.push(context.CreateThruster(
-            _V!(
-                (60.0f64).to_radians().sin() * VERNIER_RAD,
-                -0.5 * VERNIER_RAD,
-                VERNIER_Z
-            ),
-            _V!(0.0, 0.0, 1.0),
+            &THRUSTER2_POS,
+            &DIR_Z_PLUS,
             VERNIER_THRUST,
             self.ph_vernier,
             VERNIER_ISP,
         ));
         self.th_vernier.push(context.CreateThruster(
-            _V!(
-                (-60.0f64).to_radians().sin() * VERNIER_RAD,
-                -0.5 * VERNIER_RAD,
-                VERNIER_Z
-            ),
-            _V!(0.0, 0.0, 1.0),
+            &THRUSTER3_POS,
+            &DIR_Z_PLUS,
             VERNIER_THRUST,
             self.ph_vernier,
             VERNIER_ISP,
@@ -174,14 +189,14 @@ impl OrbiterVessel for Surveyor {
         // Roll (Leg1) jets
         self.th_rcs.push(context.CreateThruster(
             _V!(-RCS_SPACE, RCS_RAD, RCS_Z),
-            _V!(1.0, 0.0, 0.0),
+            & DIR_X_PLUS,
             RCS_THRUST,
             self.ph_rcs,
             RCS_ISP,
         ));
         self.th_rcs.push(context.CreateThruster(
             _V!(RCS_SPACE, RCS_RAD, RCS_Z),
-            _V!(-1.0, 0.0, 0.0),
+            & DIR_X_MINUS,
             RCS_THRUST,
             self.ph_rcs,
             RCS_ISP,

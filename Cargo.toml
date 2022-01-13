@@ -21,5 +21,8 @@ crate-type = ["cdylib"]
 [features]
 docs = []
 
+[dev-dependencies]
+lazy_static = "1.4.0"
+
 [package.metadata.docs.rs]
 features = [ "docs" ] # This feature will be enabled during the docs.rs build
