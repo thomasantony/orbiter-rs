@@ -2,6 +2,8 @@
 name = "orbiter-rs"
 version = "0.1.0"
 edition = "2021"
+description = "Rust bindings for the Orbiter spaceflight simulator SDK"
+license = "MIT"
 authors = ["Thomas Antony"]
 
 [dependencies]
