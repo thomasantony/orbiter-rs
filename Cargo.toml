@@ -5,6 +5,7 @@ edition = "2021"
 description = "Rust bindings for the Orbiter spaceflight simulator SDK"
 license = "MIT"
 authors = ["Thomas Antony"]
+repository = "https://github.com/thomasantony/orbiter-rs"
 
 [dependencies]
 cxx = "1.0.62"
