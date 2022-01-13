@@ -176,6 +176,7 @@ pub mod ffi {
         unsafe fn vessel_ovcInit(hvessel: OBJHANDLE, flightmodel: i32, box_vessel: BoxDynVessel) -> *mut VESSEL;
         unsafe fn vessel_ovcExit(vessel: *mut VESSEL);
 
+        /// Create new vessel using Orbiter SDK
         fn oapi_create_vessel(name: String, classname: String, status: &VESSELSTATUS) -> OBJHANDLE;
 
         // VESSEL API wrappers
@@ -222,7 +223,7 @@ pub mod ffi {
         #[rust_name = "GetThrusterGroupLevel"]
         fn GetThrusterGroupLevel(self: &VesselContext, th: THGROUP_HANDLE) -> f64;
 
-        /// Helper function for logging to the Orbiter debug log on-screen
+        /// Print message to lower-left corner of screen. For debugging purposes only!
         fn ODebug(s: &str);
     }
     extern "Rust" {
@@ -308,5 +309,8 @@ pub use ffi::VesselContext;
 
 #[doc(hidden)]
 pub use ffi::BoxDynVessel;
+
+pub use ffi::ODebug;
+pub use ffi::oapi_create_vessel;
 /// Type alias for [THGROUP_TYPE]
 pub use ffi::THGROUP_TYPE as ThrusterGroupType;

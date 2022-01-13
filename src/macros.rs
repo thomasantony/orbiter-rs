@@ -70,19 +70,19 @@ macro_rules! ctype_wrapper {
 macro_rules! init_vessel {
     (fn init($hvessel_ident:ident :OBJHANDLE, $flightmodel_ident:ident :i32) -> $spacecraft_type:ty $body_init:block fn exit() $body_exit:block) => {
         #[no_mangle]
-        pub extern "C" fn ovcInit (hvessel: $crate::OBJHANDLE, flightmodel: i32) -> *mut $crate::VESSEL
+        pub extern "C" fn ovcInit (hvessel: $crate::OBJHANDLE, flightmodel: i32) -> *mut $crate::ffi::VESSEL
         {
             let ($hvessel_ident, $flightmodel_ident) = (hvessel, flightmodel);
             let spacecraft: $spacecraft_type = {
                 $body_init
             };
-            unsafe { $crate::vessel_ovcInit(hvessel, flightmodel, Box::new(spacecraft)) }
+            unsafe { $crate::ffi::vessel_ovcInit(hvessel, flightmodel, Box::new(spacecraft)) }
         }
         #[no_mangle]
-        pub extern "C" fn ovcExit (vessel: *mut $crate::VESSEL)
+        pub extern "C" fn ovcExit (vessel: *mut $crate::ffi::VESSEL)
         {
             $body_exit
-            unsafe { $crate::vessel_ovcExit(vessel); }
+            unsafe { $crate::ffi::vessel_ovcExit(vessel); }
         }
     };
 }
