@@ -15,7 +15,7 @@ cxx-build = "1.0.62"
 
 [[example]]
 name = "Surveyor"
-path = "examples/surveyor.rs"
+path = "examples/Surveyor/surveyor.rs"
 crate-type = ["cdylib"]
 
 [features]

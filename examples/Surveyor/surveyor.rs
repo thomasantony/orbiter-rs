@@ -209,7 +209,7 @@ impl OrbiterVessel for Surveyor {
                 -0.5 * RCS_RAD,
                 RCS_Z - RCS_SPACE
             ),
-            _V!(0., 0., 1.),
+            &DIR_Z_PLUS,
             RCS_THRUST,
             self.ph_rcs,
             RCS_ISP,
@@ -220,7 +220,7 @@ impl OrbiterVessel for Surveyor {
                 -0.5 * RCS_RAD,
                 RCS_Z + RCS_SPACE
             ),
-            _V!(0., 0., -1.),
+            &DIR_Z_MINUS,
             RCS_THRUST,
             self.ph_rcs,
             RCS_ISP,
@@ -233,7 +233,7 @@ impl OrbiterVessel for Surveyor {
                 -0.5 * RCS_RAD,
                 RCS_Z - RCS_SPACE
             ),
-            _V!(0., 0., 1.),
+            &DIR_Z_PLUS,
             RCS_THRUST,
             self.ph_rcs,
             RCS_ISP,
@@ -244,7 +244,7 @@ impl OrbiterVessel for Surveyor {
                 -0.5 * RCS_RAD,
                 RCS_Z + RCS_SPACE
             ),
-            _V!(0., 0., -1.),
+            &DIR_Z_MINUS,
             RCS_THRUST,
             self.ph_rcs,
             RCS_ISP,
@@ -281,7 +281,7 @@ impl OrbiterVessel for Surveyor {
 
         self.th_retro = context.CreateThruster(
             _V!(0.0, 0.0, RETRO_Z),
-            _V!(0.0, 0.0, 1.0),
+            & DIR_Z_PLUS,
             RETRO_THRUST,
             self.ph_retro,
             RETRO_ISP,
