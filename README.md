@@ -24,7 +24,7 @@ init_vessel!(
 1. Download/Install Orbiter
 2. Install Visual Studio 2019
 3. Install Rust using `rustup` (https://rustup.rs)
-4. Install the win32 target by running `rustup add target i686-pc-windows-msvc`
+4. Install the win32 target by running `rustup target add i686-pc-windows-msvc`
 
 This addon has been tested with Rust 1.57.0 and Visual Studio 2019 Commuity Edition on Windows 10. Running `cargo build` should build the project generate a DLL file.
 
