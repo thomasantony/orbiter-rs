@@ -13,7 +13,7 @@ using std::unique_ptr;
 
 void ODebug(rust::String s)
 {
-    std::string _s(s.data(), s.length());
+    std::string _s(s.data(), min(s.length(), 254));
     sprintf(oapiDebugString(), _s.c_str());
 }
 OBJHANDLE oapi_create_vessel(rust::String name, rust::String classname, const VESSELSTATUS &status)
@@ -21,8 +21,9 @@ OBJHANDLE oapi_create_vessel(rust::String name, rust::String classname, const VE
     return oapiCreateVessel(name.c_str(), classname.c_str(), status);
 }
 
-VesselContext::VesselContext(OBJHANDLE hVessel, int flightmodel, BoxDynVessel& box_vessel)
-    : VESSEL4(hVessel, flightmodel), rust_spacecraft_(std::move(box_vessel))
+// VesselContext::VesselContext(OBJHANDLE hVessel, int flightmodel, BoxDynVessel& box_vessel)
+VesselContext::VesselContext(OBJHANDLE hVessel, int flightmodel, VesselInitFn fn)
+    : VESSEL4(hVessel, flightmodel), rust_init_fn_(fn)
 {
 }
 
@@ -67,6 +68,7 @@ OBJHANDLE VesselContext::GetSurfaceRef() const
 }
 void VesselContext::clbkSetClassCaps(FILEHANDLE cfg)
 {
+    rust_spacecraft_ = std::move(rust_init_fn_(*this));
     dyn_vessel_set_class_caps(rust_spacecraft_, *this, cfg);
 }
 
@@ -93,10 +95,15 @@ int VesselContext::clbkConsumeBufferedKey(DWORD key, bool down, char *kstate)
 // --------------------------------------------------------------
 // Vessel initialisation
 // --------------------------------------------------------------
-VESSEL *vessel_ovcInit(OBJHANDLE hvessel, int flightmodel, BoxDynVessel box_vessel)
+VESSEL *vessel_ovcInit(OBJHANDLE hvessel, int flightmodel, VesselInitFn fn)
 {
-    return new VesselContext(hvessel, flightmodel, box_vessel);
+    return new VesselContext(hvessel, flightmodel, fn);
 }
+
+// VESSEL *vessel_ovcInit(OBJHANDLE hvessel, int flightmodel, BoxDynVessel box_vessel)
+// {
+//     return new VesselContext(hvessel, flightmodel, box_vessel);
+// }
 
 // --------------------------------------------------------------
 // Vessel cleanup

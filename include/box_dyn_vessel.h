@@ -4,11 +4,12 @@
 class BoxDynVessel
 {
 public:
+    BoxDynVessel() noexcept;
     BoxDynVessel(BoxDynVessel &&) noexcept;
     ~BoxDynVessel() noexcept;
+    BoxDynVessel &operator=(BoxDynVessel &&other);
     using IsRelocatable = std::true_type;
-
-private:
+    private:
     std::array<std::uintptr_t, 2> repr;
 };
 using PtrBoxDynVessel = BoxDynVessel *;

@@ -199,7 +199,8 @@ pub mod ffi {
         type VESSELSTATUS = crate::VesselStatus;
         type VESSEL;
 
-        unsafe fn vessel_ovcInit(hvessel: OBJHANDLE, flightmodel: i32, box_vessel: BoxDynVessel) -> *mut VESSEL;
+        unsafe fn vessel_ovcInit(hvessel: OBJHANDLE, flightmodel: i32, init_fn: fn(Pin<&'static mut VesselContext>)->BoxDynVessel) -> *mut VESSEL;
+        // unsafe fn vessel_ovcInit(hvessel: OBJHANDLE, flightmodel: i32, box_vessel: BoxDynVessel) -> *mut VESSEL;
         unsafe fn vessel_ovcExit(vessel: *mut VESSEL);
 
         /// Create new vessel using Orbiter SDK
@@ -359,7 +360,11 @@ unsafe fn dyn_vessel_consume_buffered_key(
 }
 
 pub use ffi::VesselContext;
-
+impl std::fmt::Debug for VesselContext {
+    fn fmt(&self, fmt:&mut std::fmt::Formatter) -> std::fmt::Result {
+        fmt.debug_struct("VesselContext").finish()
+    }
+}
 #[doc(hidden)]
 pub use ffi::BoxDynVessel;
 

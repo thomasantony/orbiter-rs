@@ -68,21 +68,31 @@ macro_rules! ctype_wrapper {
 /// ```
 #[macro_export]
 macro_rules! init_vessel {
-    (fn init($hvessel_ident:ident :OBJHANDLE, $flightmodel_ident:ident :i32) -> $spacecraft_type:ty $body_init:block fn exit() $body_exit:block) => {
+    // (fn init($hvessel_ident:ident, $flightmodel_ident:ident) -> $spacecraft_type:ty $body_init:block fn init2($vessel2_ident:ident) -> $spacecraft_type2:ty $init2_block:block fn exit() $body_exit:block) => {
+    (fn init2($vessel2_ident:ident) $init2_block:block fn exit() $body_exit:block) => {
         #[no_mangle]
         pub extern "C" fn ovcInit (hvessel: $crate::OBJHANDLE, flightmodel: i32) -> *mut $crate::ffi::VESSEL
         {
-            let ($hvessel_ident, $flightmodel_ident) = (hvessel, flightmodel);
-            let spacecraft: $spacecraft_type = {
-                $body_init
-            };
-            unsafe { $crate::ffi::vessel_ovcInit(hvessel, flightmodel, Box::new(spacecraft)) }
+            // let ($hvessel_ident, $flightmodel_ident) = (hvessel, flightmodel);
+            // let spacecraft: $spacecraft_type = {
+            //     $body_init
+            // };
+            // unsafe { $crate::ffi::vessel_ovcInit(hvessel, flightmodel, Box::new(spacecraft)) }
+            unsafe { $crate::ffi::vessel_ovcInit(hvessel, flightmodel, vessel_init) }
         }
         #[no_mangle]
         pub extern "C" fn ovcExit (vessel: *mut $crate::ffi::VESSEL)
         {
             $body_exit
             unsafe { $crate::ffi::vessel_ovcExit(vessel); }
+        }
+        pub fn vessel_init<'a> (vessel: std::pin::Pin<&'static mut $crate::ffi::VesselContext>) -> Box<dyn $crate::OrbiterVessel + 'static>
+        {
+            let $vessel2_ident = unsafe { vessel.get_unchecked_mut() };
+            let spacecraft = {
+                $init2_block
+            };
+            return Box::new(spacecraft);
         }
     };
 }

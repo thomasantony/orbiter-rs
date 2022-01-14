@@ -7,11 +7,15 @@
 void ODebug(rust::String);
 
 using Vector3 = VECTOR3;
+class VesselContext;
+using VesselInitFn = rust::Fn<BoxDynVessel(VesselContext &)>;
 
-// Wrapper for oapiCreateVessel
-OBJHANDLE oapi_create_vessel(rust::String name, rust::String classname, const VESSELSTATUS& status);
-VESSEL *vessel_ovcInit(OBJHANDLE hvessel, int flightmodel, BoxDynVessel box_vessel);
+    // Wrapper for oapiCreateVessel
+    OBJHANDLE oapi_create_vessel(rust::String name, rust::String classname, const VESSELSTATUS &status);
+// VESSEL *vessel_ovcInit(OBJHANDLE hvessel, int flightmodel, BoxDynVessel box_vessel);
+VESSEL *vessel_ovcInit(OBJHANDLE hvessel, int flightmodel, VesselInitFn fn);
 void vessel_ovcExit(VESSEL *vessel);
+
 
 // ==============================================================
 // Spacecraft class interface
@@ -19,7 +23,8 @@ void vessel_ovcExit(VESSEL *vessel);
 class VesselContext : public VESSEL4
 {
 public:
-    VesselContext(OBJHANDLE hVessel, int flightmodel, BoxDynVessel& box_vessel);
+    // VesselContext(OBJHANDLE hVessel, int flightmodel, BoxDynVessel& box_vessel);
+    VesselContext(OBJHANDLE hVessel, int flightmodel, VesselInitFn fn);
     ~VesselContext();
     void clbkSetClassCaps(FILEHANDLE cfg);
     void clbkPreStep(double SimT, double SimDT, double MJD);
@@ -38,4 +43,6 @@ public:
     OBJHANDLE GetSurfaceRef() const;
 private:
     BoxDynVessel rust_spacecraft_;
+    VesselInitFn rust_init_fn_;
 };
+BoxDynVessel vessel_init(VesselContext& vessel);
