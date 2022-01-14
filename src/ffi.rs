@@ -111,6 +111,23 @@ pub type VesselStatus = VESSELSTATUS;
 #[doc(hidden)]
 #[cxx::bridge]
 pub mod ffi {
+    /// Reference Frame
+    #[derive(Debug)]
+    #[repr(usize)]
+    enum REFFRAME {
+        /// Global (ecliptic) frame
+        #[cxx_name = "FRAME_GLOBAL"]
+        Global,
+        /// local object frame
+        #[cxx_name = "FRAME_LOCAL"]
+        Local,
+        /// local reference object frame
+        #[cxx_name = "FRAME_REFLOCAL"]
+        RefLocal,
+        /// local horizon frame
+        #[cxx_name = "FRAME_HORIZON"]
+        Horizon,
+    }
     /// Thruster Group Type
     #[derive(Debug)]
     #[repr(usize)]
@@ -180,6 +197,8 @@ pub mod ffi {
         type OBJHANDLE = crate::OBJHANDLE;
         type DWORD = crate::DWORD;
         type FILEHANDLE = crate::FILEHANDLE;
+
+        type REFFRAME;
         type THGROUP_TYPE;
 
         type VESSELSTATUS = crate::VesselStatus;
@@ -232,7 +251,7 @@ pub mod ffi {
         fn GetPropellantMass(self: &VesselContext, ph: PROPELLANT_HANDLE) -> f64;
         /// Get angular velocity (in rad/s) of the spacecraft around its principal axes and store it in `a_vel`
         fn GetAngularVel(self: &VesselContext, a_vel: &mut VECTOR3);
-
+        fn GetAirspeedVector(self: &VesselContext, ref_frame: REFFRAME, airspeed: &mut VECTOR3) -> bool;
         #[rust_name = "GetThrusterGroupLevelByType"]
         fn GetThrusterGroupLevel(self: &VesselContext, thgroup_type: THGROUP_TYPE) -> f64;
         #[rust_name = "GetThrusterGroupLevel"]
@@ -329,3 +348,4 @@ pub use ffi::ODebug;
 pub use ffi::oapi_create_vessel;
 /// Type alias for [THGROUP_TYPE]
 pub use ffi::THGROUP_TYPE as ThrusterGroupType;
+pub use ffi::REFFRAME as ReferenceFrame;
