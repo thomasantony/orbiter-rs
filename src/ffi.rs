@@ -191,6 +191,7 @@ pub mod ffi {
         fn SetTouchdownPoints(self: &VesselContext, pt1: &VECTOR3, pt2: &VECTOR3, pt3: &VECTOR3);
         fn SetThrusterDir(self: &VesselContext, th: THRUSTER_HANDLE, dir: &VECTOR3);
         fn SetThrusterLevel(self: &VesselContext, th: THRUSTER_HANDLE, level: f64);
+        fn SetThrusterLevel_SingleStep(self: &VesselContext, th: THRUSTER_HANDLE, level: f64);
 
         fn AddMesh(self: &VesselContext, mesh_name: String);
         fn AddMeshWithOffset(self: &VesselContext, mesh_name: String, ofs: &VECTOR3);
