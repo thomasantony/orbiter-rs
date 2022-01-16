@@ -5,6 +5,7 @@ use std::os::raw::c_char;
 #[derive(Debug, Default)]
 #[repr(C)]
 pub struct VECTOR3([f64; 3]);
+
 impl VECTOR3 {
     pub fn new(x: f64, y: f64, z: f64) -> Self {
         Self([x, y, z])
@@ -54,6 +55,12 @@ impl VECTOR3 {
         self / self.length()
     }
 }
+/// Type alias for [VECTOR3](VECTOR3)
+pub type Vector3 = VECTOR3;
+unsafe impl cxx::ExternType for VECTOR3 {
+    type Id = cxx::type_id!("VECTOR3");
+    type Kind = cxx::kind::Trivial;
+}
 impl std::ops::Neg for Vector3 {
     type Output = Self;
     fn neg(self) -> Self::Output
@@ -62,6 +69,14 @@ impl std::ops::Neg for Vector3 {
     }
 }
 /// Scalar multiplication for `Vector3`
+impl std::ops::Mul<f64> for Vector3 {
+    type Output = Vector3;
+    fn mul(self, rhs: f64) -> Self::Output
+    {
+        V!(self.x()*rhs, self.y()*rhs, self.z()*rhs)
+    }
+}
+/// Scalar multiplication for `&Vector3`
 impl std::ops::Mul<f64> for &Vector3 {
     type Output = Vector3;
     fn mul(self, rhs: f64) -> Self::Output
@@ -70,6 +85,14 @@ impl std::ops::Mul<f64> for &Vector3 {
     }
 }
 /// Scalar division for `Vector3`
+impl std::ops::Div<f64> for Vector3 {
+    type Output = Vector3;
+    fn div(self, rhs: f64) -> Self::Output
+    {
+        V!(self.x()/rhs, self.y()/rhs, self.z()/rhs)
+    }
+}
+/// Scalar division for `&Vector3`
 impl std::ops::Div<f64> for &Vector3 {
     type Output = Vector3;
     fn div(self, rhs: f64) -> Self::Output
@@ -77,13 +100,6 @@ impl std::ops::Div<f64> for &Vector3 {
         V!(self.x()/rhs, self.y()/rhs, self.z()/rhs)
     }
 }
-
-unsafe impl cxx::ExternType for VECTOR3 {
-    type Id = cxx::type_id!("VECTOR3");
-    type Kind = cxx::kind::Trivial;
-}
-/// Type alias for [VECTOR3](VECTOR3)
-pub type Vector3 = VECTOR3;
  
 ctype_wrapper!(THRUSTER_HANDLE, usize, ThrusterHandle); 
 ctype_wrapper!(PROPELLANT_HANDLE, usize, PropellantHandle);
