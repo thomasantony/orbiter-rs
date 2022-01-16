@@ -68,6 +68,34 @@ impl std::ops::Neg for Vector3 {
         V!(-self.x(), -self.y(), -self.z())
     }
 }
+/// Implement addition operator for `Vector3`
+impl std::ops::Add for Vector3 {
+    type Output = Self;
+    fn add(self, other: Self) -> Self::Output {
+        V!(self.x() + other.x(), self.y() + other.y(), self.z() + other.z())
+    }
+}
+/// Implement subtraction operator for `Vector3`
+impl std::ops::Sub for Vector3 {
+    type Output = Self;
+    fn sub(self, other: Self) -> Self::Output {
+        V!(self.x() - other.x(), self.y() - other.y(), self.z() - other.z())
+    }
+}
+/// Implement addition operator for `Vector3`
+impl std::ops::Add<&Vector3> for Vector3 {
+    type Output = Self;
+    fn add(self, other: &Self) -> Self::Output {
+        V!(self.x() + other.x(), self.y() + other.y(), self.z() + other.z())
+    }
+}
+/// Implement subtraction operator for `Vector3`
+impl std::ops::Sub<&Vector3> for Vector3 {
+    type Output = Self;
+    fn sub(self, other: &Self) -> Self::Output {
+        V!(self.x() - other.x(), self.y() - other.y(), self.z() - other.z())
+    }
+}
 /// Scalar multiplication for `Vector3`
 impl std::ops::Mul<f64> for Vector3 {
     type Output = Vector3;
