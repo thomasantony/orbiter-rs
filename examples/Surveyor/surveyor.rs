@@ -4,7 +4,7 @@
 /// 
 use orbiter_rs::{
     ODebug, oapi_create_vessel, OrbiterVessel, init_vessel, KeyStates, Key, FileHandle,
-    PropellantHandle, ThrusterHandle, Vector3, VesselContext, VesselStatus, ThrusterGroupType, _V,
+    PropellantHandle, ThrusterHandle, Vector3, VesselContext, VesselStatus, ThrusterGroupType, V,
 };
 use lazy_static::lazy_static;
 
@@ -127,11 +127,11 @@ impl Surveyor {
         match self.vehicle_state {
             BeforeRetroIgnition => {
                 self.vehicle_state = RetroFiring;
-                self.spawn_object(context, "Surveyor_AMR", "-AMR", _V!(0., 0., -0.6));
+                self.spawn_object(context, "Surveyor_AMR", "-AMR", &V!(0., 0., -0.6));
             }
             RetroFiring => {
                 self.vehicle_state = AfterRetro;
-                self.spawn_object(context, "Surveyor_Retro", "-Retro", _V!(0., 0., -0.5));
+                self.spawn_object(context, "Surveyor_Retro", "-Retro", &V!(0., 0., -0.5));
             }
             _ => {}
         }
@@ -141,15 +141,15 @@ impl Surveyor {
 impl OrbiterVessel for Surveyor {
     fn set_class_caps(&mut self, context: &VesselContext, _cfg: FileHandle) {
         context.SetSize(1.0);
-        context.SetPMI(_V!(0.50, 0.50, 0.50));
+        context.SetPMI(&V!(0.50, 0.50, 0.50));
         context.SetTouchdownPoints(
-            _V!(0.0, LEG_RAD, LEG_Z),
-            _V!(
+            &V!(0.0, LEG_RAD, LEG_Z),
+            &V!(
                 (60.0f64).to_radians().sin() * LEG_RAD,
                 -0.5 * LEG_RAD,
                 LEG_Z
             ),
-            _V!(
+            &V!(
                 -(60.0f64).to_radians().sin() * LEG_RAD,
                 -0.5 * LEG_RAD,
                 LEG_Z
@@ -188,14 +188,14 @@ impl OrbiterVessel for Surveyor {
 
         // Roll (Leg1) jets
         self.th_rcs.push(context.CreateThruster(
-            _V!(-RCS_SPACE, RCS_RAD, RCS_Z),
+            &V!(-RCS_SPACE, RCS_RAD, RCS_Z),
             & DIR_X_PLUS,
             RCS_THRUST,
             self.ph_rcs,
             RCS_ISP,
         ));
         self.th_rcs.push(context.CreateThruster(
-            _V!(RCS_SPACE, RCS_RAD, RCS_Z),
+            &V!(RCS_SPACE, RCS_RAD, RCS_Z),
             & DIR_X_MINUS,
             RCS_THRUST,
             self.ph_rcs,
@@ -204,7 +204,7 @@ impl OrbiterVessel for Surveyor {
 
         // Leg2 jets
         self.th_rcs.push(context.CreateThruster(
-            _V!(
+            &V!(
                 (60.0f64).to_radians().sin() * RCS_RAD,
                 -0.5 * RCS_RAD,
                 RCS_Z - RCS_SPACE
@@ -215,7 +215,7 @@ impl OrbiterVessel for Surveyor {
             RCS_ISP,
         ));
         self.th_rcs.push(context.CreateThruster(
-            _V!(
+            &V!(
                 (60.0f64).to_radians().sin() * RCS_RAD,
                 -0.5 * RCS_RAD,
                 RCS_Z + RCS_SPACE
@@ -228,7 +228,7 @@ impl OrbiterVessel for Surveyor {
 
         // Leg3 jets
         self.th_rcs.push(context.CreateThruster(
-            _V!(
+            &V!(
                 -(60.0f64).to_radians().sin() * RCS_RAD,
                 -0.5 * RCS_RAD,
                 RCS_Z - RCS_SPACE
@@ -239,7 +239,7 @@ impl OrbiterVessel for Surveyor {
             RCS_ISP,
         ));
         self.th_rcs.push(context.CreateThruster(
-            _V!(
+            &V!(
                 -(60.0f64).to_radians().sin() * RCS_RAD,
                 -0.5 * RCS_RAD,
                 RCS_Z + RCS_SPACE
@@ -280,7 +280,7 @@ impl OrbiterVessel for Surveyor {
         }
 
         self.th_retro = context.CreateThruster(
-            _V!(0.0, 0.0, RETRO_Z),
+            &V!(0.0, 0.0, RETRO_Z),
             & DIR_Z_PLUS,
             RETRO_THRUST,
             self.ph_retro,
@@ -291,7 +291,7 @@ impl OrbiterVessel for Surveyor {
         context.SetEmptyMass(LANDER_EMPTY_MASS);
 
         // camera parameters
-        context.SetCameraOffset(_V!(0.0, 0.8, 0.0));
+        context.SetCameraOffset(&V!(0.0, 0.8, 0.0));
         self.setup_meshes(context)
     }
     fn on_pre_step(&mut self, context: &VesselContext, _sim_t: f64, _sim_dt: f64, _mjd: f64) {
@@ -307,15 +307,15 @@ impl OrbiterVessel for Surveyor {
         // Differential thrusting for attitude control
         context.SetThrusterDir(
             self.th_vernier[0],
-            _V!(5.0f64.to_radians().sin() * roll, 0.0, 1.0),
+            &V!(5.0f64.to_radians().sin() * roll, 0.0, 1.0),
         ); // Roll using the 5 degree offset
         context.SetThrusterDir(
             self.th_vernier[1],
-            _V!(0.0, 0.0, 1.0 + 0.05 * (pitch - yaw)),
+            &V!(0.0, 0.0, 1.0 + 0.05 * (pitch - yaw)),
         );
         context.SetThrusterDir(
             self.th_vernier[2],
-            _V!(0.0, 0.0, 1.0 + 0.05 * (pitch + yaw)),
+            &V!(0.0, 0.0, 1.0 + 0.05 * (pitch + yaw)),
         );
 
         if self.vehicle_state == SurveyorState::RetroFiring

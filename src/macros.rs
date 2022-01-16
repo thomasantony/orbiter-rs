@@ -1,8 +1,8 @@
 /// Helper macro for defining [`Vector3`](super::VECTOR3) objects
 #[macro_export]
-macro_rules! _V {
+macro_rules! V {
     ($x:expr, $y:expr, $z:expr) => {
-        &$crate::Vector3::new($x, $y, $z)
+        $crate::Vector3::new($x, $y, $z)
     };
 }
 /// Macro for defining ctype wrappers
