@@ -43,6 +43,16 @@ impl VECTOR3 {
             a1*b2 - a2*b1
         )
     }
+    /// Computes the length of the vector
+    pub fn length(&self) -> f64
+    {
+        (self.x() * self.x() + self.y() * self.y() + self.z() * self.z()).sqrt()
+    }
+    /// Computes the unit vector in the direction of this vector
+    pub fn unit(&self) -> Self
+    {
+        self / self.length()
+    }
 }
 impl std::ops::Neg for Vector3 {
     type Output = Self;
