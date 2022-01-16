@@ -44,6 +44,14 @@ impl VECTOR3 {
         )
     }
 }
+impl std::ops::Neg for Vector3 {
+    type Output = Self;
+    fn neg(self) -> Self::Output
+    {
+        V!(-self.x(), -self.y(), -self.z())
+    }
+}
+
 unsafe impl cxx::ExternType for VECTOR3 {
     type Id = cxx::type_id!("VECTOR3");
     type Kind = cxx::kind::Trivial;
