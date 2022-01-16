@@ -9,17 +9,39 @@ impl VECTOR3 {
     pub fn new(x: f64, y: f64, z: f64) -> Self {
         Self([x, y, z])
     }
+    /// Returns the `x` coordinate of the vector
+    #[inline(always)]
     pub fn x(&self) -> f64
     {
         self.0[0]
     }
+    /// Returns the `y` coordinate of the vector
+    #[inline(always)]
     pub fn y(&self) -> f64
     {
         self.0[1]
     }
+    /// Returns the `z` coordinate of the vector
+    #[inline(always)]
     pub fn z(&self) -> f64
     {
         self.0[2]
+    }
+    /// Computes the dot product with `other`
+    pub fn dot(&self, other: &Vector3) -> f64
+    {
+        self.x() * other.x() + self.y() * other.y() + self.z() * other.z()
+    }
+    /// Computes cross product with `other`
+    pub fn cross(&self, other: &Vector3) -> Vector3
+    {
+        let [a1, a2, a3] = self.0;
+        let [b1, b2, b3] = other.0;
+        V!(
+            a2*b3 - a3*b2,
+            a3*b1 - a1*b3,
+            a1*b2 - a2*b1
+        )
     }
 }
 unsafe impl cxx::ExternType for VECTOR3 {
