@@ -51,6 +51,22 @@ impl std::ops::Neg for Vector3 {
         V!(-self.x(), -self.y(), -self.z())
     }
 }
+/// Scalar multiplication for `Vector3`
+impl std::ops::Mul<f64> for &Vector3 {
+    type Output = Vector3;
+    fn mul(self, rhs: f64) -> Self::Output
+    {
+        V!(self.x()*rhs, self.y()*rhs, self.z()*rhs)
+    }
+}
+/// Scalar division for `Vector3`
+impl std::ops::Div<f64> for &Vector3 {
+    type Output = Vector3;
+    fn div(self, rhs: f64) -> Self::Output
+    {
+        V!(self.x()/rhs, self.y()/rhs, self.z()/rhs)
+    }
+}
 
 unsafe impl cxx::ExternType for VECTOR3 {
     type Id = cxx::type_id!("VECTOR3");
