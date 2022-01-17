@@ -35,6 +35,7 @@ public:
     THGROUP_HANDLE CreateThrusterGroup(rust::Slice<const THRUSTER_HANDLE> thrusters, THGROUP_TYPE thgroup_type) const;
 
     rust::Str GetName() const;
+    double GetAltitudeAboveGround();
 private:
     BoxDynVessel rust_spacecraft_;
 };

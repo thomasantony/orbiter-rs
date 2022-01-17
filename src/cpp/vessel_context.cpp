@@ -61,6 +61,11 @@ rust::Str VesselContext::GetName() const
 {
     return rust::Str(VESSEL4::GetName());
 }
+double VesselContext::GetAltitudeAboveGround()
+{
+    int reslvl;
+    return VESSEL4::GetAltitude(ALTMODE_GROUND, &reslvl);
+}
 
 void VesselContext::clbkSetClassCaps(FILEHANDLE cfg)
 {

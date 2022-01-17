@@ -163,6 +163,18 @@ pub mod ffi {
         #[cxx_name = "THGROUP_USER"]
         User = 0x40,
     }
+    /// Altitude Mode
+    #[derive(Debug)]
+    #[repr(usize)]
+    enum AltitudeMode
+    {
+        /// Altitude over mean radius
+        #[cxx_name = "ALTMODE_MEANRAD"]
+        MeanRadius,
+        /// Altitude over ground
+        #[cxx_name = "ALTMODE_GROUND"]
+        Ground
+    }
     unsafe extern "C++" {
         include!("include/vessel_context.h");
         #[doc(hidden)]
@@ -182,6 +194,7 @@ pub mod ffi {
 
         type REFFRAME;
         type THGROUP_TYPE;
+        type AltitudeMode;
 
         type VESSELSTATUS = crate::VesselStatus;
         type VESSEL;
@@ -240,7 +253,7 @@ pub mod ffi {
         fn GetThrusterGroupLevel(self: &VesselContext, thgroup_type: THGROUP_TYPE) -> f64;
         #[rust_name = "GetThrusterGroupLevel"]
         fn GetThrusterGroupLevel(self: &VesselContext, th: THGROUP_HANDLE) -> f64;
-
+        fn GetAltitudeAboveGround(self: Pin<&mut VesselContext>) -> f64;
         /// Print message to lower-left corner of screen. For debugging purposes only!
         fn ODebug(s: String);
     }
