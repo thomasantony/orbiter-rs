@@ -234,6 +234,8 @@ pub mod ffi {
         /// Get angular velocity (in rad/s) of the spacecraft around its principal axes and store it in `a_vel`
         fn GetAngularVel(self: &VesselContext, a_vel: &mut VECTOR3);
         fn GetAirspeedVector(self: &VesselContext, ref_frame: REFFRAME, airspeed: &mut VECTOR3) -> bool;
+        fn GetThrustVector(self: &VesselContext, thrust_vec: &mut VECTOR3) -> bool;
+        fn GetTotalPropellantMass(self: &VesselContext) -> f64;
         #[rust_name = "GetThrusterGroupLevelByType"]
         fn GetThrusterGroupLevel(self: &VesselContext, thgroup_type: THGROUP_TYPE) -> f64;
         #[rust_name = "GetThrusterGroupLevel"]
