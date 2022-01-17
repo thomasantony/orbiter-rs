@@ -208,7 +208,11 @@ pub mod ffi {
         // VESSEL API wrappers
         // Some of these have direct counterparts in vessel_context.h
         // Others are using the default implementations from VesselAPI.h (through the VESSEL4 super-class)
+
+        /// Performs a transformation from local vessel coordinates to the ecliptic frame centered at the vessel's reference body
         fn Local2Rel(self: &VesselContext, local: &VECTOR3, rel: &mut VECTOR3);
+        /// Performs a transformation from global (ecliptic) to local vessel coordinates
+        fn Global2Local(self: &VesselContext, global: &VECTOR3, local: &mut VECTOR3);
 
         fn SetSize(self: &VesselContext, size: f64);
         fn SetPMI(self: &VesselContext, pmi: &VECTOR3);
@@ -253,7 +257,23 @@ pub mod ffi {
         fn GetThrusterGroupLevel(self: &VesselContext, thgroup_type: THGROUP_TYPE) -> f64;
         #[rust_name = "GetThrusterGroupLevel"]
         fn GetThrusterGroupLevel(self: &VesselContext, th: THGROUP_HANDLE) -> f64;
-        fn GetAltitudeAboveGround(self: Pin<&mut VesselContext>) -> f64;
+        /// Returns a flag indicating contact with a planetary surface
+        fn GroundContact(self: &VesselContext) -> bool;
+
+        /// Returns a handle to the surface reference object (planet or moon)
+        fn GetSurfaceRef(self: &VesselContext) -> OBJHANDLE;
+
+        /// Returns the elevation of the surface at the vessel's current longitude/latitude above the reference radius
+        fn GetSurfaceElevation(self: &VesselContext) -> f64;
+
+        /// Returns altitude above mean ellipsoid
+        fn GetAltitude(self: &VesselContext) -> f64;
+
+        /// Returns the vessel's current velocity relative to another object
+        /// 
+        /// Results are returned in the ecliptic frame (ecliptic and equinox of J2000.0). 
+        fn GetRelativeVel(self: &VesselContext, href: OBJHANDLE, rel_vel: &mut VECTOR3);
+
         /// Print message to lower-left corner of screen. For debugging purposes only!
         fn ODebug(s: String);
     }
