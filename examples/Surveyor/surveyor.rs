@@ -3,7 +3,7 @@
 /// This is a port of Surveyor.cpp to Rust
 /// 
 use orbiter_rs::{
-    ODebug, oapi_create_vessel, OrbiterVessel, init_vessel, KeyStates, Key, FileHandle,
+    debug_string, oapi_create_vessel, OrbiterVessel, init_vessel, KeyStates, Key, FileHandle,
     PropellantHandle, ThrusterHandle, Vector3, VesselContext, VesselStatus, ThrusterGroupType, V,
 };
 use lazy_static::lazy_static;
@@ -332,7 +332,7 @@ impl OrbiterVessel for Surveyor {
             //Relight the retro if needed
             context.SetThrusterLevel(self.th_retro, 1.0);
         }
-        ODebug(&format!("Pitch: {}, Yaw: {}, Roll: {}", pitch, yaw, roll));
+        debug_string!("Pitch: {}, Yaw: {}, Roll: {}", pitch, yaw, roll);
     }
     fn consume_buffered_key(
         &mut self,

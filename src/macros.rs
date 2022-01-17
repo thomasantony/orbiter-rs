@@ -86,3 +86,34 @@ macro_rules! init_vessel {
         }
     };
 }
+
+/// Displays a string in the lower left corner of the viewport.
+///
+/// This macro uses the exact same parameters as the [`format!`] macro of the
+/// standard library.
+///
+/// Due to how Orbiter handles this string, its length is limited to 255 characters.
+/// The Rust code truncates the formatted string to 255 characters to make sure that
+/// no buffer overflow occurs.
+///
+/// **This function should only be used for debugging purposes.**
+///
+/// # Examples
+///
+/// ```
+/// use orbiter_rs::debug_string;
+///
+/// let some_value = 42;
+/// debug_string!("This is my value: {}", 42);
+/// ```
+///
+/// [`format!`]: https://doc.rust-lang.org/std/fmt/index.html
+/// 
+/// Macro adapted from Émile Grégoire's version at
+/// https://github.com/emgre/orbiter-rs/blob/107068c6e66564b9dff86c8b964515da9771a3af/orbiter/src/lib.rs#L96
+#[macro_export]
+macro_rules! debug_string {
+    ($($args:tt)+) => {
+        $crate::ODebug(format!($($args)*));
+    }
+}

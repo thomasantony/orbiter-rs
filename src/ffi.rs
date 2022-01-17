@@ -4,7 +4,7 @@ use std::os::raw::c_char;
 /// Rust binding for `VECTOR3`
 #[derive(Debug, Default)]
 #[repr(C)]
-pub struct VECTOR3([f64; 3]);
+pub struct VECTOR3(pub [f64; 3]);
 
 impl VECTOR3 {
     pub fn new(x: f64, y: f64, z: f64) -> Self {
@@ -93,6 +93,13 @@ impl std::ops::Add<&Vector3> for Vector3 {
 impl std::ops::Sub<&Vector3> for Vector3 {
     type Output = Self;
     fn sub(self, other: &Self) -> Self::Output {
+        V!(self.x() - other.x(), self.y() - other.y(), self.z() - other.z())
+    }
+}
+/// Implement subtraction operator for `Vector3`
+impl std::ops::Sub<Vector3> for &Vector3 {
+    type Output = Vector3;
+    fn sub(self, other: Vector3) -> Self::Output {
         V!(self.x() - other.x(), self.y() - other.y(), self.z() - other.z())
     }
 }
@@ -358,7 +365,7 @@ pub mod ffi {
         fn GetThrusterGroupLevel(self: &VesselContext, th: THGROUP_HANDLE) -> f64;
 
         /// Print message to lower-left corner of screen. For debugging purposes only!
-        fn ODebug(s: &str);
+        fn ODebug(s: String);
     }
     extern "Rust" {
         fn dyn_vessel_set_class_caps(vessel: &mut BoxDynVessel, context: &VesselContext, cfg: FILEHANDLE);
