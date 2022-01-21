@@ -213,6 +213,8 @@ pub mod ffi {
         fn Local2Rel(self: &VesselContext, local: &VECTOR3, rel: &mut VECTOR3);
         /// Performs a transformation from global (ecliptic) to local vessel coordinates
         fn Global2Local(self: &VesselContext, global: &VECTOR3, local: &mut VECTOR3);
+        /// Performs a transformation from local vessel to global (ecliptic) coordinates
+        fn Local2Global(self: &VesselContext, local: &VECTOR3, global: &mut VECTOR3);
 
         fn SetSize(self: &VesselContext, size: f64);
         fn SetPMI(self: &VesselContext, pmi: &VECTOR3);
