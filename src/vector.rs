@@ -1,5 +1,5 @@
 use crate::V;
-#[derive(Debug, Default)]
+#[derive(Debug, Default, PartialEq)]
 #[repr(C)]
 pub struct Vector3(pub [f64; 3]);
 
