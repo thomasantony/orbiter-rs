@@ -69,7 +69,7 @@ macro_rules! ctype_wrapper {
 #[macro_export]
 macro_rules! init_vessel {
     // (fn init($hvessel_ident:ident, $flightmodel_ident:ident) -> $spacecraft_type:ty $body_init:block fn init2($vessel2_ident:ident) -> $spacecraft_type2:ty $init2_block:block fn exit() $body_exit:block) => {
-    (fn init2($vessel2_ident:ident) $init2_block:block fn exit() $body_exit:block) => {
+    (fn init($vessel2_ident:ident) $init2_block:block fn exit() $body_exit:block) => {
         #[no_mangle]
         pub extern "C" fn ovcInit (hvessel: $crate::OBJHANDLE, flightmodel: i32) -> *mut $crate::ffi::VESSEL
         {
@@ -88,7 +88,7 @@ macro_rules! init_vessel {
         }
         pub fn vessel_init<'a> (vessel: std::pin::Pin<&'static mut $crate::ffi::VesselContext>) -> Box<dyn $crate::OrbiterVessel + 'static>
         {
-            let $vessel2_ident = unsafe { vessel.get_unchecked_mut() };
+            let $vessel2_ident = vessel;
             let spacecraft = {
                 $init2_block
             };

@@ -5,8 +5,10 @@
 use orbiter_rs::{
     debug_string, oapi_create_vessel, OrbiterVessel, init_vessel, KeyStates, Key, FileHandle,
     PropellantHandle, ThrusterHandle, Vector3, VesselContext, VesselStatus, ThrusterGroupType, V,
+    SDKVessel
 };
 use lazy_static::lazy_static;
+use std::pin::Pin;
 
 const VERNIER_PROP_MASS: f64 = 70.98;
 const VERNIER_ISP: f64 = 3200.0;
@@ -69,8 +71,9 @@ impl Default for SurveyorState {
     }
 }
 
-#[derive(Default, Debug)]
+#[derive(Debug)]
 pub struct Surveyor {
+    ctx: SDKVessel,
     th_vernier: Vec<ThrusterHandle>,
     th_rcs: Vec<ThrusterHandle>,
     th_retro: ThrusterHandle,
@@ -80,8 +83,21 @@ pub struct Surveyor {
     vehicle_state: SurveyorState,
 }
 impl Surveyor {
-    fn setup_meshes(&mut self, context: &VesselContext) {
-        context.ClearMeshes();
+    pub fn new(vessel: Pin<&'static mut VesselContext>) -> Self
+    {
+        Self {
+            ctx: vessel,
+            th_vernier: Vec::new(),
+            th_rcs: Vec::new(),
+            th_retro: ThrusterHandle::default(),
+            ph_vernier: PropellantHandle::default(),
+            ph_retro: PropellantHandle::default(),
+            ph_rcs: PropellantHandle::default(),
+            vehicle_state: SurveyorState::default(),
+        }
+    }
+    fn setup_meshes(&mut self) {
+        self.ctx.ClearMeshes();
         let mut meshes = Vec::new();
         meshes.push(("Surveyor-AMR", Vector3::new(0., 0., -0.6)));
         meshes.push(("Surveyor-Retro", Vector3::new(0., 0., -0.5)));
@@ -93,56 +109,56 @@ impl Surveyor {
             SurveyorState::AfterRetro => &meshes[2..],
         };
         for (mesh, ofs) in meshes_used {
-            context.AddMeshWithOffset(mesh.to_string(), &ofs);
+            self.ctx.AddMeshWithOffset(mesh.to_string(), &ofs);
         }
     }
-    fn calc_empty_mass(&self, context: &VesselContext) -> f64 {
+    fn calc_empty_mass(&self) -> f64 {
         let mut empty_mass = 0.0;
         // Jettison AMR when retro starts firing
-        if context.GetPropellantMass(self.ph_retro) > 0.999 * RETRO_PROP_MASS {
+        if self.ctx.GetPropellantMass(self.ph_retro) > 0.999 * RETRO_PROP_MASS {
             empty_mass += AMR_MASS;
         }
         // Add in retro mass while there is still retro fuel left
-        if context.GetPropellantMass(self.ph_retro) > 1. {
+        if self.ctx.GetPropellantMass(self.ph_retro) > 1. {
             empty_mass += RETRO_EMPTY_MASS;
         }
         empty_mass += LANDER_EMPTY_MASS;
         return empty_mass;
     }
-    fn spawn_object(&self, context: &VesselContext, classname: &str, ext: &str, offset: &Vector3) {
+    fn spawn_object(&self, classname: &str, ext: &str, offset: &Vector3) {
         let mut vs = VesselStatus::default();
 
-        context.GetStatus(&mut vs);
-        context.Local2Rel(offset, &mut vs.rpos);
+        self.ctx.GetStatus(&mut vs);
+        self.ctx.Local2Rel(offset, &mut vs.rpos);
 
         vs.eng_main = 0.0;
         vs.eng_hovr = 0.0;
         vs.status = 0;
-        let new_object_name = format!("{}{}", context.GetName(), ext);
+        let new_object_name = format!("{}{}", self.ctx.GetName(), ext);
 
         oapi_create_vessel(new_object_name, classname.to_owned(), &vs);
     }
-    fn jettison(&mut self, context: &VesselContext) {
+    fn jettison(&mut self) {
         use SurveyorState::*;
         match self.vehicle_state {
             BeforeRetroIgnition => {
                 self.vehicle_state = RetroFiring;
-                self.spawn_object(context, "Surveyor_AMR", "-AMR", &V!(0., 0., -0.6));
+                self.spawn_object("Surveyor_AMR", "-AMR", &V!(0., 0., -0.6));
             }
             RetroFiring => {
                 self.vehicle_state = AfterRetro;
-                self.spawn_object(context, "Surveyor_Retro", "-Retro", &V!(0., 0., -0.5));
+                self.spawn_object("Surveyor_Retro", "-Retro", &V!(0., 0., -0.5));
             }
             _ => {}
         }
-        self.setup_meshes(context);
+        self.setup_meshes();
     }
 }
 impl OrbiterVessel for Surveyor {
     fn set_class_caps(&mut self, context: &VesselContext, _cfg: FileHandle) {
-        context.SetSize(1.0);
-        context.SetPMI(&V!(0.50, 0.50, 0.50));
-        context.SetTouchdownPoints(
+        self.ctx.SetSize(1.0);
+        self.ctx.SetPMI(&V!(0.50, 0.50, 0.50));
+        self.ctx.SetTouchdownPoints(
             &V!(0.0, LEG_RAD, LEG_Z),
             &V!(
                 (60.0f64).to_radians().sin() * LEG_RAD,
@@ -156,45 +172,45 @@ impl OrbiterVessel for Surveyor {
             ),
         );
         // Create Propellant Resources
-        self.ph_vernier = context.CreatePropellantResource(VERNIER_PROP_MASS);
-        self.ph_rcs = context.CreatePropellantResource(RCS_PROP_MASS);
-        self.ph_retro = context.CreatePropellantResource(RETRO_PROP_MASS);
+        self.ph_vernier = self.ctx.CreatePropellantResource(VERNIER_PROP_MASS);
+        self.ph_rcs = self.ctx.CreatePropellantResource(RCS_PROP_MASS);
+        self.ph_retro = self.ctx.CreatePropellantResource(RETRO_PROP_MASS);
 
-        self.th_vernier.push(context.CreateThruster(
+        self.th_vernier.push(self.ctx.CreateThruster(
             &THRUSTER1_POS,
             &DIR_Z_PLUS,
             VERNIER_THRUST,
             self.ph_vernier,
             VERNIER_ISP,
         ));
-        self.th_vernier.push(context.CreateThruster(
+        self.th_vernier.push(self.ctx.CreateThruster(
             &THRUSTER2_POS,
             &DIR_Z_PLUS,
             VERNIER_THRUST,
             self.ph_vernier,
             VERNIER_ISP,
         ));
-        self.th_vernier.push(context.CreateThruster(
+        self.th_vernier.push(self.ctx.CreateThruster(
             &THRUSTER3_POS,
             &DIR_Z_PLUS,
             VERNIER_THRUST,
             self.ph_vernier,
             VERNIER_ISP,
         ));
-        context.CreateThrusterGroup(&self.th_vernier, ThrusterGroupType::Main);
+        self.ctx.CreateThrusterGroup(&self.th_vernier, ThrusterGroupType::Main);
         for th in self.th_vernier.iter() {
-            context.AddExhaust(*th, 1.0, 0.1);
+            self.ctx.AddExhaust(*th, 1.0, 0.1);
         }
 
         // Roll (Leg1) jets
-        self.th_rcs.push(context.CreateThruster(
+        self.th_rcs.push(self.ctx.CreateThruster(
             &V!(-RCS_SPACE, RCS_RAD, RCS_Z),
             & DIR_X_PLUS,
             RCS_THRUST,
             self.ph_rcs,
             RCS_ISP,
         ));
-        self.th_rcs.push(context.CreateThruster(
+        self.th_rcs.push(self.ctx.CreateThruster(
             &V!(RCS_SPACE, RCS_RAD, RCS_Z),
             & DIR_X_MINUS,
             RCS_THRUST,
@@ -203,7 +219,7 @@ impl OrbiterVessel for Surveyor {
         ));
 
         // Leg2 jets
-        self.th_rcs.push(context.CreateThruster(
+        self.th_rcs.push(self.ctx.CreateThruster(
             &V!(
                 (60.0f64).to_radians().sin() * RCS_RAD,
                 -0.5 * RCS_RAD,
@@ -214,7 +230,7 @@ impl OrbiterVessel for Surveyor {
             self.ph_rcs,
             RCS_ISP,
         ));
-        self.th_rcs.push(context.CreateThruster(
+        self.th_rcs.push(self.ctx.CreateThruster(
             &V!(
                 (60.0f64).to_radians().sin() * RCS_RAD,
                 -0.5 * RCS_RAD,
@@ -227,7 +243,7 @@ impl OrbiterVessel for Surveyor {
         ));
 
         // Leg3 jets
-        self.th_rcs.push(context.CreateThruster(
+        self.th_rcs.push(self.ctx.CreateThruster(
             &V!(
                 -(60.0f64).to_radians().sin() * RCS_RAD,
                 -0.5 * RCS_RAD,
@@ -238,7 +254,7 @@ impl OrbiterVessel for Surveyor {
             self.ph_rcs,
             RCS_ISP,
         ));
-        self.th_rcs.push(context.CreateThruster(
+        self.th_rcs.push(self.ctx.CreateThruster(
             &V!(
                 -(60.0f64).to_radians().sin() * RCS_RAD,
                 -0.5 * RCS_RAD,
@@ -255,82 +271,82 @@ impl OrbiterVessel for Surveyor {
 
         th_group[0] = self.th_rcs[3]; // -Z #1
         th_group[1] = self.th_rcs[5]; // -Z #2
-        context.CreateThrusterGroup(&th_group, ThrusterGroupType::AttPitchdown);
+        self.ctx.CreateThrusterGroup(&th_group, ThrusterGroupType::AttPitchdown);
 
         th_group[0] = self.th_rcs[2]; // +Z #1
         th_group[1] = self.th_rcs[4]; // +Z #2
-        context.CreateThrusterGroup(&th_group, ThrusterGroupType::AttPitchup);
+        self.ctx.CreateThrusterGroup(&th_group, ThrusterGroupType::AttPitchup);
 
         th_group[0] = self.th_rcs[0]; // +X
-        context.CreateThrusterGroup(&th_group[..1], ThrusterGroupType::AttBankright);
+        self.ctx.CreateThrusterGroup(&th_group[..1], ThrusterGroupType::AttBankright);
 
         th_group[0] = self.th_rcs[1]; // -X
-        context.CreateThrusterGroup(&th_group, ThrusterGroupType::AttBankleft);
+        self.ctx.CreateThrusterGroup(&th_group, ThrusterGroupType::AttBankleft);
 
         th_group[0] = self.th_rcs[3]; // -Z #1
         th_group[1] = self.th_rcs[4]; // +Z #2
-        context.CreateThrusterGroup(&th_group, ThrusterGroupType::AttYawright);
+        self.ctx.CreateThrusterGroup(&th_group, ThrusterGroupType::AttYawright);
 
         th_group[0] = self.th_rcs[2]; // +Z #1
         th_group[1] = self.th_rcs[5]; // -Z #2
-        context.CreateThrusterGroup(&th_group, ThrusterGroupType::AttYawleft);
+        self.ctx.CreateThrusterGroup(&th_group, ThrusterGroupType::AttYawleft);
 
         for th in self.th_rcs.iter() {
-            context.AddExhaust(*th, 0.1, 0.05);
+            self.ctx.AddExhaust(*th, 0.1, 0.05);
         }
 
-        self.th_retro = context.CreateThruster(
+        self.th_retro = self.ctx.CreateThruster(
             &V!(0.0, 0.0, RETRO_Z),
             & DIR_Z_PLUS,
             RETRO_THRUST,
             self.ph_retro,
             RETRO_ISP,
         );
-        context.AddExhaust(self.th_retro, 2.0, 0.3);
+        self.ctx.AddExhaust(self.th_retro, 2.0, 0.3);
 
-        context.SetEmptyMass(LANDER_EMPTY_MASS);
+        self.ctx.SetEmptyMass(LANDER_EMPTY_MASS);
 
         // camera parameters
-        context.SetCameraOffset(&V!(0.0, 0.8, 0.0));
-        self.setup_meshes(context)
+        self.ctx.SetCameraOffset(&V!(0.0, 0.8, 0.0));
+        self.setup_meshes()
     }
     fn on_pre_step(&mut self, context: &VesselContext, _sim_t: f64, _sim_dt: f64, _mjd: f64) {
-        context.SetEmptyMass(self.calc_empty_mass(context));
+        self.ctx.SetEmptyMass(self.calc_empty_mass());
 
-        let pitch = context.GetThrusterGroupLevelByType(ThrusterGroupType::AttPitchup)
-            - context.GetThrusterGroupLevelByType(ThrusterGroupType::AttPitchdown);
-        let yaw = context.GetThrusterGroupLevelByType(ThrusterGroupType::AttYawright)
-            - context.GetThrusterGroupLevelByType(ThrusterGroupType::AttYawleft);
-        let roll = context.GetThrusterGroupLevelByType(ThrusterGroupType::AttBankright)
-            - context.GetThrusterGroupLevelByType(ThrusterGroupType::AttBankleft);
+        let pitch = self.ctx.GetThrusterGroupLevelByType(ThrusterGroupType::AttPitchup)
+            - self.ctx.GetThrusterGroupLevelByType(ThrusterGroupType::AttPitchdown);
+        let yaw = self.ctx.GetThrusterGroupLevelByType(ThrusterGroupType::AttYawright)
+            - self.ctx.GetThrusterGroupLevelByType(ThrusterGroupType::AttYawleft);
+        let roll = self.ctx.GetThrusterGroupLevelByType(ThrusterGroupType::AttBankright)
+            - self.ctx.GetThrusterGroupLevelByType(ThrusterGroupType::AttBankleft);
 
         // Differential thrusting for attitude control
-        context.SetThrusterDir(
+        self.ctx.SetThrusterDir(
             self.th_vernier[0],
             &V!(5.0f64.to_radians().sin() * roll, 0.0, 1.0),
         ); // Roll using the 5 degree offset
-        context.SetThrusterDir(
+        self.ctx.SetThrusterDir(
             self.th_vernier[1],
             &V!(0.0, 0.0, 1.0 + 0.05 * (pitch - yaw)),
         );
-        context.SetThrusterDir(
+        self.ctx.SetThrusterDir(
             self.th_vernier[2],
             &V!(0.0, 0.0, 1.0 + 0.05 * (pitch + yaw)),
         );
 
         if self.vehicle_state == SurveyorState::RetroFiring
-            && context.GetPropellantMass(self.ph_retro) < 1.0
+            && self.ctx.GetPropellantMass(self.ph_retro) < 1.0
         {
             //Jettison the spent main retro
-            self.jettison(context);
+            self.jettison();
         }
         if self.vehicle_state == SurveyorState::BeforeRetroIgnition
-            && context.GetPropellantMass(self.ph_retro) < 0.999 * RETRO_PROP_MASS
+            && self.ctx.GetPropellantMass(self.ph_retro) < 0.999 * RETRO_PROP_MASS
         {
             //Jettison the AMR if the retro has started burning
-            self.jettison(context);
+            self.jettison();
             //Relight the retro if needed
-            context.SetThrusterLevel(self.th_retro, 1.0);
+            self.ctx.SetThrusterLevel(self.th_retro, 1.0);
         }
         debug_string!("Pitch: {}, Yaw: {}, Roll: {}", pitch, yaw, roll);
     }
@@ -351,7 +367,7 @@ impl OrbiterVessel for Surveyor {
             if key == Key::L
             {
                 // Fire Retro
-                context.SetThrusterLevel(self.th_retro, 1.0);
+                self.ctx.SetThrusterLevel(self.th_retro, 1.0);
                 1
             }else{
                 1
@@ -361,9 +377,9 @@ impl OrbiterVessel for Surveyor {
 }
 
 init_vessel!(
-    fn init(_h_vessel: OBJHANDLE, _flight_model: i32) -> Surveyor 
+    fn init(vessel)
     {
-        Surveyor::default()
+        Surveyor::new(vessel)
     }
     fn exit() {}
 );

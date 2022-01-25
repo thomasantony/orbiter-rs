@@ -373,3 +373,4 @@ pub use ffi::oapi_create_vessel;
 /// Type alias for [THGROUP_TYPE]
 pub use ffi::THGROUP_TYPE as ThrusterGroupType;
 pub use ffi::REFFRAME as ReferenceFrame;
+pub type SDKVessel = std::pin::Pin<&'static mut VesselContext>;
