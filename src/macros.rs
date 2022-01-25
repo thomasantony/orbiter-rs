@@ -73,11 +73,8 @@ macro_rules! init_vessel {
         #[no_mangle]
         pub extern "C" fn ovcInit (hvessel: $crate::OBJHANDLE, flightmodel: i32) -> *mut $crate::ffi::VESSEL
         {
-            // let ($hvessel_ident, $flightmodel_ident) = (hvessel, flightmodel);
-            // let spacecraft: $spacecraft_type = {
-            //     $body_init
-            // };
-            // unsafe { $crate::ffi::vessel_ovcInit(hvessel, flightmodel, Box::new(spacecraft)) }
+            // The init function pointer gets stored in the C++ object
+            // and gets triggered on clbkSetClassCaps() before the trait method
             unsafe { $crate::ffi::vessel_ovcInit(hvessel, flightmodel, vessel_init) }
         }
         #[no_mangle]

@@ -281,24 +281,21 @@ pub mod ffi {
         fn ODebug(s: String);
     }
     extern "Rust" {
-        fn dyn_vessel_set_class_caps(vessel: &mut BoxDynVessel, context: &VesselContext, cfg: FILEHANDLE);
+        fn dyn_vessel_set_class_caps(vessel: &mut BoxDynVessel, cfg: FILEHANDLE);
         fn dyn_vessel_pre_step(
             vessel: &mut BoxDynVessel,
-            context: &VesselContext,
             sim_t: f64,
             sim_dt: f64,
             mjd: f64,
         );
         fn dyn_vessel_post_step(
             vessel: &mut BoxDynVessel,
-            context: &VesselContext,
             sim_t: f64,
             sim_dt: f64,
             mjd: f64,
         );
         unsafe fn dyn_vessel_consume_buffered_key(
             vessel: &mut BoxDynVessel,
-            context: &VesselContext,
             key: DWORD,
             down: bool,
             kstate: *mut c_char,
@@ -327,36 +324,33 @@ unsafe fn dyn_vessel_drop_in_place(ptr: PtrBoxDynVessel) {
 }
 
 // trait fn shims
-fn dyn_vessel_set_class_caps(vessel: &mut Box<dyn OrbiterVessel>, context: &VesselContext, cfg: FileHandle) {
-    (**vessel).set_class_caps(context, cfg);
+fn dyn_vessel_set_class_caps(vessel: &mut Box<dyn OrbiterVessel>, cfg: FileHandle) {
+    (**vessel).set_class_caps(cfg);
 }
 fn dyn_vessel_pre_step(
     vessel: &mut Box<dyn OrbiterVessel>,
-    context: &VesselContext,
     sim_t: f64,
     sim_dt: f64,
     mjd: f64,
 ) {
-    (**vessel).on_pre_step(context, sim_t, sim_dt, mjd);
+    (**vessel).on_pre_step(sim_t, sim_dt, mjd);
 }
 fn dyn_vessel_post_step(
     vessel: &mut Box<dyn OrbiterVessel>,
-    context: &VesselContext,
     sim_t: f64,
     sim_dt: f64,
     mjd: f64,
 ) {
-    (**vessel).on_post_step(context, sim_t, sim_dt, mjd);
+    (**vessel).on_post_step(sim_t, sim_dt, mjd);
 }
 unsafe fn dyn_vessel_consume_buffered_key(
     vessel: &mut BoxDynVessel,
-    context: &VesselContext,
     key: DWORD,
     down: bool,
     kstate: *mut c_char,
 ) -> i32 {
     let kstate = crate::KeyStates::from(kstate);
-    (**vessel).consume_buffered_key(context, crate::Key::from(key.0 as u8), down, kstate)
+    (**vessel).consume_buffered_key(crate::Key::from(key.0 as u8), down, kstate)
 }
 
 pub use ffi::VesselContext;

@@ -69,7 +69,7 @@ OBJHANDLE VesselContext::GetSurfaceRef() const
 void VesselContext::clbkSetClassCaps(FILEHANDLE cfg)
 {
     rust_spacecraft_ = std::move(rust_init_fn_(*this));
-    dyn_vessel_set_class_caps(rust_spacecraft_, *this, cfg);
+    dyn_vessel_set_class_caps(rust_spacecraft_, cfg);
 }
 
 // ==============================================================
@@ -78,15 +78,15 @@ void VesselContext::clbkSetClassCaps(FILEHANDLE cfg)
 // Pre-step callback
 void VesselContext::clbkPreStep(double SimT, double SimDT, double MJD)
 {
-    dyn_vessel_pre_step(rust_spacecraft_, *this, SimT, SimDT, MJD);
+    dyn_vessel_pre_step(rust_spacecraft_, SimT, SimDT, MJD);
 }
 void VesselContext::clbkPostStep(double SimT, double SimDT, double MJD)
 {
-    dyn_vessel_post_step(rust_spacecraft_, *this, SimT, SimDT, MJD);
+    dyn_vessel_post_step(rust_spacecraft_, SimT, SimDT, MJD);
 }
 int VesselContext::clbkConsumeBufferedKey(DWORD key, bool down, char *kstate)
 {
-    return dyn_vessel_consume_buffered_key(rust_spacecraft_, *this, key, down, kstate);
+    return dyn_vessel_consume_buffered_key(rust_spacecraft_, key, down, kstate);
 }
 
 // ==============================================================

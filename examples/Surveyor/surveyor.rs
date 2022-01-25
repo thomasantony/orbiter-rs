@@ -4,11 +4,10 @@
 /// 
 use orbiter_rs::{
     debug_string, oapi_create_vessel, OrbiterVessel, init_vessel, KeyStates, Key, FileHandle,
-    PropellantHandle, ThrusterHandle, Vector3, VesselContext, VesselStatus, ThrusterGroupType, V,
+    PropellantHandle, ThrusterHandle, Vector3, VesselStatus, ThrusterGroupType, V,
     SDKVessel
 };
 use lazy_static::lazy_static;
-use std::pin::Pin;
 
 const VERNIER_PROP_MASS: f64 = 70.98;
 const VERNIER_ISP: f64 = 3200.0;
@@ -83,7 +82,7 @@ pub struct Surveyor {
     vehicle_state: SurveyorState,
 }
 impl Surveyor {
-    pub fn new(vessel: Pin<&'static mut VesselContext>) -> Self
+    pub fn new(vessel: SDKVessel) -> Self
     {
         Self {
             ctx: vessel,
@@ -155,7 +154,7 @@ impl Surveyor {
     }
 }
 impl OrbiterVessel for Surveyor {
-    fn set_class_caps(&mut self, context: &VesselContext, _cfg: FileHandle) {
+    fn set_class_caps(&mut self, _cfg: FileHandle) {
         self.ctx.SetSize(1.0);
         self.ctx.SetPMI(&V!(0.50, 0.50, 0.50));
         self.ctx.SetTouchdownPoints(
@@ -310,7 +309,7 @@ impl OrbiterVessel for Surveyor {
         self.ctx.SetCameraOffset(&V!(0.0, 0.8, 0.0));
         self.setup_meshes()
     }
-    fn on_pre_step(&mut self, context: &VesselContext, _sim_t: f64, _sim_dt: f64, _mjd: f64) {
+    fn on_pre_step(&mut self, _sim_t: f64, _sim_dt: f64, _mjd: f64) {
         self.ctx.SetEmptyMass(self.calc_empty_mass());
 
         let pitch = self.ctx.GetThrusterGroupLevelByType(ThrusterGroupType::AttPitchup)
@@ -352,7 +351,6 @@ impl OrbiterVessel for Surveyor {
     }
     fn consume_buffered_key(
         &mut self,
-        context: &VesselContext,
         key: Key,
         down: bool,
         kstate: KeyStates,
