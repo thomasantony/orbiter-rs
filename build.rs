@@ -65,6 +65,7 @@ fn main() {
         .include("./include")
         .include(orbiter_include_path)
         .flag_if_supported("-std=c++14")
+        .warnings(false)
         .compile("orbiter-rs");
 
     println!("cargo:rerun-if-changed=src/ffi.rs");
