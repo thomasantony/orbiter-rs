@@ -1,13 +1,12 @@
-/// Surveyor spacecraft implementation using orbiter-rs
-/// 
-/// This is a port of Surveyor.cpp to Rust
-/// 
-use orbiter_rs::{
-    debug_string, oapi_create_vessel, OrbiterVessel, init_vessel, KeyStates, Key, FileHandle,
-    PropellantHandle, ThrusterHandle, Vector3, VesselStatus, ThrusterGroupType, V,
-    SDKVessel
-};
 use lazy_static::lazy_static;
+/// Surveyor spacecraft implementation using orbiter-rs
+///
+/// This is a port of Surveyor.cpp to Rust
+///
+use orbiter_rs::{
+    debug_string, init_vessel, oapi_create_vessel, FileHandle, Key, KeyStates, OrbiterVessel,
+    PropellantHandle, SDKVessel, ThrusterGroupType, ThrusterHandle, Vector3, VesselStatus, V,
+};
 
 const VERNIER_PROP_MASS: f64 = 70.98;
 const VERNIER_ISP: f64 = 3200.0;
@@ -36,9 +35,9 @@ const AMR_MASS: f64 = 3.82;
 const LEG_RAD: f64 = 1.5;
 const LEG_Z: f64 = -0.6;
 
-
 lazy_static! {
-    static ref THRUSTER1_POS: Vector3 = Vector3::new(0.0 * VERNIER_RAD, 1.0 * VERNIER_RAD, VERNIER_Z);
+    static ref THRUSTER1_POS: Vector3 =
+        Vector3::new(0.0 * VERNIER_RAD, 1.0 * VERNIER_RAD, VERNIER_Z);
     static ref THRUSTER2_POS: Vector3 = Vector3::new(
         (60.0f64).to_radians().sin() * VERNIER_RAD,
         -0.5 * VERNIER_RAD,
@@ -49,7 +48,6 @@ lazy_static! {
         -0.5 * VERNIER_RAD,
         VERNIER_Z
     );
-
     static ref DIR_X_PLUS: Vector3 = Vector3::new(1., 0., 0.);
     static ref DIR_X_MINUS: Vector3 = Vector3::new(-1., 0., 0.);
     static ref DIR_Y_PLUS: Vector3 = Vector3::new(0., 1., 0.);
@@ -82,8 +80,7 @@ pub struct Surveyor {
     vehicle_state: SurveyorState,
 }
 impl Surveyor {
-    pub fn new(vessel: SDKVessel) -> Self
-    {
+    pub fn new(vessel: SDKVessel) -> Self {
         Self {
             ctx: vessel,
             th_vernier: Vec::new(),
@@ -196,7 +193,8 @@ impl OrbiterVessel for Surveyor {
             self.ph_vernier,
             VERNIER_ISP,
         ));
-        self.ctx.CreateThrusterGroup(&self.th_vernier, ThrusterGroupType::Main);
+        self.ctx
+            .CreateThrusterGroup(&self.th_vernier, ThrusterGroupType::Main);
         for th in self.th_vernier.iter() {
             self.ctx.AddExhaust(*th, 1.0, 0.1);
         }
@@ -204,14 +202,14 @@ impl OrbiterVessel for Surveyor {
         // Roll (Leg1) jets
         self.th_rcs.push(self.ctx.CreateThruster(
             &V!(-RCS_SPACE, RCS_RAD, RCS_Z),
-            & DIR_X_PLUS,
+            &DIR_X_PLUS,
             RCS_THRUST,
             self.ph_rcs,
             RCS_ISP,
         ));
         self.th_rcs.push(self.ctx.CreateThruster(
             &V!(RCS_SPACE, RCS_RAD, RCS_Z),
-            & DIR_X_MINUS,
+            &DIR_X_MINUS,
             RCS_THRUST,
             self.ph_rcs,
             RCS_ISP,
@@ -270,25 +268,31 @@ impl OrbiterVessel for Surveyor {
 
         th_group[0] = self.th_rcs[3]; // -Z #1
         th_group[1] = self.th_rcs[5]; // -Z #2
-        self.ctx.CreateThrusterGroup(&th_group, ThrusterGroupType::AttPitchdown);
+        self.ctx
+            .CreateThrusterGroup(&th_group, ThrusterGroupType::AttPitchdown);
 
         th_group[0] = self.th_rcs[2]; // +Z #1
         th_group[1] = self.th_rcs[4]; // +Z #2
-        self.ctx.CreateThrusterGroup(&th_group, ThrusterGroupType::AttPitchup);
+        self.ctx
+            .CreateThrusterGroup(&th_group, ThrusterGroupType::AttPitchup);
 
         th_group[0] = self.th_rcs[0]; // +X
-        self.ctx.CreateThrusterGroup(&th_group[..1], ThrusterGroupType::AttBankright);
+        self.ctx
+            .CreateThrusterGroup(&th_group[..1], ThrusterGroupType::AttBankright);
 
         th_group[0] = self.th_rcs[1]; // -X
-        self.ctx.CreateThrusterGroup(&th_group, ThrusterGroupType::AttBankleft);
+        self.ctx
+            .CreateThrusterGroup(&th_group, ThrusterGroupType::AttBankleft);
 
         th_group[0] = self.th_rcs[3]; // -Z #1
         th_group[1] = self.th_rcs[4]; // +Z #2
-        self.ctx.CreateThrusterGroup(&th_group, ThrusterGroupType::AttYawright);
+        self.ctx
+            .CreateThrusterGroup(&th_group, ThrusterGroupType::AttYawright);
 
         th_group[0] = self.th_rcs[2]; // +Z #1
         th_group[1] = self.th_rcs[5]; // -Z #2
-        self.ctx.CreateThrusterGroup(&th_group, ThrusterGroupType::AttYawleft);
+        self.ctx
+            .CreateThrusterGroup(&th_group, ThrusterGroupType::AttYawleft);
 
         for th in self.th_rcs.iter() {
             self.ctx.AddExhaust(*th, 0.1, 0.05);
@@ -296,7 +300,7 @@ impl OrbiterVessel for Surveyor {
 
         self.th_retro = self.ctx.CreateThruster(
             &V!(0.0, 0.0, RETRO_Z),
-            & DIR_Z_PLUS,
+            &DIR_Z_PLUS,
             RETRO_THRUST,
             self.ph_retro,
             RETRO_ISP,
@@ -312,12 +316,24 @@ impl OrbiterVessel for Surveyor {
     fn on_pre_step(&mut self, _sim_t: f64, _sim_dt: f64, _mjd: f64) {
         self.ctx.SetEmptyMass(self.calc_empty_mass());
 
-        let pitch = self.ctx.GetThrusterGroupLevelByType(ThrusterGroupType::AttPitchup)
-            - self.ctx.GetThrusterGroupLevelByType(ThrusterGroupType::AttPitchdown);
-        let yaw = self.ctx.GetThrusterGroupLevelByType(ThrusterGroupType::AttYawright)
-            - self.ctx.GetThrusterGroupLevelByType(ThrusterGroupType::AttYawleft);
-        let roll = self.ctx.GetThrusterGroupLevelByType(ThrusterGroupType::AttBankright)
-            - self.ctx.GetThrusterGroupLevelByType(ThrusterGroupType::AttBankleft);
+        let pitch = self
+            .ctx
+            .GetThrusterGroupLevelByType(ThrusterGroupType::AttPitchup)
+            - self
+                .ctx
+                .GetThrusterGroupLevelByType(ThrusterGroupType::AttPitchdown);
+        let yaw = self
+            .ctx
+            .GetThrusterGroupLevelByType(ThrusterGroupType::AttYawright)
+            - self
+                .ctx
+                .GetThrusterGroupLevelByType(ThrusterGroupType::AttYawleft);
+        let roll = self
+            .ctx
+            .GetThrusterGroupLevelByType(ThrusterGroupType::AttBankright)
+            - self
+                .ctx
+                .GetThrusterGroupLevelByType(ThrusterGroupType::AttBankleft);
 
         // Differential thrusting for attitude control
         self.ctx.SetThrusterDir(
@@ -349,25 +365,18 @@ impl OrbiterVessel for Surveyor {
         }
         debug_string!("Pitch: {}, Yaw: {}, Roll: {}", pitch, yaw, roll);
     }
-    fn consume_buffered_key(
-        &mut self,
-        key: Key,
-        down: bool,
-        kstate: KeyStates,
-    ) -> i32 {
+    fn consume_buffered_key(&mut self, key: Key, down: bool, kstate: KeyStates) -> i32 {
         if !down {
             0
-        } else if kstate.shift()
-        {
+        } else if kstate.shift() {
             0
         } else {
             // unmodified keys
-            if key == Key::L
-            {
+            if key == Key::L {
                 // Fire Retro
                 self.ctx.SetThrusterLevel(self.th_retro, 1.0);
                 1
-            }else{
+            } else {
                 1
             }
         }

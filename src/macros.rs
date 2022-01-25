@@ -6,12 +6,11 @@ macro_rules! V {
     };
 }
 /// Macro for defining ctype wrappers
-/// 
+///
 /// Adapted from [comment](https://github.com/dtolnay/cxx/issues/254#issuecomment-747860504) by Adrian Taylor
 #[macro_export]
 macro_rules! ctype_wrapper {
     ($r:ident, $c:ty) => {
-        
         #[doc = "Newtype wrapper for `"]
         #[doc = stringify!($r)]
         #[doc = "` as a [`"]
@@ -48,18 +47,18 @@ macro_rules! ctype_wrapper {
 }
 
 /// Helper macro for defining entry point into a Vessel addon
-/// 
+///
 /// Inspired by emgre's [orbiter-rs](https://github.com/emgre/orbiter-rs/blob/107068c6e66564b9dff86c8b964515da9771a3af/orbiter/src/lib.rs#L37)
-/// 
+///
 /// The macro should contain two function blocks `init()` and `exit()`. The `init` function takes two arguments,
 /// and [`OBJHANDLE`](super::OBJHANDLE) and an [`i32`] and returns an instance of a struct that implements the `[OrbiterVessel]` trait. This function is called each time a scenario containing the vessel is loaded.
-/// 
+///
 /// The `exit` function is called at the end of a simulation session and can be used to perform cleanup functions.
-/// 
+///
 /// Example:
 /// ```no_run
 /// init_vessel!(
-///    fn init(_h_vessel: OBJHANDLE, _flight_model: i32) -> Surveyor 
+///    fn init(_h_vessel: OBJHANDLE, _flight_model: i32) -> Surveyor
 ///    {
 ///        Surveyor::default()
 ///    }
@@ -115,7 +114,7 @@ macro_rules! init_vessel {
 /// ```
 ///
 /// [`format!`]: https://doc.rust-lang.org/std/fmt/index.html
-/// 
+///
 /// Macro adapted from Émile Grégoire's version at
 /// https://github.com/emgre/orbiter-rs/blob/107068c6e66564b9dff86c8b964515da9771a3af/orbiter/src/lib.rs#L96
 #[macro_export]

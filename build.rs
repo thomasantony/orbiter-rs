@@ -10,12 +10,12 @@ macro_rules! error {
 }
 
 #[cfg(feature = "docs")]
-fn main() { }
+fn main() {}
 
 #[cfg(not(feature = "docs"))]
 fn main() {
-    use std::path::PathBuf;
     use std::env;
+    use std::path::PathBuf;
 
     const ORBITER_DIR_ENV: &str = "ORBITER_DIR";
     const ORBITER_SDK_ENV: &str = "ORBITER_SDK";
@@ -74,5 +74,8 @@ fn main() {
     println!("cargo:rerun-if-changed=src/cpp/vessel_context.cpp");
     println!("cargo:rustc-link-lib=Orbiter");
     println!("cargo:rustc-link-lib=Orbitersdk");
-    println!("cargo:rustc-link-search={}", orbiter_lib_path.to_string_lossy());
+    println!(
+        "cargo:rustc-link-search={}",
+        orbiter_lib_path.to_string_lossy()
+    );
 }
