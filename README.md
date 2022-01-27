@@ -1,14 +1,15 @@
 ## Rust Bindings for Orbiter SDK
 
-This project is a proof of concept for creating a spacecraft addon for the [Orbiter](https://github.com/orbitersim/orbiter) spaceflight simulator in Rust. It uses the [cxx](https://www.cxx.rs) crate creating Rust bindings for the Orbiter SDK. 
+This project is a proof of concept for creating a spacecraft addon for the [Orbiter](https://github.com/orbitersim/orbiter) spaceflight simulator in Rust. It uses the [cxx](https://www.cxx.rs) crate creating Rust bindings for the Orbiter SDK. An addon built using these bindings can be found at: [https://github.com/thomasantony/surveyor](https://github.com/thomasantony/surveyor) which further on the included example to implement a landing guidance system.
+
 
 ### Goals
 
-The initial goal of this project is to be able to re-create the core logic from this [tutorial](https://www.orbiterwiki.org/wiki/Vessel_Tutorial_1) in Rust. The source-code from the tutorial can be found in [examples/Surveyor.cpp](examples/Surveyor.cpp). This file exists purely as a reference and is not used during the build. Only the functions/classes required for this tutorial is currently implemented for Rust. This has been completed and it is possible to build a DLL file that can be loaded in Orbiter and re-creates the functionality of the Surveyor spacecraft to the extent shown in the aforementioned tutorial.
+The initial goal of this project is to be able to re-create the core logic from this [tutorial](https://www.orbiterwiki.org/wiki/Vessel_Tutorial_1) in Rust. The source-code from the tutorial can be found in [examples/Surveyor/Surveyor.cpp](examples/Surveyor/Surveyor.cpp). This file exists purely as a reference and is not used during the build. Only the functions/classes required for this tutorial is currently implemented for Rust. This has been completed and it is possible to build a DLL file that can be loaded in Orbiter and re-creates the functionality of the Surveyor spacecraft to the extent shown in the aforementioned tutorial.
 
 ### Implementation
 
-The crate can now be imported and used like a library. A demo implementation can be found in [`src/examples/surveyor.rs`](src/examples/surveyor.rs). An addon module must include a struct implementing the `OrbiterVessel` trait. Then it must use the `init_vessel!` macro to generate the code that links it to Orbiter SDK. For example:
+The crate can now be imported and used like a library. A demo implementation can be found in [`src/examples/Surveyor/surveyor.rs`](src/examples/Surveyor/surveyor.rs). An addon module must include a struct implementing the `OrbiterVessel` trait. Then it must use the `init_vessel!` macro to generate the code that links it to Orbiter SDK. For example:
 
 ```rust
 init_vessel!(
