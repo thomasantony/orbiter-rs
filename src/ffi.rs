@@ -293,7 +293,7 @@ pub mod ffi {
         unsafe fn oapiReadItem_vec(f: FILEHANDLE, item: *mut c_char, val: &mut VECTOR3) -> bool;
     }
     extern "Rust" {
-        fn dyn_vessel_set_class_caps(vessel: &mut BoxDynVessel, cfg: FILEHANDLE);
+        fn dyn_vessel_set_class_caps(vessel: &mut BoxDynVessel, cfg: &FILEHANDLE);
         fn dyn_vessel_pre_step(
             vessel: &mut BoxDynVessel,
             sim_t: f64,
@@ -336,7 +336,7 @@ unsafe fn dyn_vessel_drop_in_place(ptr: PtrBoxDynVessel) {
 }
 
 // trait fn shims
-fn dyn_vessel_set_class_caps(vessel: &mut Box<dyn OrbiterVessel>, cfg: FileHandle) {
+fn dyn_vessel_set_class_caps(vessel: &mut Box<dyn OrbiterVessel>, cfg: &FileHandle) {
     (**vessel).set_class_caps(cfg);
 }
 fn dyn_vessel_pre_step(

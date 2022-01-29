@@ -151,7 +151,7 @@ impl Surveyor {
     }
 }
 impl OrbiterVessel for Surveyor {
-    fn set_class_caps(&mut self, _cfg: FileHandle) {
+    fn set_class_caps(&mut self, _cfg: &FileHandle) {
         self.ctx.SetSize(1.0);
         self.ctx.SetPMI(&V!(0.50, 0.50, 0.50));
         self.ctx.SetTouchdownPoints(
