@@ -1,5 +1,27 @@
 # Changelog
 
+## v0.2.1
+- Bump version to 0.2.1 and update changelog
+- Add Logging section in lib.rs documentation
+- Add logging example to Surveyor.rs
+- Add init_logging()
+- Add oapiWriteLog to OrbiterLogger impl
+- Add initial version of OrbiterLogger
+- Add log crate to dependencies
+- (config-file-api) Add docstrings to FileHandle methods
+- Add oapiWriteLine and FileHandle::write()
+- Add write_* methods to FileHandle
+- Add oapiWriteItem_*
+- Run cargo fmt on MinimalPB.rs
+- Add PathRoot and oapiOpenFile
+- Add wrapper for oapiCloseFile
+- Update set_class_caps to take &FileHandle
+- Add FileHandle methods wrapping oapiReadItem_*
+- Add bindings for oapiReadItem_*
+- (origin/config-file-api) Add oapiReadItem_string()
+- Update README.md with badges
+- Update README.md
+
 ## v0.2
 - Bump version to 0.2 and update changelog
 - Add MinimalPB example
