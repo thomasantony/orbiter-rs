@@ -347,6 +347,9 @@ pub mod ffi {
             root: PathRoot,
         ) -> FILEHANDLE;
         fn oapiCloseFile(f: FILEHANDLE, mode: FileAccessMode);
+
+        /// Writes a line to the Orbiter log file (orbiter.log) in the main orbiter directory
+        unsafe fn oapiWriteLog(line: *mut c_char);
     }
     extern "Rust" {
         fn dyn_vessel_set_class_caps(vessel: &mut BoxDynVessel, cfg: &FILEHANDLE);
