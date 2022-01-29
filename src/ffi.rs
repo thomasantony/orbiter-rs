@@ -326,6 +326,7 @@ pub mod ffi {
 
         type FileAccessMode;
         type PathRoot;
+
         unsafe fn oapiReadItem_string(f: FILEHANDLE, item: *mut c_char, val: *mut c_char) -> bool;
         unsafe fn oapiReadItem_float(f: FILEHANDLE, item: *mut c_char, val: &mut f64) -> bool;
         unsafe fn oapiReadItem_int(f: FILEHANDLE, item: *mut c_char, val: &mut i32) -> bool;
@@ -337,6 +338,8 @@ pub mod ffi {
         unsafe fn oapiWriteItem_int(f: FILEHANDLE, item: *mut c_char, val: i32);
         unsafe fn oapiWriteItem_bool(f: FILEHANDLE, item: *mut c_char, val: bool);
         unsafe fn oapiWriteItem_vec(f: FILEHANDLE, item: *mut c_char, val: &VECTOR3);
+
+        unsafe fn oapiWriteLine(f: FILEHANDLE, line: *mut c_char);
 
         unsafe fn oapiOpenFile(
             fname: *const c_char,

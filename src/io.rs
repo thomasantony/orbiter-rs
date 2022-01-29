@@ -85,6 +85,11 @@ impl FileHandle {
         let item_name = CString::new(item_name).unwrap();
         unsafe { ffi::oapiWriteItem_vec(self.clone(), item_name.as_ptr() as *mut c_char, val) };
     }
+    pub fn write(&self, line: &[u8])
+    {
+        let line = CString::new(line).unwrap();
+        unsafe { ffi::oapiWriteLine(self.clone(), line.as_ptr() as *mut c_char) };
+    }
     pub fn close(self, mode: FileAccessMode) {
         ffi::oapiCloseFile(self, mode);
     }
