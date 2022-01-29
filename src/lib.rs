@@ -31,7 +31,7 @@
 //!         debug_string!("Hello world! sim_t: {:.2}", sim_t);
 //!     }
 //! }
-//! 
+//!
 //! init_vessel!(
 //!     fn init(vessel) {
 //!         MinimalPB::new(vessel)
@@ -48,16 +48,16 @@
 //! ```
 //!
 //! This will ensure that the build always targets 32-bit windows (which is the only platform supported by Orbiter at the time of writing).
-//! The `ORBITER_DIR` environment variable must be set to the path to a working Orbiter installation before building. 
-//! 
+//! The `ORBITER_DIR` environment variable must be set to the path to a working Orbiter installation before building.
+//!
 //! ## Building and Installing Examples
-//! 
-//! The examples in the `examples` directory can be built by running `cargo build --example MinimalPB` and `cargo build --example Surveyor`. To install these, copy the resulting DLL from 
-//! `target/i686-pc-windows-msvc/debug/examples/MinimalPB.dll` to the `Modules` folder in your Orbiter installation. The contents of `examples/MinimalPB/Config` and `examples/MinimalPB/Scenarios` should also be copied 
+//!
+//! The examples in the `examples` directory can be built by running `cargo build --example MinimalPB` and `cargo build --example Surveyor`. To install these, copy the resulting DLL from
+//! `target/i686-pc-windows-msvc/debug/examples/MinimalPB.dll` to the `Modules` folder in your Orbiter installation. The contents of `examples/MinimalPB/Config` and `examples/MinimalPB/Scenarios` should also be copied
 //! into your Orbiter installation direction under the respective folders.
-//! 
+//!
 //! For the `Surveyor` example, the `Meshes`, `Textures` folders also needs to have their contents copied to the respective folders under the Orbiter installation
-//! 
+//!
 //! The addons can then be tested by opening the newly installed scenarios in Orbiter.
 
 use cxx::ExternType;

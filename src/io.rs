@@ -11,11 +11,13 @@ use std::os::raw::c_char;
 #[doc(hidden)]
 pub struct FileHandle(usize);
 pub use ffi::FileAccessMode;
+pub use ffi::PathRoot;
 
 impl FileHandle {
-    pub fn open(_filename: &str, mode: FileAccessMode) -> Self
+    pub fn open(filename: &str, mode: FileAccessMode, root: PathRoot) -> Self
     {
-        Self(0)
+        let filename = CString::new(filename).unwrap();
+        unsafe { ffi::oapiOpenFile(filename.as_ptr(), mode, root) }
     }
     pub fn read_string(&self, item_name: &str) -> String {
         let mut buffer = vec![0; 256];

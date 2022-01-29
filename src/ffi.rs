@@ -198,6 +198,27 @@ pub mod ffi {
         #[cxx_name = "FILE_IN_ZEROONFAIL"]
         In_ZeroOnFail,
     }
+
+    #[derive(Debug)]
+    #[repr(usize)]
+    enum PathRoot {
+        #[cxx_name = "ROOT"]
+        Root,
+        #[cxx_name = "CONFIG"]
+        Config,
+        #[cxx_name = "SCENARIOS"]
+        Scenarios,
+        #[cxx_name = "TEXTURES"]
+        Textures,
+        #[cxx_name = "TEXTURES2"]
+        Textures2,
+        #[cxx_name = "MESHES"]
+        Meshes,
+        #[cxx_name = "MODULES"]
+        Modules,
+    }
+
+
     unsafe extern "C++" {
         include!("include/vessel_context.h");
         #[doc(hidden)]
@@ -304,11 +325,13 @@ pub mod ffi {
         fn ODebug(s: String);
 
         type FileAccessMode;
+        type PathRoot;
         unsafe fn oapiReadItem_string(f: FILEHANDLE, item: *mut c_char, val: *mut c_char) -> bool;
         unsafe fn oapiReadItem_float(f: FILEHANDLE, item: *mut c_char, val: &mut f64) -> bool;
         unsafe fn oapiReadItem_int(f: FILEHANDLE, item: *mut c_char, val: &mut i32) -> bool;
         unsafe fn oapiReadItem_bool(f: FILEHANDLE, item: *mut c_char, val: &mut bool) -> bool;
         unsafe fn oapiReadItem_vec(f: FILEHANDLE, item: *mut c_char, val: &mut VECTOR3) -> bool;
+        unsafe fn oapiOpenFile(fname: *const c_char, mode: FileAccessMode, root: PathRoot) -> FILEHANDLE;
         fn oapiCloseFile(f: FILEHANDLE, mode: FileAccessMode);
     }
     extern "Rust" {
