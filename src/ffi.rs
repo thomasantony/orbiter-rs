@@ -13,9 +13,16 @@ unsafe impl cxx::ExternType for VECTOR3 {
 ctype_wrapper!(THRUSTER_HANDLE, usize, ThrusterHandle); 
 ctype_wrapper!(PROPELLANT_HANDLE, usize, PropellantHandle);
 ctype_wrapper!(THGROUP_HANDLE, usize, ThrustGroupHandle);
-ctype_wrapper!(FILEHANDLE, usize, FileHandle);
 ctype_wrapper!(OBJHANDLE, usize);
 ctype_wrapper!(DWORD, u32);
+
+mod io;
+pub use io::FileHandle;
+pub type FILEHANDLE = io::FileHandle;
+unsafe impl cxx::ExternType for FILEHANDLE {
+    type Id = cxx::type_id!("FILEHANDLE");
+    type Kind = cxx::kind::Trivial;
+}
 
 /// Binding for OrbiterSDK's `VESSELSTATUS` struct
 #[repr(C)]
