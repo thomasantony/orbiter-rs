@@ -1,0 +1,126 @@
+# Changelog
+
+## v0.2
+- Bump version to 0.2 and update changelog
+- Add MinimalPB example
+- Update example in README.md
+- Add more docstrings to source
+- Format with rustfmt
+- Suppress warnings in build.rs
+- Cleanup unused imports and the trait methods
+- Update example to use SDKVessel
+- Testing new interface with late init
+
+## v0.1 + some other commits
+- (origin/master) Add link to surveyor project
+- Add PartialEq to Vector3
+- Add Local2Global
+- Add some more ffi bindings
+- Add GetAltitudeAboveGround
+- Add GetTotalPropellantMass and GetThrustVector
+- Refactor out Vector3 into vector.rs
+- Add debug_string macro. Make Vector3 field public
+- Implement addition and subtraction for Vector3
+- Add Div and Mul impls for Vector3 structs
+- Add length and unit vector to Vector3
+- Add scalar division and multiplication for Vector3
+- Implement negation operator for Vector3
+- Add dot product and cross product for `Vector3`
+- (attitude-rate-control) Change _V! to V! and make it return struct
+- Merge branch 'master' of github.com:thomasantony/orbiter-rs into master
+- Add Textures folder
+- Add Surveyor_AMR.cfg and Surveyor_Retro.cfg
+- Add REFFRAME and GetAirspeedVector
+- Add x(), y(), z() to Vector3
+- Add SetThrusterLevel_SingleStep
+- Restructured Surveyor example
+- Add GetAngularVel wrapper
+- Add static defs for thruster positions
+- Add repository field to Cargo.toml
+- Fix typo in README.md
+- Add license and description to Cargo.toml
+- Fix import paths and add more docs
+- (origin/add-docs) More documentation
+- Add more docs including ThrusterGroupType
+- Add a bunch of documentation + fix doc build
+- Rename trait methods for pre/post step callback
+- Add clbkPostStep callback to wrapper
+- Clean up GetThrusterGroupLevel wrapper
+- Clean up Cargo.toml
+- Add ThrustGroupType as alias for THGROUP_TYPE
+- Add FileHandle argument to set_class_caps
+- Refactored init_vessel and added comments
+- Move BoxDynVessel into box_dyn_vessel.cpp
+- Update README.md and some comments
+- Add OrbiterSDK path detection in build.rs
+- Made some functions private
+- Added exit() block to ovcExit()
+- Add new KeyState processing code from emgre
+- Move Surveyor implementation into examples/surveyor.rs
+- Clean up some stuff in ffi.rs
+- Add init_vessel macro and remove make_orbiter_vessel
+- Fix some grammar in README.md
+- Minor change to package path
+- Add default impls for pre_step and consume_buffered_key
+- Fix bug in ctype_wrapper macro
+- Update README.md with some details
+- Add some details to README.md
+- Refactor and clean up the code
+- Add Scenarios
+- Add Meshes and Config
+- Add MIT license
+- Rename oapi_consts to consts
+- Move c++ code info src/cpp/
+- Refactor macros into single file
+- Move header files to include/
+- Rename spacecraft.* to vessel_context.*
+- Reformat code using cargo fmt
+- Add logic to fire retro rockets on pressing L
+- Add wrapper for clbkConsumeBufferedKey
+- Changed all i32 to usize in oapi_consts.rs
+- Add consume_buffered_key to OrbiterVessel trait
+- Add jettison + spawn_object logic
+- Add wrapper for oapiCreateVessel
+- Add Local2Rel wrapper
+- Use the new c_str() API in rust::String
+- Add wrappers for VESSELSTATUS and GetStatus
+- Remove obsolete wrapper methods
+- Auto generate type alias for ctype wrapper
+- Add ctype wrapper for THGROUP_HANDLE
+- Add ctype wrapper for THRUSTER_HANDLE
+- Add ctype wrapper for PROPELLANT_HANDLE
+- Rename SpacecraftWrapper to VesselContext
+- Added transparent impl for Vector3
+- Add GetName()
+- Add SetThrusterLevel
+- Add differential thrusting for attitude control
+- Add SetThrusterDir
+- Change GetThrusterGroupLevel to GetThrusterGroupLevelByType
+- Change constants to usize
+- Add calc_empty_mass()
+- Add GetPropellantMass and GetThrusterGroupLevel
+- Reformat using cargo fmt
+- Add SetTouchdownPoints
+- Fix bug in setup_meshes() logic
+- Rename RustSpacecraft to Surveyor
+- Add setup_meshes() to spacecraft
+- Add ClearMeshes and AddMeshWithOffset
+- Add SetCameraOffset
+- Add retro and RCS thrusters
+- Reformat with cargo fmt
+- Add THGROUP_TYPE argument to CreateThrusterGroup
+- Add SetEmptyMass
+- Remove box_wrapper.h
+- Refactor spacecraft code into surveyor.rs
+- Add AddExhaust and some fixes
+- Add CreateThrusterGroup
+- Add CreateThruster and CreatePropellantResource
+- Add initial version of README.md
+- Add SetPMI to wrapper
+- Passthrough SetSize and AddMesh to Rust
+- Add experimental macro
+- Clean up FFI interface
+- Update build artifact name in build.rs
+- Fix compile-time warnings
+- Initial commit with working module
+- 
