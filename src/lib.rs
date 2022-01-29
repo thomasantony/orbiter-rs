@@ -59,6 +59,12 @@
 //! For the `Surveyor` example, the `Meshes`, `Textures` folders also needs to have their contents copied to the respective folders under the Orbiter installation
 //!
 //! The addons can then be tested by opening the newly installed scenarios in Orbiter.
+//!
+//! ## Logging
+//!
+//! `orbiter-rs` uses the [log] crate to facilitate logging directly to the Orbiter log. Any addons seeking to use this must call [`init_logging`] somewhere in their code, preferably in their [OrbiterVessel::set_class_caps] implementation.
+//! After the system is initialized, the macros [log::error], [log::warn], [log::info], [log::debug] and [log::trace] can be used. All of the [filtering features](log#compile-time-filters) of the log crate may be used as well.
+//!
 
 use cxx::ExternType;
 
