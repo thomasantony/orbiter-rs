@@ -9,6 +9,7 @@ repository = "https://github.com/thomasantony/orbiter-rs"
 
 [dependencies]
 cxx = "1.0.62"
+log = { version = "0.4.14", features = ["std"]}
 
 [build-dependencies]
 cxx-build = "1.0.62"
