@@ -1,6 +1,5 @@
 // This file is included directly from lib.rs as making it into a module created too many hassles
 use std::os::raw::c_char;
-
 mod vector;
 
 pub use vector::Vector3;
@@ -280,7 +279,11 @@ pub mod ffi {
         /// Print message to lower-left corner of screen. For debugging purposes only!
         fn ODebug(s: String);
 
-        fn oapiReadItem_string(f: FILEHANDLE, item: *mut char, string: *mut char);
+        unsafe fn oapiReadItem_string(f: FILEHANDLE, item: *mut c_char, val: *mut c_char) -> bool;
+        unsafe fn oapiReadItem_float(f: FILEHANDLE, item: *mut c_char, val: &mut f64) -> bool;
+        unsafe fn oapiReadItem_int(f: FILEHANDLE, item: *mut c_char, val: &mut i32) -> bool;
+        unsafe fn oapiReadItem_bool(f: FILEHANDLE, item: *mut c_char, val: &mut bool) -> bool;
+        unsafe fn oapiReadItem_vec(f: FILEHANDLE, item: *mut c_char, val: &mut VECTOR3) -> bool;
     }
     extern "Rust" {
         fn dyn_vessel_set_class_caps(vessel: &mut BoxDynVessel, cfg: FILEHANDLE);
@@ -366,6 +369,12 @@ pub use ffi::BoxDynVessel;
 
 pub use ffi::ODebug;
 pub use ffi::oapi_create_vessel;
+pub use ffi::oapiReadItem_string;
+pub use ffi::oapiReadItem_float;
+pub use ffi::oapiReadItem_int;
+pub use ffi::oapiReadItem_bool;
+pub use ffi::oapiReadItem_vec;
+
 /// Type alias for [THGROUP_TYPE]
 pub use ffi::THGROUP_TYPE as ThrusterGroupType;
 pub use ffi::REFFRAME as ReferenceFrame;
