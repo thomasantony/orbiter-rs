@@ -13,12 +13,16 @@ The crate can now be imported and used like a library. A demo implementation can
 
 ```rust
 init_vessel!(
-    fn init(_h_vessel: OBJHANDLE, _flight_model: i32) {
-        Surveyor::default()
+    fn init(vessel) {
+        Surveyor::new(vessel)
     }
     fn exit() {}
 );
 ```
+
+### Lifecycle of an Orbiter Rust Addon
+
+TODO
 
 ### Building
 
