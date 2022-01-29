@@ -18,6 +18,11 @@ name = "Surveyor"
 path = "examples/Surveyor/surveyor.rs"
 crate-type = ["cdylib"]
 
+[[example]]
+name = "MinimalPB"
+path = "examples/minimal/MinimalPB.rs"
+crate-type = ["cdylib"]
+
 [features]
 docs = []
 
