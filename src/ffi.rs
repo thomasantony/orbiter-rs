@@ -331,7 +331,18 @@ pub mod ffi {
         unsafe fn oapiReadItem_int(f: FILEHANDLE, item: *mut c_char, val: &mut i32) -> bool;
         unsafe fn oapiReadItem_bool(f: FILEHANDLE, item: *mut c_char, val: &mut bool) -> bool;
         unsafe fn oapiReadItem_vec(f: FILEHANDLE, item: *mut c_char, val: &mut VECTOR3) -> bool;
-        unsafe fn oapiOpenFile(fname: *const c_char, mode: FileAccessMode, root: PathRoot) -> FILEHANDLE;
+
+        unsafe fn oapiWriteItem_string(f: FILEHANDLE, item: *mut c_char, val: *mut c_char);
+        unsafe fn oapiWriteItem_float(f: FILEHANDLE, item: *mut c_char, val: f64);
+        unsafe fn oapiWriteItem_int(f: FILEHANDLE, item: *mut c_char, val: i32);
+        unsafe fn oapiWriteItem_bool(f: FILEHANDLE, item: *mut c_char, val: bool);
+        unsafe fn oapiWriteItem_vec(f: FILEHANDLE, item: *mut c_char, val: &VECTOR3);
+
+        unsafe fn oapiOpenFile(
+            fname: *const c_char,
+            mode: FileAccessMode,
+            root: PathRoot,
+        ) -> FILEHANDLE;
         fn oapiCloseFile(f: FILEHANDLE, mode: FileAccessMode);
     }
     extern "Rust" {
@@ -409,24 +420,19 @@ unsafe fn dyn_vessel_consume_buffered_key(
 
 pub use ffi::VesselContext;
 impl std::fmt::Debug for VesselContext {
-    fn fmt(&self, fmt:&mut std::fmt::Formatter) -> std::fmt::Result {
+    fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
         fmt.debug_struct("VesselContext").finish()
     }
 }
 #[doc(hidden)]
 pub use ffi::BoxDynVessel;
 
-pub use ffi::ODebug;
 pub use ffi::oapi_create_vessel;
-pub use ffi::oapiReadItem_string;
-pub use ffi::oapiReadItem_float;
-pub use ffi::oapiReadItem_int;
-pub use ffi::oapiReadItem_bool;
-pub use ffi::oapiReadItem_vec;
+pub use ffi::ODebug;
 
+pub use ffi::REFFRAME as ReferenceFrame;
 /// Type alias for [THGROUP_TYPE]
 pub use ffi::THGROUP_TYPE as ThrusterGroupType;
-pub use ffi::REFFRAME as ReferenceFrame;
 
 /// A wrapper over the FFI interface to the Orbiter SDK
 /// This is passed to the init() function in the `[init_vessel!]` macro
