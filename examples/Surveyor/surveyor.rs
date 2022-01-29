@@ -4,9 +4,12 @@ use lazy_static::lazy_static;
 /// This is a port of Surveyor.cpp to Rust
 ///
 use orbiter_rs::{
-    debug_string, init_vessel, oapi_create_vessel, FileHandle, Key, KeyStates, OrbiterVessel,
-    PropellantHandle, SDKVessel, ThrusterGroupType, ThrusterHandle, Vector3, VesselStatus, V,
+    debug_string, init_logging, init_vessel, oapi_create_vessel, FileHandle, Key, KeyStates,
+    OrbiterVessel, PropellantHandle, SDKVessel, ThrusterGroupType, ThrusterHandle, Vector3,
+    VesselStatus, V,
 };
+
+use log::info;
 
 const VERNIER_PROP_MASS: f64 = 70.98;
 const VERNIER_ISP: f64 = 3200.0;
@@ -152,6 +155,9 @@ impl Surveyor {
 }
 impl OrbiterVessel for Surveyor {
     fn set_class_caps(&mut self, _cfg: &FileHandle) {
+        init_logging(log::Level::Info);
+        info!("Surveyor::set_class_caps()");
+
         self.ctx.SetSize(1.0);
         self.ctx.SetPMI(&V!(0.50, 0.50, 0.50));
         self.ctx.SetTouchdownPoints(
