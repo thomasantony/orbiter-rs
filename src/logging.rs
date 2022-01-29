@@ -4,6 +4,7 @@ use log::{Level, LevelFilter, Log, Metadata, Record};
 use std::ffi::CString;
 use std::os::raw::c_char;
 
+#[derive(Clone)]
 pub struct OrbiterLogger {
     verbosity: LevelFilter,
     quiet: bool,
@@ -14,6 +15,12 @@ impl OrbiterLogger {
             verbosity: LevelFilter::Error,
             quiet: false,
         }
+}
+    /// 'Init' the actual logger, instantiate it and configure it,
+    /// this method MUST be called in order for the logger to be effective.
+    pub fn init(&mut self) -> Result<(), log::SetLoggerError> {
+        log::set_max_level(self.log_level_filter());
+        log::set_boxed_logger(Box::new(self.clone()))
     }
     /// Set minimum log level
     pub fn level(&mut self, level: Level) -> &mut Self {
@@ -41,7 +48,6 @@ impl OrbiterLogger {
             self.verbosity
         }
     }
-
 }
 impl Log for OrbiterLogger {
     /// Determines if a log message with the specified metadata would be
@@ -71,4 +77,9 @@ impl Default for OrbiterLogger {
     fn default() -> Self {
         OrbiterLogger::new()
     }
+}
+
+/// Initialize orbiter logger with given minimum log level
+pub fn init_logging(level: Level) {
+    OrbiterLogger::new().level(level).init().unwrap();
 }

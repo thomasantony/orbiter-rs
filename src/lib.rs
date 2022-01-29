@@ -71,6 +71,7 @@ mod input;
 pub use input::*;
 
 mod logging;
+pub use logging::init_logging;
 pub use logging::OrbiterLogger;
 
 // FFI interface to orbiter.rs
