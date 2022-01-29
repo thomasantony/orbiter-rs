@@ -367,4 +367,7 @@ pub use ffi::oapi_create_vessel;
 /// Type alias for [THGROUP_TYPE]
 pub use ffi::THGROUP_TYPE as ThrusterGroupType;
 pub use ffi::REFFRAME as ReferenceFrame;
+
+/// A wrapper over the FFI interface to the Orbiter SDK
+/// This is passed to the init() function in the `[init_vessel!]` macro
 pub type SDKVessel = std::pin::Pin<&'static mut VesselContext>;

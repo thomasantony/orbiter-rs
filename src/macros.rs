@@ -50,25 +50,22 @@ macro_rules! ctype_wrapper {
 ///
 /// Inspired by emgre's [orbiter-rs](https://github.com/emgre/orbiter-rs/blob/107068c6e66564b9dff86c8b964515da9771a3af/orbiter/src/lib.rs#L37)
 ///
-/// The macro should contain two function blocks `init()` and `exit()`. The `init` function takes two arguments,
-/// and [`OBJHANDLE`](super::OBJHANDLE) and an [`i32`] and returns an instance of a struct that implements the `[OrbiterVessel]` trait. This function is called each time a scenario containing the vessel is loaded.
+/// The macro should contain two function blocks `init()` and `exit()`. The `init` function takes one argument,
+/// an `[SDKVessel]` instance. It is expected that this `[SDKVessel]` instance is passed to and stored in the Rust code implementing the addon.
 ///
 /// The `exit` function is called at the end of a simulation session and can be used to perform cleanup functions.
 ///
 /// Example:
 /// ```no_run
-/// init_vessel!(
-///    fn init(_h_vessel: OBJHANDLE, _flight_model: i32) -> Surveyor
-///    {
-///        Surveyor::default()
-///    }
-///    fn exit() {}
-/// );
+/// fn init(vessel)
+/// {
+///     Surveyor::new(vessel)
+/// }
+/// fn exit() {}
 /// ```
 #[macro_export]
 macro_rules! init_vessel {
-    // (fn init($hvessel_ident:ident, $flightmodel_ident:ident) -> $spacecraft_type:ty $body_init:block fn init2($vessel2_ident:ident) -> $spacecraft_type2:ty $init2_block:block fn exit() $body_exit:block) => {
-    (fn init($vessel2_ident:ident) $init2_block:block fn exit() $body_exit:block) => {
+    (fn init($vessel_ident:ident) $init_block:block fn exit() $body_exit:block) => {
         #[no_mangle]
         pub extern "C" fn ovcInit (hvessel: $crate::OBJHANDLE, flightmodel: i32) -> *mut $crate::ffi::VESSEL
         {
@@ -84,9 +81,9 @@ macro_rules! init_vessel {
         }
         pub fn vessel_init<'a> (vessel: std::pin::Pin<&'static mut $crate::ffi::VesselContext>) -> Box<dyn $crate::OrbiterVessel + 'static>
         {
-            let $vessel2_ident = vessel;
+            let $vessel_ident = vessel;
             let spacecraft = {
-                $init2_block
+                $init_block
             };
             return Box::new(spacecraft);
         }
@@ -116,7 +113,7 @@ macro_rules! init_vessel {
 /// [`format!`]: https://doc.rust-lang.org/std/fmt/index.html
 ///
 /// Macro adapted from Émile Grégoire's version at
-/// https://github.com/emgre/orbiter-rs/blob/107068c6e66564b9dff86c8b964515da9771a3af/orbiter/src/lib.rs#L96
+/// <https://github.com/emgre/orbiter-rs/blob/107068c6e66564b9dff86c8b964515da9771a3af/orbiter/src/lib.rs#L96>
 #[macro_export]
 macro_rules! debug_string {
     ($($args:tt)+) => {
