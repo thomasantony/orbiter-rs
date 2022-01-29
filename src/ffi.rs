@@ -279,6 +279,8 @@ pub mod ffi {
 
         /// Print message to lower-left corner of screen. For debugging purposes only!
         fn ODebug(s: String);
+
+        fn oapiReadItem_string(f: FILEHANDLE, item: *mut char, string: *mut char);
     }
     extern "Rust" {
         fn dyn_vessel_set_class_caps(vessel: &mut BoxDynVessel, cfg: FILEHANDLE);
