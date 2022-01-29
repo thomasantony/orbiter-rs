@@ -181,6 +181,23 @@ pub mod ffi {
         #[cxx_name = "ALTMODE_GROUND"]
         Ground
     }
+
+    #[derive(Debug)]
+    #[repr(usize)]
+    enum FileAccessMode {
+        /// Read
+        #[cxx_name = "FILE_IN"]
+        In,
+        /// Write
+        #[cxx_name = "FILE_OUT"]
+        Out,
+        /// Write (append)
+        #[cxx_name = "FILE_APP"]
+        Append,
+        /// Read (zero on fail)
+        #[cxx_name = "FILE_IN_ZEROONFAIL"]
+        In_ZeroOnFail,
+    }
     unsafe extern "C++" {
         include!("include/vessel_context.h");
         #[doc(hidden)]
@@ -286,11 +303,13 @@ pub mod ffi {
         /// Print message to lower-left corner of screen. For debugging purposes only!
         fn ODebug(s: String);
 
+        type FileAccessMode;
         unsafe fn oapiReadItem_string(f: FILEHANDLE, item: *mut c_char, val: *mut c_char) -> bool;
         unsafe fn oapiReadItem_float(f: FILEHANDLE, item: *mut c_char, val: &mut f64) -> bool;
         unsafe fn oapiReadItem_int(f: FILEHANDLE, item: *mut c_char, val: &mut i32) -> bool;
         unsafe fn oapiReadItem_bool(f: FILEHANDLE, item: *mut c_char, val: &mut bool) -> bool;
         unsafe fn oapiReadItem_vec(f: FILEHANDLE, item: *mut c_char, val: &mut VECTOR3) -> bool;
+        fn oapiCloseFile(f: FILEHANDLE, mode: FileAccessMode);
     }
     extern "Rust" {
         fn dyn_vessel_set_class_caps(vessel: &mut BoxDynVessel, cfg: &FILEHANDLE);

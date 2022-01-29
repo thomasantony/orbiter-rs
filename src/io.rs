@@ -7,12 +7,13 @@ use std::ffi::{CString, CStr};
 use std::os::raw::c_char;
 
 #[repr(transparent)]
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Clone, Copy)]
 #[doc(hidden)]
 pub struct FileHandle(usize);
+pub use ffi::FileAccessMode;
 
 impl FileHandle {
-    pub fn open(_filename: &str) -> Self
+    pub fn open(_filename: &str, mode: FileAccessMode) -> Self
     {
         Self(0)
     }
@@ -47,5 +48,9 @@ impl FileHandle {
         let item_name = CString::new(item_name).unwrap();
         unsafe { ffi::oapiReadItem_vec(self.clone(), item_name.as_ptr() as *mut c_char, &mut val) };
         val
+    }
+    pub fn close(self, mode: FileAccessMode)
+    {
+        ffi::oapiCloseFile(self, mode);
     }
 }
