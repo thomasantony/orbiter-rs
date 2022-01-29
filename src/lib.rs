@@ -70,5 +70,8 @@ pub use vessel::OrbiterVessel;
 mod input;
 pub use input::*;
 
+mod logging;
+pub use logging::OrbiterLogger;
+
 // FFI interface to orbiter.rs
 include!("ffi.rs");
