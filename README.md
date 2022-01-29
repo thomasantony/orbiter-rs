@@ -1,6 +1,21 @@
-## Rust Bindings for Orbiter SDK
+orbiter-rs &mdash; Rust Bindings for the Orbiter SDK
+================================================
 
-This project is a proof of concept for creating a spacecraft addon for the [Orbiter](https://github.com/orbitersim/orbiter) spaceflight simulator in Rust. It uses the [cxx](https://www.cxx.rs) crate creating Rust bindings for the Orbiter SDK. An addon built using these bindings can be found at: [https://github.com/thomasantony/surveyor](https://github.com/thomasantony/surveyor) which builds further on the included example and implements a landing guidance system for the spacecraft in Rust.
+[![Crates.io][crates-badge]][crates-url]
+[![MIT licensed][mit-badge]][mit-url]
+[![Docs.rs][docs-badge]][docs-url]
+
+[crates-badge]: https://img.shields.io/crates/v/orbiter-rs.svg
+[crates-url]: https://crates.io/crates/orbiter-rs
+[docs-badge]: https://img.shields.io/badge/docs.rs-rustdoc-green
+[docs-url]: https://docs.rs/orbiter-rs/
+[mit-badge]: https://img.shields.io/badge/license-MIT-blue.svg
+[mit-url]: https://github.com/thomasantony/orbiter-rs/blob/master/LICENSE
+<!-- [actions-badge]: https://github.com/tokio-rs/tokio/workflows/CI/badge.svg
+[actions-url]: https://github.com/tokio-rs/tokio/actions?query=workflow%3ACI+branch%3Amaster
+-->
+
+This library was created to develop addons for the [Orbiter](https://github.com/orbitersim/orbiter) spaceflight simulator in Rust. It uses the [cxx](https://www.cxx.rs) crate for creating Rust bindings for the Orbiter SDK. A fairly complicated addon complete with a landing guidance system built using these bindings can be found at: [https://github.com/thomasantony/surveyor](https://github.com/thomasantony/surveyor)
 
 ### Implementation
 
