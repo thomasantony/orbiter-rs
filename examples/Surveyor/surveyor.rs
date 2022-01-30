@@ -388,10 +388,14 @@ impl OrbiterVessel for Surveyor {
         }
     }
     fn on_load_param(&mut self, param_data: &str) -> bool {
+        // Log all parameters loaded from the scenario file
         log::info!("Loading param: {}", param_data);
         false
     }
-
+    fn on_save_state(&mut self, scn: &FileHandle) {
+        // Save a custom parameter to scenario file
+        scn.write_scenario_string("TESTPARAM", "Hello World");
+    }
 }
 
 init_vessel!(
