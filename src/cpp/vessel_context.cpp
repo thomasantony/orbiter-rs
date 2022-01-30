@@ -66,6 +66,10 @@ OBJHANDLE VesselContext::GetSurfaceRef() const
 {
     return VESSEL4::GetSurfaceRef();
 }
+void VesselContext::ParseScenarioLineEx(char* line, void* status) const
+{
+    return VESSEL::ParseScenarioLineEx(line, status);
+}
 void VesselContext::clbkSetClassCaps(FILEHANDLE cfg)
 {
     rust_spacecraft_ = std::move(rust_init_fn_(*this));

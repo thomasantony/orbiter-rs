@@ -225,6 +225,7 @@ pub mod ffi {
         type BoxDynVessel = Box<dyn crate::OrbiterVessel>;
         type PtrBoxDynVessel = crate::PtrBoxDynVessel;
 
+        type c_void;
         /// Rust interface to the `VESSELx` abstract classes in Orbiter SDK
         type VesselContext;
 
@@ -321,6 +322,9 @@ pub mod ffi {
         /// Results are returned in the ecliptic frame (ecliptic and equinox of J2000.0). 
         fn GetRelativeVel(self: &VesselContext, href: OBJHANDLE, rel_vel: &mut VECTOR3);
 
+        /// Pass a line read from a scenario file to Orbiter for default processing
+        unsafe fn ParseScenarioLineEx(self: &VesselContext, line: *mut c_char, status: *mut c_void);
+
         /// Print message to lower-left corner of screen. For debugging purposes only!
         fn ODebug(s: String);
 
@@ -345,7 +349,6 @@ pub mod ffi {
         unsafe fn oapiWriteScenario_vec(scn: FILEHANDLE, item: *mut c_char, val: &VECTOR3);
 
         unsafe fn oapiReadScenario_nextline(scn: FILEHANDLE, line: &mut *mut c_char) -> bool;
-
         unsafe fn oapiWriteLine(f: FILEHANDLE, line: *mut c_char);
 
         unsafe fn oapiOpenFile(

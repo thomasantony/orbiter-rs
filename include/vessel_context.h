@@ -10,8 +10,10 @@ using Vector3 = VECTOR3;
 class VesselContext;
 using VesselInitFn = rust::Fn<BoxDynVessel(VesselContext &)>;
 
-    // Wrapper for oapiCreateVessel
-    OBJHANDLE oapi_create_vessel(rust::String name, rust::String classname, const VESSELSTATUS &status);
+using c_void = void;
+
+// Wrapper for oapiCreateVessel
+OBJHANDLE oapi_create_vessel(rust::String name, rust::String classname, const VESSELSTATUS &status);
 // VESSEL *vessel_ovcInit(OBJHANDLE hvessel, int flightmodel, BoxDynVessel box_vessel);
 VESSEL *vessel_ovcInit(OBJHANDLE hvessel, int flightmodel, VesselInitFn fn);
 void vessel_ovcExit(VESSEL *vessel);
@@ -35,6 +37,7 @@ public:
     void AddMeshWithOffset(rust::String mesh_name, const Vector3& ofs) const;
     size_t AddExhaust(THRUSTER_HANDLE th, double lscale, double wscale) const;
 
+    void ParseScenarioLineEx(char* line, void* status) const;
     THRUSTER_HANDLE CreateThruster(const Vector3 &pos, const Vector3 &dir, double maxth0, PROPELLANT_HANDLE ph, double isp) const;
     PROPELLANT_HANDLE CreatePropellantResource(double mass) const;
     THGROUP_HANDLE CreateThrusterGroup(rust::Slice<const THRUSTER_HANDLE> thrusters, THGROUP_TYPE thgroup_type) const;
