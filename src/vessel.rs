@@ -15,4 +15,9 @@ pub trait OrbiterVessel {
     fn on_load_param(&mut self, _param_data: &str) -> bool {
         false
     }
+    /// Triggered when a scenario containing the vessel is saved. This is used for 
+    /// persisting any custom vehicle parameters to the scenario
+    /// 
+    /// Use the FileHandle::write_scenario_*() methods here
+    fn on_save_state(&mut self, _scn: &FileHandle){}
 }

@@ -96,6 +96,11 @@ void VesselContext::clbkLoadStateEx(FILEHANDLE scn, void* status)
 {
     dyn_vessel_load_state_ex(rust_spacecraft_, scn, status, *this);
 }
+void VesselContext::clbkSaveState(FILEHANDLE scn)
+{
+    VESSEL4::clbkSaveState(scn);
+    dyn_vessel_save_state(rust_spacecraft_, scn);
+}
 // ==============================================================
 // API callback interface used by the init_vessel! macro
 // ==============================================================

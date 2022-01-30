@@ -106,6 +106,7 @@ impl FileHandle {
     /// Write a parameter and its [String] value to a configuration file
     pub fn write_scenario_string(&self, item_name: &str, val: &str) {
         let item_name = CString::new(item_name).unwrap();
+        let val = CString::new(val).unwrap();
         unsafe {
             ffi::oapiWriteScenario_string(
                 self.clone(),

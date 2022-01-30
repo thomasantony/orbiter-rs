@@ -390,6 +390,7 @@ pub mod ffi {
             status: *mut c_void,
             sdk_vessel: Pin<&mut VesselContext>
         );
+        fn dyn_vessel_save_state(vessel: &mut BoxDynVessel, scn: FILEHANDLE);
     }
 }
 
@@ -462,6 +463,12 @@ unsafe fn dyn_vessel_load_state_ex(
     }
 }
 
+fn dyn_vessel_save_state(
+    vessel: &mut BoxDynVessel,
+    scn: FILEHANDLE
+) {
+    vessel.on_save_state(&scn);
+}
 pub use ffi::VesselContext;
 impl std::fmt::Debug for VesselContext {
     fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
