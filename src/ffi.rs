@@ -264,21 +264,50 @@ pub mod ffi {
         /// Performs a transformation from local vessel to global (ecliptic) coordinates
         fn Local2Global(self: &VesselContext, local: &VECTOR3, global: &mut VECTOR3);
 
+        /// Set the vessel's mean radius
+        ///
+        /// The size should correspond to the vessel's visual representation, for example the mesh used to show the vessel in the simulation window.
+        /// The size parameter is used by Orbiter to determine the camera distance at which the vessel is within visual
+        /// range of the observer camera. It is also used for calculating various physical parameters.
+        /// If SetSize is not called during the vessel setup, the value from the Size entry in the vessel's configuration file
+        /// is used.
         fn SetSize(self: &VesselContext, size: f64);
+        /// Set the vessel's mass-normalised principal moments of inertia (PMI)
         fn SetPMI(self: &VesselContext, pmi: &VECTOR3);
+        /// Set the vessel's empty mass (excluding propellants)
         fn SetEmptyMass(self: &VesselContext, empty_mass: f64);
+        /// Set the camera position for internal (cockpit) view.
+        /// 
+        /// # Arguments
+        /// * `camera_offset` - Camera offset in vessel coordinates
         fn SetCameraOffset(self: &VesselContext, camera_offset: &VECTOR3);
+        /// Defines the three points defining the vessel's ground contact plane
         fn SetTouchdownPoints(self: &VesselContext, pt1: &VECTOR3, pt2: &VECTOR3, pt3: &VECTOR3);
+        /// Reset the force direction of a thruster
         fn SetThrusterDir(self: &VesselContext, th: THRUSTER_HANDLE, dir: &VECTOR3);
+        /// Set thrust level for a thruster
         fn SetThrusterLevel(self: &VesselContext, th: THRUSTER_HANDLE, level: f64);
+        /// Set the thrust level of a thruster for the current time step only
         fn SetThrusterLevel_SingleStep(self: &VesselContext, th: THRUSTER_HANDLE, level: f64);
 
+        /// Load a mesh definition for the vessel from a file
         fn AddMesh(self: &VesselContext, mesh_name: String);
+        /// Load a mesh definition for the vessel from a file displaced by offset `ofs`
+        /// 
+        /// # Arguments
+        /// * `mesh_name` - name of the mesh file (without extension)
+        /// * `ofs` - a displacement vector which describes the offset of the mesh origin against the vessel origin
         fn AddMeshWithOffset(self: &VesselContext, mesh_name: String, ofs: &VECTOR3);
+        /// Add an exhaust render definition for a thruster
         fn AddExhaust(self: &VesselContext, th: THRUSTER_HANDLE, lscale: f64, wscale: f64)
             -> usize;
 
+        /// Create a new propellant resource ("fuel tank")
+        /// 
+        /// Propellant resources are a component of the vessel's propulsion system. They can hold propellants and distribute
+        /// them to connected engines to generate thrust
         fn CreatePropellantResource(self: &VesselContext, mass: f64) -> PROPELLANT_HANDLE;
+        /// Add a logical thruster definition for the vessel
         fn CreateThruster(
             self: &VesselContext,
             pos: &VECTOR3,
@@ -287,24 +316,38 @@ pub mod ffi {
             ph: PROPELLANT_HANDLE,
             isp: f64,
         ) -> THRUSTER_HANDLE;
+        /// Combine thrusters into a logical thruster group
         fn CreateThrusterGroup(
             self: &VesselContext,
             thrusters: &[THRUSTER_HANDLE],
             thgroup_type: THGROUP_TYPE,
         ) -> THGROUP_HANDLE;
 
+        /// Remove all mesh definitions for the vessel
         fn ClearMeshes(self: &VesselContext);
 
+        /// Returns the vessel's name
         fn GetName(self: &VesselContext) -> &str;
+        /// Returns the vessel's current status parameters in a [VesselStatus] structure
         fn GetStatus(self: &VesselContext, status: &mut VESSELSTATUS);
+        /// Returns the current mass of a propellant resource specified by `ph`
         fn GetPropellantMass(self: &VesselContext, ph: PROPELLANT_HANDLE) -> f64;
         /// Get angular velocity (in rad/s) of the spacecraft around its principal axes and store it in `a_vel`
         fn GetAngularVel(self: &VesselContext, a_vel: &mut VECTOR3);
+        /// Returns the vessel's true "airspeed" vector
+        /// 
+        /// This method returns the true airspeed vector in the requested frame of reference. The ground airvector is
+        /// defined as the vessel's velocity vector with respect to the surrounding freestream air flow.
+        /// If the vessel is not within an a planetary atmosphere, the returned vector is equal to the groundspeed vector
         fn GetAirspeedVector(self: &VesselContext, ref_frame: REFFRAME, airspeed: &mut VECTOR3) -> bool;
+        /// Returns thrust force vector in local vessel coordinates
         fn GetThrustVector(self: &VesselContext, thrust_vec: &mut VECTOR3) -> bool;
+        /// Returns the vessel's current total propellant mass
         fn GetTotalPropellantMass(self: &VesselContext) -> f64;
+        /// Returns the mean thrust level for a default thruster group type
         #[rust_name = "GetThrusterGroupLevelByType"]
         fn GetThrusterGroupLevel(self: &VesselContext, thgroup_type: THGROUP_TYPE) -> f64;
+        /// Returns the mean thrust level for a default thruster group specified by `th`
         #[rust_name = "GetThrusterGroupLevel"]
         fn GetThrusterGroupLevel(self: &VesselContext, th: THGROUP_HANDLE) -> f64;
         /// Returns a flag indicating contact with a planetary surface
