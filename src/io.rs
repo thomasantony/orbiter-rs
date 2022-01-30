@@ -102,6 +102,34 @@ impl FileHandle {
         let line = CString::new(line).unwrap();
         unsafe { ffi::oapiWriteLine(self.clone(), line.as_ptr() as *mut c_char) };
     }
+
+    /// Write a parameter and its [String] value to a configuration file
+    pub fn write_scenario_string(&self, item_name: &str, val: &str) {
+        let item_name = CString::new(item_name).unwrap();
+        unsafe {
+            ffi::oapiWriteScenario_string(
+                self.clone(),
+                item_name.as_ptr() as *mut c_char,
+                val.as_ptr() as *mut c_char,
+            )
+        };
+    }
+    /// Write a parameter and its [f64] value to a scenario file
+    pub fn write_scenario_f64(&self, item_name: &str, val: f64) {
+        let item_name = CString::new(item_name).unwrap();
+        unsafe { ffi::oapiWriteScenario_float(self.clone(), item_name.as_ptr() as *mut c_char, val) };
+    }
+    /// Write a parameter and its [i32] value to a scenario file
+    pub fn write_scenario_i32(&self, item_name: &str, val: i32) {
+        let item_name = CString::new(item_name).unwrap();
+        unsafe { ffi::oapiWriteScenario_int(self.clone(), item_name.as_ptr() as *mut c_char, val) };
+    }
+    /// Write a parameter and its [Vector3] value to a scenario file
+    pub fn write_scenario_vec(&self, item_name: &str, val: &Vector3) {
+        let item_name = CString::new(item_name).unwrap();
+        unsafe { ffi::oapiWriteScenario_vec(self.clone(), item_name.as_ptr() as *mut c_char, val) };
+    }
+
     /// Close a file after reading or writing
     pub fn close(self, mode: FileAccessMode) {
         ffi::oapiCloseFile(self, mode);
