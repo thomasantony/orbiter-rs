@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.2.2
+- Bump version to v0.2.2 and update changelog
+- Add more documentation to `VesselContext`
+- Fix null-term bug in FileHandle::write_string()
+- Add example for saving custom parameter
+- Add on_save_state() + clbkSaveState()
+- Add write_scenario_* methods to FileHandle
+- Add PoC for loading scenario params
+- Add wrapper for ParseScenarioLineEx
+- Add scenario read/write functions to ffi.rs
+- Make some Vector3 methods const
+
 ## v0.2.1
 - Bump version to 0.2.1 and update changelog
 - Add Logging section in lib.rs documentation
