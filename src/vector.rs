@@ -5,24 +5,24 @@ pub struct Vector3(pub [f64; 3]);
 
 impl Vector3 {
     /// Build a new `Vector3` struct from given `x`, `y` and `z` coordinates
-    pub fn new(x: f64, y: f64, z: f64) -> Self {
+    pub const fn new(x: f64, y: f64, z: f64) -> Self {
         Self([x, y, z])
     }
     /// Returns the `x` coordinate of the vector
     #[inline(always)]
-    pub fn x(&self) -> f64
+    pub const fn x(&self) -> f64
     {
         self.0[0]
     }
     /// Returns the `y` coordinate of the vector
     #[inline(always)]
-    pub fn y(&self) -> f64
+    pub const fn y(&self) -> f64
     {
         self.0[1]
     }
     /// Returns the `z` coordinate of the vector
     #[inline(always)]
-    pub fn z(&self) -> f64
+    pub const fn z(&self) -> f64
     {
         self.0[2]
     }
@@ -43,11 +43,13 @@ impl Vector3 {
         )
     }
     /// Computes the length of the vector
+    #[inline(always)]
     pub fn length(&self) -> f64
     {
         (self.x() * self.x() + self.y() * self.y() + self.z() * self.z()).sqrt()
     }
     /// Computes the unit vector in the direction of this vector
+    #[inline(always)]
     pub fn unit(&self) -> Self
     {
         self / self.length()
