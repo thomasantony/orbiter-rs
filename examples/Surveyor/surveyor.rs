@@ -387,6 +387,11 @@ impl OrbiterVessel for Surveyor {
             }
         }
     }
+    fn on_load_param(&mut self, param_data: &str) -> bool {
+        log::info!("Loading param: {}", param_data);
+        false
+    }
+
 }
 
 init_vessel!(

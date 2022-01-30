@@ -92,7 +92,10 @@ int VesselContext::clbkConsumeBufferedKey(DWORD key, bool down, char *kstate)
 {
     return dyn_vessel_consume_buffered_key(rust_spacecraft_, key, down, kstate);
 }
-
+void VesselContext::clbkLoadStateEx(FILEHANDLE scn, void* status)
+{
+    dyn_vessel_load_state_ex(rust_spacecraft_, scn, status, *this);
+}
 // ==============================================================
 // API callback interface used by the init_vessel! macro
 // ==============================================================

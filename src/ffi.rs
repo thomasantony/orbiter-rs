@@ -1,5 +1,7 @@
 // This file is included directly from lib.rs as making it into a module created too many hassles
 use std::os::raw::c_char;
+use std::pin::Pin;
+
 mod vector;
 
 pub use vector::Vector3;
@@ -382,6 +384,12 @@ pub mod ffi {
             kstate: *mut c_char,
         ) -> i32;
         unsafe fn dyn_vessel_drop_in_place(ptr: PtrBoxDynVessel);
+        unsafe fn dyn_vessel_load_state_ex(
+            vessel: &mut BoxDynVessel,
+            scn: FILEHANDLE,
+            status: *mut c_void,
+            sdk_vessel: Pin<&mut VesselContext>
+        );
     }
 }
 
@@ -432,6 +440,26 @@ unsafe fn dyn_vessel_consume_buffered_key(
 ) -> i32 {
     let kstate = crate::KeyStates::from(kstate);
     (**vessel).consume_buffered_key(crate::Key::from(key.0 as u8), down, kstate)
+}
+unsafe fn dyn_vessel_load_state_ex(
+    vessel: &mut BoxDynVessel,
+    scn: FILEHANDLE,
+    status: *mut ffi::c_void,
+    sdk_vessel: Pin<&mut VesselContext>)
+{
+    let mut line: *mut c_char = std::ptr::null_mut();
+    loop {
+        let res = ffi::oapiReadScenario_nextline(scn, &mut line);
+        if !res {
+            break;
+        }
+
+        let line_str = std::ffi::CStr::from_ptr(line).to_string_lossy();
+        if !vessel.on_load_param(&line_str)
+        {
+            sdk_vessel.ParseScenarioLineEx(line, status);
+        }
+    }
 }
 
 pub use ffi::VesselContext;

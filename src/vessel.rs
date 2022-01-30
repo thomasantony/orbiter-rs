@@ -9,4 +9,10 @@ pub trait OrbiterVessel {
     fn consume_buffered_key(&mut self, _key: Key, _down: bool, _kstate: KeyStates) -> i32 {
         0
     }
+    /// Triggered for each line of vehicle parameters when a scenario is loaded
+    /// Return true to indicate that it was a custom value parsed by the module
+    /// Returning false will pass the parameter to Orbiter for default processing
+    fn on_load_param(&mut self, _param_data: &str) -> bool {
+        false
+    }
 }

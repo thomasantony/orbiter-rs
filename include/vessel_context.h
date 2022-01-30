@@ -31,6 +31,7 @@ public:
     void clbkSetClassCaps(FILEHANDLE cfg);
     void clbkPreStep(double SimT, double SimDT, double MJD);
     void clbkPostStep(double SimT, double SimDT, double MJD);
+    void clbkLoadStateEx(FILEHANDLE scn, void* status);
     int clbkConsumeBufferedKey(DWORD key, bool down, char *kstate);
 
     void AddMesh(rust::String mesh_name) const;
