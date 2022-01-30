@@ -339,6 +339,13 @@ pub mod ffi {
         unsafe fn oapiWriteItem_bool(f: FILEHANDLE, item: *mut c_char, val: bool);
         unsafe fn oapiWriteItem_vec(f: FILEHANDLE, item: *mut c_char, val: &VECTOR3);
 
+        unsafe fn oapiWriteScenario_string(scn: FILEHANDLE, item: *mut c_char, val: *mut c_char);
+        unsafe fn oapiWriteScenario_float(scn: FILEHANDLE, item: *mut c_char, val: f64);
+        unsafe fn oapiWriteScenario_int(scn: FILEHANDLE, item: *mut c_char, val: i32);
+        unsafe fn oapiWriteScenario_vec(scn: FILEHANDLE, item: *mut c_char, val: &VECTOR3);
+
+        unsafe fn oapiReadScenario_nextline(scn: FILEHANDLE, line: &mut *mut c_char) -> bool;
+
         unsafe fn oapiWriteLine(f: FILEHANDLE, line: *mut c_char);
 
         unsafe fn oapiOpenFile(
